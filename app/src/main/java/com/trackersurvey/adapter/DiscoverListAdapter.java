@@ -17,6 +17,7 @@ import java.util.List;
  */
 
 //DONG
+//ZH
 public class DiscoverListAdapter extends RecyclerView.Adapter<DiscoverListAdapter.DiscoverViewHolder> {
 
     private List<DiscoverListBean> dataList;
