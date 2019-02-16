@@ -112,6 +112,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    // 哈哈哈
                                     Toast.makeText(RegisterActivity.this, "注册成功！", Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
