@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.trackersurvey.happynavi.MySportActivity"
+    android:orientation="vertical">
+
+    <com.trackersurvey.util.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.trackersurvey.util.TitleLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+        <TextView
+            android:id="@+id/steplable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/step_label"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:id="@+id/stepcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/steplable"
+            android:layout_marginLeft="20dp"
+            android:text="@string/step_count"
+            android:textSize="50sp"
+            android:textColor="@color/blue"
+            />
+        <TextView
+            android:id="@+id/dislable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/steplable"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/distance_label"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:id="@+id/distancedata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dislable"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/distance"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:id="@+id/timelable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/dislable"
+            android:layout_alignTop="@id/dislable"
+            android:layout_marginLeft="50dp"
+            android:text="@string/duration_label"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:id="@+id/durationdata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/timelable"
+            android:layout_alignLeft="@id/timelable"
+            android:layout_marginTop="10dp"
+
+            android:text="@string/time_value"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:id="@+id/calorielable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/timelable"
+            android:layout_alignTop="@id/timelable"
+            android:layout_marginLeft="50dp"
+            android:text="@string/calorie_label"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:id="@+id/caloriedata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/calorielable"
+            android:layout_alignLeft="@id/calorielable"
+            android:layout_marginTop="10dp"
+
+            android:text="@string/calorie"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            />
+
+        <Button
+            android:id="@+id/refreshsport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/caloriedata"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/calorielable"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/button_register_bg"
+            android:gravity="center"
+            android:text="@string/refreshbtn"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="15dp"
+        >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray" />
+        <TextView
+            android:id="@+id/tuli"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tuli"
+            android:textColor="@color/blue"
+            />
+        <lecho.lib.hellocharts.view.LineChartView
+            android:id="@+id/chart_top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="invisible">"
+        </lecho.lib.hellocharts.view.LineChartView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray" />
+
+        <lecho.lib.hellocharts.view.ColumnChartView
+            android:id="@+id/chart_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="invisible">
+        </lecho.lib.hellocharts.view.ColumnChartView>
+    </LinearLayout>
+
+</LinearLayout>

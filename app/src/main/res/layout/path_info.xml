@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000" >
+
+    <LinearLayout
+        android:id="@+id/message1_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:id="@+id/distance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" >
+
+            <LinearLayout
+                android:id="@+id/distance2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/distance_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/distance"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/distance_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/dis_unit"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/distance_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/distance2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:text="@string/distance_label"
+                android:textColor="#FFFFFF" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/during"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/distance"
+            android:layout_weight="2" >
+
+            <TextView
+                android:id="@+id/during_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="@string/time_value"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/during_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/during_info"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:text="@string/duration_label"
+                android:textColor="#FFFFFF" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/during"
+            android:layout_weight="3" >
+
+            <TextView
+                android:id="@+id/time_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="@string/zero"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/time_info"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:text="@string/start_time"
+                android:textColor="#FFFFFF" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/split"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/message1_3"
+        android:background="#FFFFFF" />
+
+    <LinearLayout
+        android:id="@+id/message4_6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/split" >
+
+        <RelativeLayout
+            android:id="@+id/speed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" >
+
+            <TextView
+                android:id="@+id/speed_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text=""
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/speed_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/speed_info"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:text="@string/speed"
+                android:textColor="#FFFFFF" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/step"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/speed"
+            android:layout_weight="2" >
+
+            <TextView
+                android:id="@+id/step_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="@string/step_count"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/step_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/step_info"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:text="@string/step_label"
+                android:textColor="#FFFFFF" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/calorie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/step"
+            android:layout_weight="3" >
+
+            <TextView
+                android:id="@+id/calorie_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="@string/zero"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/calorie_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/calorie_info"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:text="@string/calorie_label"
+                android:textColor="#FFFFFF" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

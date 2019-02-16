@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center" >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray_c"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/bg_edittext">
+                    <EditText
+                        android:id="@+id/et_search"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:layout_alignTop="@+id/bt_search"
+                        android:layout_alignBottom="@+id/bt_search"
+                        android:hint="@string/searchgroups"
+                        android:singleLine="true"
+                        />
+                    <ImageButton
+                        android:id="@+id/bt_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/bg_search"
+                        />
+                </RelativeLayout>
+            </LinearLayout>
+            <com.trackersurvey.util.PullToRefreshView
+                android:id="@+id/main_pull_refresh_view"
+
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                >
+                <ListView
+                    android:id="@+id/listview_allgroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:cacheColorHint="#000000"
+                    ></ListView>
+            </com.trackersurvey.util.PullToRefreshView>
+            <RelativeLayout
+
+                android:id="@+id/allgroup_relative"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+
+                android:visibility="gone"
+                >
+                <Button
+
+                    android:id="@+id/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel_withdiv"
+                    android:textSize="20sp"
+                    android:background="@null"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/blue"
+                    />
+                <Button
+
+                    android:id="@+id/joingroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/joingroup"
+                    android:textSize="20sp"
+                    android:layout_toRightOf="@id/cancel"
+                    android:layout_marginLeft="20dp"
+                    android:background="@null"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/blue"
+                    />
+                <TextView
+
+                    android:id="@+id/txtcount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total"
+                    android:textSize="15sp"
+                    android:padding="3dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/joingroup"
+                    android:layout_marginLeft="20dp"
+                    />
+
+
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nogroup"
+            android:layout_centerInParent="true"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:visibility="invisible"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

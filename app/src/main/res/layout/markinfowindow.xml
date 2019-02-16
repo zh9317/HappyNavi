@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical" >
+	<ImageButton
+        android:id="@+id/infowindow_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_close"
+        android:background="@null"
+        android:layout_gravity="right"
+        
+        >
+    </ImageButton>
+	<com.trackersurvey.photoview.SlideListView
+        android:id="@+id/listViewMark"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        
+        android:scrollbars="none"
+        />
+	
+
+</LinearLayout>

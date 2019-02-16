@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:background="@drawable/custom_info_bubble"
+    android:orientation="vertical"
+     >
+
+    <ImageButton
+        android:id="@+id/infowin_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_close"
+        android:background="@null"
+        android:layout_gravity="right"
+        >
+    </ImageButton>
+
+    
+        <TextView
+            android:id="@+id/infowin_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="2016-05-04 12:00:00"
+            android:textColor="#ff000000"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+       
+    
+
+</LinearLayout>

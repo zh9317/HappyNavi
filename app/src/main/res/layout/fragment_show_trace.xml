@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/show_amapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="130dp"
+        />
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/layout_seekbar"
+        android:src="@mipmap/ic_mapsigns" />
+    <LinearLayout
+        android:id="@+id/layout_seekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/mark_left"
+        android:background="@color/white"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <com.trackersurvey.util.TextMoveLayout
+                android:id="@+id/textLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="30dp"
+                android:background="@color/white" />
+
+            <SeekBar
+                android:id="@+id/seekbar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:maxHeight="4dp"
+                android:minHeight="4dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:progressDrawable="@drawable/po_seekbar"
+                android:thumb="@drawable/seekbar_thumb" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="14dp"
+                android:textColor="@color/bg_lin_95" />
+
+            <TextView
+                android:id="@+id/end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="14dp"
+                android:textColor="@color/bg_lin_95" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/mark_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/bg_mark_left" />
+
+    <ImageView
+        android:id="@+id/mark_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/mark_left"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/bg_mark_right" />
+    <ImageView
+        android:id="@+id/addmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/mark_right"
+        android:layout_marginLeft="10dp"
+        android:background="@mipmap/addmarkpic"
+        />
+    <ImageView
+        android:id="@+id/checktraceinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/addmark"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/bg_checktrace"
+        />
+    <ImageView
+        android:id="@+id/sharetrace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/checktraceinfo"
+        android:layout_marginLeft="10dp"
+        android:background="@mipmap/share"
+        />
+
+</RelativeLayout>

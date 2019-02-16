@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.trackersurvey.happynavi.TraceListActivity"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.trackersurvey.util.TitleLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </com.trackersurvey.util.TitleLayout>
+
+        <com.trackersurvey.util.PullToRefreshView
+            android:id="@+id/pull_refresh_view_tracelist"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ListView
+                android:id="@+id/listview_trace"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="#000000"
+                android:divider="@color/gray"
+                android:dividerHeight="0.5dp">
+            </ListView>
+
+        </com.trackersurvey.util.PullToRefreshView>
+
+        <!--<android.support.v7.widget.RecyclerView
+            android:id="@+id/trace_list_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>-->
+
+        <!--<com.trackersurvey.util.PullToRefreshView
+            android:id="@+id/pull_refresh_view_tracelist"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+
+
+        </com.trackersurvey.util.PullToRefreshView>-->
+
+        <RelativeLayout
+            android:id="@+id/relative_tracemenu"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:visibility="gone" >
+            <Button
+                android:id="@+id/tracelist_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel_withdiv"
+                android:textSize="20sp"
+                android:background="@null"
+                android:layout_centerVertical="true"
+                android:textColor="@color/blue" />
+            <Button
+                android:id="@+id/tracelist_downupload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tracelist_cancel"
+                android:text="@string/downupload_withdiv"
+                android:textSize="20sp"
+                android:background="@null"
+                android:layout_centerVertical="true"
+                android:textColor="@color/blue" />
+            <TextView
+                android:id="@+id/tracelist_txtcount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total"
+                android:textSize="15sp"
+                android:padding="3dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tracelist_downupload" />
+            <Button
+                android:id="@+id/tracelist_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_withdiv"
+                android:textSize="20sp"
+                android:background="@null"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/blue" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tracelist_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

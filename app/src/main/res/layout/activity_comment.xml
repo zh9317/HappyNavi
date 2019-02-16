@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    tools:context="com.trackersurvey.happynavi.CommentActivity"
+    tools:ignore="MergeRootFrame"
+    android:background="#FFFFFF">
+
+    <!-- 底部按钮 -->
+
+    <RelativeLayout
+        android:id="@+id/Layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:gravity="center" >
+
+        <ImageView
+            android:id="@+id/comment_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="13dp"
+            android:src="@mipmap/ic_comment_photo" />
+
+        <ImageView
+            android:id="@+id/comment_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="13dp"
+            android:src="@mipmap/ic_comment_video" />
+
+    </RelativeLayout>
+    <!-- 显示图片 -->
+
+    <RelativeLayout
+        android:id="@+id/Content_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/Layout_bottom"
+        android:layout_marginBottom="10dp"
+        android:gravity="center" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <!-- 设置运行多行 设置圆角图形 黑色字体 -->
+
+            <!-- 标题栏 -->
+            <com.trackersurvey.util.TitleLayout
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </com.trackersurvey.util.TitleLayout>
+
+            <EditText
+                android:id="@+id/editComment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="4.7"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:gravity="top|left"
+                android:background="@null"
+                android:hint="@string/saysomethint"
+                android:maxLength="500"
+                android:textColor="#000000"
+                android:textSize="20dp" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/mood_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/feelingst"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"/>
+
+                <RadioGroup
+                    android:id="@+id/rg_mood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/mood_label"
+                    android:checkedButton="@+id/rb_happy"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/rb_happy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/radiobutton_bg"
+                        android:button="@null" />
+
+                    <ImageView
+                        android:id="@+id/iv_happy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_happy" />
+
+                    <RadioButton
+                        android:id="@+id/rb_general"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/radiobutton_bg"
+                        android:layout_marginLeft="35dp"
+                        android:button="@null" />
+
+                    <ImageView
+                        android:id="@+id/iv_general"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_general" />
+
+                    <RadioButton
+                        android:id="@+id/rb_unhappy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/radiobutton_bg"
+                        android:layout_marginLeft="35dp"
+                        android:button="@null" />
+
+                    <ImageView
+                        android:id="@+id/iv_unhappy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_unhappy" />
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/behaviour_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/mood_label"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/behaviour"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <com.trackersurvey.util.DropDownListView
+                    android:id="@+id/drop_down_list_view_behaviour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/mood_label"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toRightOf="@id/behaviour_label" >
+                </com.trackersurvey.util.DropDownListView>
+
+                <TextView
+                    android:id="@+id/duration_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/duration"
+                    android:textSize="16dp"
+                    android:layout_toRightOf="@id/drop_down_list_view_behaviour"
+                    android:layout_below="@id/mood_label"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginLeft="5dp"
+                    />
+                <com.trackersurvey.util.DropDownListViewShort
+                    android:id="@+id/drop_down_list_view_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/mood_label"
+                    android:layout_toRightOf="@id/duration_label"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="6dp" >
+                </com.trackersurvey.util.DropDownListViewShort>
+
+                <TextView
+                    android:id="@+id/partner_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/behaviour_label"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/partner_num"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"/>
+
+                <com.trackersurvey.util.DropDownListViewShort
+                    android:id="@+id/drop_down_list_view_partner_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/drop_down_list_view_behaviour"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toRightOf="@id/partner_number" >
+                </com.trackersurvey.util.DropDownListViewShort>
+
+                <TextView
+                    android:id="@+id/relationship_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/behaviour_label"
+                    android:layout_toRightOf="@id/drop_down_list_view_partner_number"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/relation"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"/>
+
+                <com.trackersurvey.util.DropDownListViewShort
+                    android:id="@+id/drop_down_list_view_relationship"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/drop_down_list_view_behaviour"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toRightOf="@id/relationship_label" >
+                </com.trackersurvey.util.DropDownListViewShort>
+
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/is_share_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/is_share_cb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/is_share_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分享兴趣点"
+                    android:layout_toRightOf="@id/is_share_cb"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="7dp"/>
+
+            </RelativeLayout>
+
+            <!-- 网格显示图片 行列间距5dp -->
+
+            <GridView
+                android:id="@+id/gridPicture"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                android:layout_weight="6"
+                android:listSelector="@android:color/transparent"
+                android:background="#FFFFFF"
+                android:cacheColorHint="#00000000"
+                android:fadeScrollbars="true"
+                android:gravity="center"
+                android:horizontalSpacing="5dp"
+                android:numColumns="3"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="5dp" >
+            </GridView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="#FFFFFF"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/imageView_place"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="13dp"
+                    android:src="@mipmap/ic_place" />
+
+                <TextView
+                    android:id="@+id/textView_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="19dp"
+                    android:layout_toRightOf="@+id/imageView_place"
+                    android:text="@string/place"
+                    android:textColor="@color/black"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

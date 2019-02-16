@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#AAAAAA</color>
+    <color name="gray_e">#EEEEEE</color>
+    <color name="gray_d">#DDDDDD</color>
+    <color name="gray_c">#CCCCCC</color>
+    <color name="gray_b">#BBBBBB</color>
+    <color name="gray_6">#666666</color>
+    <color name="blue">#4c90f9</color>
+    <color name="dropdownlist_bg">#ededed</color>
+    <color name="dropdownlist_press">#cedded</color>
+    <color name="dropdownlist_item">#f8f8f8</color>
+    <color name="dropdownlist_item_press">#cedded</color>
+    <color name="bg_lin_95">#959595</color>
+    <color name="btn_register_normal">#66ccff</color>
+    <color name="btn_register_pressed">#6699ff</color>
+    <color name="walkTrace">#0000FF</color>
+    <color name="slideTrace">#00FF00</color>
+    <color name="bickTrace">#F6FF00</color>
+    <color name="driveTrace">#FF6C00</color>
+    <color name="trainTrace">#FF0000</color>
+    <color name="otherTrace">#E11AED</color>
+</resources>

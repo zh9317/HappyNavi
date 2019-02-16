@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000"
+    android:orientation="vertical"
+    tools:context="com.trackersurvey.happynavi.PictureBrowserActivity">
+
+    <GridView
+        android:id="@+id/gridBrowserPicture"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:background="#111111"
+        android:cacheColorHint="#00000000"
+        android:fadeScrollbars="true"
+        android:gravity="center"
+        android:horizontalSpacing="2dp"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="2dp" >
+
+    </GridView>
+
+    <RelativeLayout
+        android:id="@+id/pbbuttom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#cccccc" >
+
+        <Button
+            android:id="@+id/pbbuttomPreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/black"
+            android:text="@string/assume" />
+
+        <TextView
+            android:id="@+id/pbbuttomHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="0/9"
+            android:textColor="#33CC33"
+            android:textSize="24dp" />
+
+        <Spinner
+            android:id="@+id/pbbuttomDirName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/pbbuttomHint"
+            android:spinnerMode="dropdown"
+            android:text="@string/allpic"
+            android:textColor="#FFFFFF" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/relativelayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="19dp">
+
+        <com.amap.api.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.amap.api.maps.MapView>
+
+        <ImageButton
+            android:id="@+id/imgbtn_starttrail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_start"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
+            android:layout_marginBottom="20dp" />
+
+        <ImageButton
+            android:id="@+id/change_sport_type_ib"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/imgbtn_endtrail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_stop"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/imgbtn_starttrail"
+            android:background="@null"
+            android:layout_marginBottom="20dp"/>
+
+        <ImageButton
+            android:id="@+id/imgbtn_takephoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/photo"
+            android:background="@null"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:id="@+id/tv_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:textColor="@color/black"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativelayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        >
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blue"
+            android:textColor="#FFFFFF"
+            android:gravity="left"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

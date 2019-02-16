@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@drawable/shape_corner_half_transparent_10dp">
+
+    <ImageView
+        android:id="@+id/guess_travel_img"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:src="@mipmap/guess_travel_test_img"/>
+
+    <TextView
+        android:id="@+id/guess_travel_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2018年全球最佳、最高性价比旅游地榜单出炉，总有一个是你想去的地方"
+        android:lineSpacingExtra="8dp"
+        android:layout_margin="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/guess_travel_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="2017-11-28"
+            android:textSize="12sp"
+            android:textColor="#888888"
+            android:layout_marginLeft="10dp"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/browse_num_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/browse_num_img"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/browse_num_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1234"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/check_detail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="查看详情"
+            android:layout_marginRight="5dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

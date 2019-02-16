@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.trackersurvey.happynavi.GroupInfoActivity">
+
+    <com.trackersurvey.util.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.trackersurvey.util.TitleLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_groupimage"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+
+            android:src="@mipmap/ic_groupimage" />
+
+        <TextView
+            android:id="@+id/tv_groupimageline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/iv_groupimage"
+            android:background="#999999" />
+        <TextView
+            android:id="@+id/tv_lablegroupname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_groupimageline"
+            android:layout_alignRight="@+id/tv_lablecreatetime"
+            android:text="@string/group_name"
+            android:textSize="@dimen/groupinfotvsize" />
+        <TextView
+            android:id="@+id/tv_groupname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_groupimageline"
+            android:layout_toRightOf="@id/tv_lablegroupname"
+            android:layout_marginLeft="10dp"
+            android:text="@string/group_name"
+            android:textSize="@dimen/groupinfotvsize"
+            android:textColor="@color/gray_6"/>
+
+        <TextView
+            android:id="@+id/tv_groupnameline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/tv_groupname"
+            android:background="#999999" />
+
+        <TextView
+            android:id="@+id/tv_lablecreateman"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_groupnameline"
+            android:layout_alignRight="@+id/tv_lablecreatetime"
+            android:layout_marginBottom="5dp"
+
+            android:layout_marginTop="5dp"
+            android:text="@string/create_man"
+            android:textSize="@dimen/groupinfotvsize" />
+
+        <TextView
+            android:id="@+id/tv_createman"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_groupnameline"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/tv_lablecreateman"
+            android:text="@string/create_man"
+            android:textColor="@color/gray_6"
+            android:textSize="@dimen/groupinfotvsize" />
+
+        <TextView
+            android:id="@+id/tv_createmanline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/tv_lablecreateman"
+            android:background="#999999" />
+
+        <TextView
+            android:id="@+id/tv_lablemanagerids"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_createmanline"
+            android:layout_alignRight="@+id/tv_lablecreatetime"
+            android:layout_marginBottom="5dp"
+
+            android:layout_marginTop="5dp"
+            android:text="@string/manager_ids"
+            android:textSize="@dimen/groupinfotvsize" />
+
+        <TextView
+            android:id="@+id/tv_managerids"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_createmanline"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/tv_lablemanagerids"
+            android:text="@string/manager_ids"
+            android:textColor="@color/gray_6"
+            android:textSize="@dimen/groupinfotvsize" />
+
+        <TextView
+            android:id="@+id/tv_manageridsline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/tv_managerids"
+            android:background="#999999" />
+
+        <TextView
+            android:id="@+id/tv_lablemembernums"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_manageridsline"
+            android:layout_alignRight="@+id/tv_lablecreatetime"
+            android:layout_marginBottom="5dp"
+
+            android:layout_marginTop="5dp"
+            android:text="@string/member_nums"
+            android:textSize="@dimen/groupinfotvsize" />
+
+        <TextView
+            android:id="@+id/tv_membernums"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_manageridsline"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/tv_lablemembernums"
+            android:text="@string/member_nums"
+            android:textColor="@color/gray_6"
+            android:textSize="@dimen/groupinfotvsize" />
+
+        <TextView
+            android:id="@+id/tv_membernumsline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/tv_membernums"
+            android:background="#999999" />
+
+        <TextView
+            android:id="@+id/tv_lablecreatetime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_membernumsline"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="20dp"
+            android:text="@string/create_time"
+            android:textSize="@dimen/groupinfotvsize" />
+
+        <TextView
+            android:id="@+id/tv_createtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_membernumsline"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/tv_lablecreatetime"
+            android:textColor="@color/gray_6"
+            android:text="@string/create_time"
+            android:layout_marginLeft="10dp"
+            android:textSize="@dimen/groupinfotvsize" />
+
+        <TextView
+            android:id="@+id/tv_createtimeline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/tv_createtime"
+            android:background="#999999" />
+
+        <TextView
+            android:id="@+id/tv_lablegroupdetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_createtimeline"
+            android:layout_alignRight="@+id/tv_lablecreatetime"
+
+            android:layout_marginTop="10dp"
+            android:text="@string/group_detail"
+            android:textSize="@dimen/groupinfotvsize" />
+
+        <TextView
+            android:id="@+id/tv_groupdetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_createtimeline"
+            android:layout_toRightOf="@id/tv_lablegroupdetail"
+            android:layout_alignTop="@id/tv_lablegroupdetail"
+
+            android:textColor="@color/gray_6"
+            android:layout_marginLeft="10dp"
+            />
+
+        <Button
+            android:id="@+id/btn_handlegroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_register_bg"
+            android:padding="10dp"
+            android:text="@string/joingroup"
+            android:textSize="@dimen/groupinfotvsize"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</LinearLayout>

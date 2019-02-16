@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.trackersurvey.happynavi.UserInfoActivity">
+
+    <com.trackersurvey.util.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.trackersurvey.util.TitleLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="90dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/user_info_head"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <ImageView
+                    android:id="@+id/user_info_head_img"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:src="@mipmap/user_info_head"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/black"
+                    android:layout_below="@id/user_info_head_img" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_info_nickname"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/user_info_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="小胖"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/black"
+                    android:layout_below="@id/user_info_nickname"
+                    android:layout_marginTop="10dp"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_info_real_name"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/user_info_real_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="小倩"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/black"
+                    android:layout_below="@id/user_info_real_name"
+                    android:layout_marginTop="10dp"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_info_id"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/user_info_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="17812345678"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/black"
+                    android:layout_below="@id/user_info_id"
+                    android:layout_marginTop="10dp"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_info_birth_date"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/user_info_birth_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="96.01.01"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/black"
+                    android:layout_below="@id/user_info_birth_date"
+                    android:layout_marginTop="10dp"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_info_sex"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/user_info_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="女"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/black"
+                    android:layout_below="@id/user_info_sex"
+                    android:layout_marginTop="10dp"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_info_occupation"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/user_info_occupation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="学生"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:layout_below="@id/user_info_occupation"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/black" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_info_education"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/user_info_education"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="硕士"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:layout_below="@id/user_info_education"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/black" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/change_user_info_btn"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/user_info_change_info"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_corner_change_user_info" />
+
+            <Button
+                android:id="@+id/change_password_btn"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/user_info_change_pwd"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_corner_change_pwd_bg" />
+
+            <Button
+                android:id="@+id/logout_btn"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/user_info_logout"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/shape_corner_logout_bg"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

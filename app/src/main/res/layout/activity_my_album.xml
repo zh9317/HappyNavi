@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.trackersurvey.happynavi.MyAlbumActivity">
+
+    <com.trackersurvey.util.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.trackersurvey.util.TitleLayout>
+
+    <com.trackersurvey.photoview.SlideListView
+        android:id="@+id/album_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+    </com.trackersurvey.photoview.SlideListView>
+
+</LinearLayout>

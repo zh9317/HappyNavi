@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.trackersurvey.happynavi">
+
+    <!-- 允许程序打开网络套接字 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 允许程序设置内置sd卡的写权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 允许程序获取网络状态 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 允许程序访问WiFi网络信息 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 允许程序读写手机状态和身份,用于读取手机当前的状态 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 用于申请调用A-GPS模块 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="5a23eb2b467ea1bbe703edfc7c07837f" />
+
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name="com.trackersurvey.service.LocationService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <!-- 启动页 -->
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- 登录 -->
+        <activity android:name=".LoginActivity" />
+        <!-- 注册 -->
+        <activity android:name=".RegisterActivity" />
+
+        <!-- 记录步数Service -->
+        <service
+            android:name="com.trackersurvey.service.StepCounterService"
+            android:enabled="true"
+            android:exported="true" />
+        <!-- 高德定位需要的服务 -->
+        <service android:name="com.amap.api.location.APSService" />
+        <service
+            android:name="com.trackersurvey.service.DownloadService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name="com.trackersurvey.service.DownloadTaskService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name="com.trackersurvey.service.CommentUploadService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".CommentActivity" />
+        <activity android:name=".BGRunningGuideActivity" />
+        <activity android:name=".PictureBrowserActivity" />
+        <activity android:name=".SelectedPictureActivity" />
+        <activity android:name=".ConfirmPlaceActivity" />
+        <activity android:name=".TraceListActivity" />
+        <activity android:name=".TraceDetailActivity" />
+        <activity android:name=".MyGroupActivity" />
+        <activity android:name=".GroupInfoActivity" />
+        <activity android:name=".MySportActivity" />
+        <activity android:name=".QuestionaryActivity" />
+        <activity
+            android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".OfflineMapActivity" />
+        <activity android:name=".MyAlbumActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".SetParameterActivity" />
+        <activity android:name=".UserInfoActivity" />
+        <activity android:name=".UserInfoChangeActivity"></activity>
+    </application>
+
+</manifest>

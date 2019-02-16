@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.trackersurvey.util.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.trackersurvey.util.TitleLayout>
+
+    <WebView
+        android:id="@+id/question_web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </WebView>
+
+    <!--<wendu.dsbridge.DWebView
+        android:id="@+id/dWebView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </wendu.dsbridge.DWebView>-->
+
+</LinearLayout>
