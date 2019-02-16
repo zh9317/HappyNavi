@@ -222,7 +222,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     private View view;
     private AlertDialog dialog;
 
-    private PoiChoiceModel model;
+    private PoiChoiceModel poiChoiceModel;
 
     @Nullable
 
@@ -1413,30 +1413,30 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
-                    model = (PoiChoiceModel) responseObject;
+                    poiChoiceModel = (PoiChoiceModel) responseObject;
                     behaviourData = new PointOfInterestData();
                     durationData = new PointOfInterestData();
                     partnerNumData = new PointOfInterestData();
                     relationData = new PointOfInterestData();
                     poiDBHelper.delete();
-                    for (int i = 0; i < model.getActivityTypeList().size(); i++) {
-                        behaviourData.setKey(model.getActivityTypeList().get(i).getActivitytype());
-                        behaviourData.setValue(model.getActivityTypeList().get(i).getActivityname());
+                    for (int i = 0; i < poiChoiceModel.getActivityTypeList().size(); i++) {
+                        behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivitytype());
+                        behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityname());
                         poiDBHelper.insertBehaviour(behaviourData);
                     }
-                    for (int i = 0; i < model.getRetentionTypeList().size(); i++) {
-                        durationData.setKey(model.getRetentionTypeList().get(i).getRetentiontype());
-                        durationData.setValue(model.getRetentionTypeList().get(i).getRetentiontypename());
+                    for (int i = 0; i < poiChoiceModel.getRetentionTypeList().size(); i++) {
+                        durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentiontype());
+                        durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentiontypename());
                         poiDBHelper.insertDuration(durationData);
                     }
-                    for (int i = 0; i < model.getCompanionTypeList().size(); i++) {
-                        partnerNumData.setKey(model.getCompanionTypeList().get(i).getCompaniontype());
-                        partnerNumData.setValue(model.getCompanionTypeList().get(i).getCompaniontypename());
+                    for (int i = 0; i < poiChoiceModel.getCompanionTypeList().size(); i++) {
+                        partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompaniontype());
+                        partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompaniontypename());
                         poiDBHelper.insertPartnerNum(partnerNumData);
                     }
-                    for (int i = 0; i < model.getRelationTypeList().size(); i++) {
-                        relationData.setKey(model.getRelationTypeList().get(i).getRelationtype());
-                        relationData.setValue(model.getRelationTypeList().get(i).getRelationtypename());
+                    for (int i = 0; i < poiChoiceModel.getRelationTypeList().size(); i++) {
+                        relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationtype());
+                        relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationtypename());
                         poiDBHelper.insertPartnerRelation(relationData);
                     }
                 }
@@ -1453,30 +1453,30 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
-                    model = (PoiChoiceModel) responseObject;
+                    poiChoiceModel = (PoiChoiceModel) responseObject;
                     behaviourData = new PointOfInterestData();
                     durationData = new PointOfInterestData();
                     partnerNumData = new PointOfInterestData();
                     relationData = new PointOfInterestData();
                     poiDBHelper.delete();
-                    for (int i = 0; i < model.getActivityTypeList().size(); i++) {
-                        behaviourData.setKey(model.getActivityTypeList().get(i).getActivitytype());
-                        behaviourData.setValue(model.getActivityTypeList().get(i).getActivityname());
+                    for (int i = 0; i < poiChoiceModel.getActivityTypeList().size(); i++) {
+                        behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivitytype());
+                        behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityname());
                         poiDBHelper.insertBehaviour(behaviourData);
                     }
-                    for (int i = 0; i < model.getRetentionTypeList().size(); i++) {
-                        durationData.setKey(model.getRetentionTypeList().get(i).getRetentiontype());
-                        durationData.setValue(model.getRetentionTypeList().get(i).getRetentiontypename());
+                    for (int i = 0; i < poiChoiceModel.getRetentionTypeList().size(); i++) {
+                        durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentiontype());
+                        durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentiontypename());
                         poiDBHelper.insertDuration(durationData);
                     }
-                    for (int i = 0; i < model.getCompanionTypeList().size(); i++) {
-                        partnerNumData.setKey(model.getCompanionTypeList().get(i).getCompaniontype());
-                        partnerNumData.setValue(model.getCompanionTypeList().get(i).getCompaniontypename());
+                    for (int i = 0; i < poiChoiceModel.getCompanionTypeList().size(); i++) {
+                        partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompaniontype());
+                        partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompaniontypename());
                         poiDBHelper.insertPartnerNum(partnerNumData);
                     }
-                    for (int i = 0; i < model.getRelationTypeList().size(); i++) {
-                        relationData.setKey(model.getRelationTypeList().get(i).getRelationtype());
-                        relationData.setValue(model.getRelationTypeList().get(i).getRelationtypename());
+                    for (int i = 0; i < poiChoiceModel.getRelationTypeList().size(); i++) {
+                        relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationtype());
+                        relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationtypename());
                         poiDBHelper.insertPartnerRelation(relationData);
                     }
                 }

@@ -50,6 +50,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     public String register_information_url = null;
     public static final String mobConnectFirst = "mobConnectFirstUse";
     public String result;
+    private LoginModel loginModel;
     public String information;
     public EditText uidEt;
     public EditText pwdEt;
@@ -226,45 +227,45 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         } else {
                             if (isSuccess) {
                                 if (code.equals("0")) {
-                                    result = (String) responseObject;
-                                    Log.i("HttpUtilEncrypt", result);
-//                                    try {
-//                                        result = DESUtil.decrypt(result);
-//                                        Log.i("HttpUtilDecrypt", result);
-//                                        JSONObject jsonObject = new JSONObject(result);
-//                                        LoginModel model = new LoginModel(jsonObject);
-//                                        token = model.getToken();
-//                                        String userID = model.getUserinfo().getUserid(); // 这个userID是后台生成的，不是手机号
-//                                        Log.i("HttpUtilDecrypt", "token:" + token);
-//                                        SharedPreferences.Editor loginEditor = sp.edit();
-//                                        loginEditor.putString("token", token);
-//                                        loginEditor.putString("userID", userID);
-//                                        loginEditor.putString("userPhone", uid);
-//                                        loginEditor.putString("birthDate", model.getUserinfo().getBirthdate());
-//                                        loginEditor.putString("headurl", model.getUserinfo().getHeadurl());
-//                                        loginEditor.putString("mobilePhone", model.getUserinfo().getMobilephone());
-//                                        loginEditor.putString("nickname", model.getUserinfo().getNickname());
-//                                        loginEditor.putString("realName", model.getUserinfo().getRealname());
-//                                        loginEditor.putString("city", model.getUserinfo().getRegisteritem2());
-//                                        loginEditor.putString("workPlace", model.getUserinfo().getRegisteritem3());
-//                                        loginEditor.putString("education", model.getUserinfo().getRegisteritem4());
-//                                        loginEditor.putString("income", model.getUserinfo().getRegisteritem5());
-//                                        loginEditor.putString("occupation", model.getUserinfo().getRegisteritem6());
-//                                        loginEditor.putString("marriage", model.getUserinfo().getRegisteritem7());
-//                                        loginEditor.putString("childCount", model.getUserinfo().getRegisteritem8());
-//                                        loginEditor.putInt("sex", model.getUserinfo().getSex());
-//                                        loginEditor.apply();
-//                                        // Log.i("HttpUtilDecrypt", "sp_token:" + sp.getString("Token", ""));
-//                                    } catch (Exception e) {
-//                                        e.printStackTrace();
-//                                    }
+                                    loginModel = (LoginModel) responseObject;
+                                    token = loginModel.getToken();
+                                    Log.i("HttpUtilDecrypt", "token:" + token);
+                                    String userID = loginModel.getUserInfo().getUserid(); // 这个userID是后台生成的，不是手机号
+                                    SharedPreferences.Editor loginEditor = sp.edit();
+                                    loginEditor.putString("token", token);
+                                    loginEditor.putString("userID", userID);
+                                    loginEditor.putString("userPhone", uid);
+                                    loginEditor.putString("birthDate", loginModel.getUserInfo().getBirthdate());
+                                    loginEditor.putString("headurl", loginModel.getUserInfo().getHeadurl());
+                                    loginEditor.putString("mobilePhone", loginModel.getUserInfo().getMobilephone());
+                                    loginEditor.putString("nickname", loginModel.getUserInfo().getNickname());
+                                    loginEditor.putString("realName", loginModel.getUserInfo().getRealname());
+                                    loginEditor.putString("city", loginModel.getUserInfo().getRegisteritem2());
+//                                    loginEditor.putString("workPlace", loginModel.getUserInfo().getRegisteritem3());
+//                                    loginEditor.putString("education", loginModel.getUserInfo().getRegisteritem4());
+//                                    loginEditor.putString("income", loginModel.getUserInfo().getRegisteritem5());
+//                                    loginEditor.putString("occupation", loginModel.getUserInfo().getRegisteritem6());
+//                                    loginEditor.putString("marriage", loginModel.getUserInfo().getRegisteritem7());
+//                                    loginEditor.putString("childCount", loginModel.getUserInfo().getRegisteritem8());
+                                    loginEditor.putInt("sex", loginModel.getUserInfo().getSex());
+                                    loginEditor.apply();
+                                    try {
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                     dismissDialog();
-                                    Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(LoginActivity.this, "登录成功！", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                     // 登录成功后跳转到MainActivity，首先显示地图界面
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
                                 }
                                 if (code.equals("200")) {
+                                    // 该用户名不存在或已停用!
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -274,6 +275,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                     dismissDialog();
                                 }
                                 if (code.equals("201")) {
+                                    // 密码错误,请重新登录!
                                     dismissDialog();
                                     runOnUiThread(new Runnable() {
                                         @Override

@@ -2,9 +2,13 @@ package com.trackersurvey.http;
 
 import android.util.Log;
 
+import com.trackersurvey.model.LoginModel;
 import com.trackersurvey.util.Common;
+import com.trackersurvey.util.DESUtil;
 import com.trackersurvey.util.HMAC_SHA1_Util;
 import com.trackersurvey.util.UrlHeader;
+
+import org.json.JSONObject;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
@@ -59,7 +63,14 @@ public class LoginRequest extends HttpUtil {
     @Override
     public HttpUtil handleData(String obj) {
         HttpUtil response = new HttpUtil();
-        response.responseObject = obj;
+        try {
+            String result = DESUtil.decrypt(obj);
+            JSONObject jsonObject = new JSONObject(result);
+            LoginModel model = new LoginModel(jsonObject);
+            response.responseObject = model;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return response;
     }
 }

@@ -1,9 +1,7 @@
 package com.trackersurvey.happynavi;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.CountDownTimer;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,17 +59,34 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 GetMsgCodeRequest getMsgCodeRequest = new GetMsgCodeRequest(uidEt.getText().toString());
                 getMsgCodeRequest.requestHttpData(new ResponseData() {
                     @Override
-                    public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                    public void onResponseData(boolean isSuccess, String code, Object responseObject, final String msg) throws IOException {
                         if (isSuccess) {
                             switch (code) {
                                 case "0":
-                                    Toast.makeText(RegisterActivity.this, "获取验证码成功！", Toast.LENGTH_SHORT).show();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(RegisterActivity.this, "获取验证码成功！", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                     break;
                                 case "12":
-                                    Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                    // 手机号格式不正确,请使用中国大陆运营商正确手机号码!
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                     break;
                                 case "13":
-                                    Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                    // 手机验证码发送失败,请稍后再试!
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                     break;
                             }
                         } else {
@@ -174,23 +189,21 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }
 
         //计时过程
-        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onTick(long millisUntilFinished) {
             //防止计时过程中重复点击
             getVrfCodeBtn.setClickable(false);
-            getVrfCodeBtn.setTextColor(getColor(R.color.gray));
+            getVrfCodeBtn.setTextColor(getResources().getColor(R.color.gray));
             getVrfCodeBtn.setText(millisUntilFinished/1000 + "秒" + "后重新获取");
             getVrfCodeBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.shape_corner_get_vrf_wait_btn));
         }
 
         //计时完毕的方法
-        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onFinish() {
             //重新给Button设置文字
             getVrfCodeBtn.setText("重新获取验证码");
-            getVrfCodeBtn.setTextColor(getColor(R.color.white));
+            getVrfCodeBtn.setTextColor(getResources().getColor(R.color.white));
             getVrfCodeBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.shape_corner_get_vrf_btn));
             //设置可点击
             getVrfCodeBtn.setClickable(true);

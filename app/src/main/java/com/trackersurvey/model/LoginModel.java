@@ -8,32 +8,32 @@ import org.json.JSONObject;
  */
 
 public class LoginModel {
-    UserInfo userinfo;
-    String Token;
+    UserInfo userInfo;
+    String token;
 
     public LoginModel(JSONObject object){
         try {
-            userinfo = new UserInfo(object.getJSONObject("userInfo"));
-            Token = object.getString("Token");
+            userInfo = new UserInfo(object.getJSONObject("userInfo"));
+            token = object.getString("token");
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public UserInfo getUserinfo() {
-        return userinfo;
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public void setUserinfo(UserInfo userinfo) {
-        this.userinfo = userinfo;
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
     public String getToken() {
-        return Token;
+        return token;
     }
 
     public void setToken(String token) {
-        Token = token;
+        this.token = token;
     }
 
     public class UserInfo {
