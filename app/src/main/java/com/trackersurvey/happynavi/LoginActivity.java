@@ -227,6 +227,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         } else {
                             if (isSuccess) {
                                 if (code.equals("0")) {
+//                                    login.setText("111");
                                     loginModel = (LoginModel) responseObject;
                                     token = loginModel.getToken();
                                     Log.i("HttpUtilDecrypt", "token:" + token);
