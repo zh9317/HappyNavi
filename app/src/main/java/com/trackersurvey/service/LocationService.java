@@ -48,6 +48,7 @@ import com.trackersurvey.httpconnection.PostGpsData;
 import com.trackersurvey.httpconnection.PostOnOffline;
 import com.trackersurvey.httpconnection.PostPhoneEvents;
 import com.trackersurvey.httpconnection.PostTimeValues;
+import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.GsonHelper;
 import com.trackersurvey.util.WakeLockUtil;
@@ -72,6 +73,7 @@ public class LocationService extends Service implements AMapLocationListener{
     private ContentObserver mObserver;
     private MyTraceDBHelper helper;
     private SharedPreferences settings ;
+    private SharedPreferences sp;
 
     //private LocationManagerProxy mAMapLocationManager;旧版定位方法
     private AMapLocationClient mLocationClient;
@@ -118,7 +120,6 @@ public class LocationService extends Service implements AMapLocationListener{
     private String eventsdata;
 
     private long traceID = 0;
-    private long localTraceID = 0;
     private static final String MY_ACTION = "android.intent.action.LOCATION_RECEIVER";
     private static final String ACCURACY_ACTION = "android.intent.action.ACCURACY_RECEIVER";
     private  String URL_GPSDATA = null;
@@ -130,6 +131,7 @@ public class LocationService extends Service implements AMapLocationListener{
 
     private int sportType;
     private String token;
+    public static final int TOKEN_INVALID = 100;
 
     Handler handler = new Handler();
     @SuppressLint("HandlerLeak")
@@ -178,6 +180,13 @@ public class LocationService extends Service implements AMapLocationListener{
                 case 10:
                     //Log.i("LogDemo","网络错误,上传位置数据失败"+msg.obj.toString());
                     //showmessage("网络错误,上传位置数据失败");
+                    break;
+                case 100:
+                    Toast.makeText(getApplication(), "登录信息过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("token", ""); // 清空token
+                    editor.apply();
+                    ActivityCollector.finishActivity("MainActivity");
                     break;
             }
         }
@@ -245,6 +254,7 @@ public class LocationService extends Service implements AMapLocationListener{
     @Override
     public void onCreate() {
         super.onCreate();
+        sp = getSharedPreferences("config", MODE_PRIVATE);
         //为content://sms的数据改变注册监听器
         helper = new MyTraceDBHelper(this);
         mObserver=new SmsObserver(new Handler());
@@ -396,23 +406,30 @@ public class LocationService extends Service implements AMapLocationListener{
             // 上传位置数据
             //PostGpsData gpsDataThread = new PostGpsData(mhandler,URL_GPSDATA,gpsData,Common.getDeviceId(getApplicationContext()));
             //gpsDataThread.start();
-            Log.i("LogDemo", "Token:" + token);
-            UpLoadGpsRequest upLoadGpsRequest = new UpLoadGpsRequest(String.valueOf(System.currentTimeMillis()),
-                    token, gpsData);
+            Log.i("LocationService", "token:" + token);
+            UpLoadGpsRequest upLoadGpsRequest = new UpLoadGpsRequest(sp.getString("token",""), gpsData);
             upLoadGpsRequest.requestHttpData(new ResponseData() {
                 @Override
                 public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                     if (isSuccess) {
-                        Log.i("LogDemo","上传成功");
-                        if(datalist != null&&datalist.size()>0) {
-                            lastPostTime = datalist.get(datalist.size()-1).getCreateTime();
-                            Log.i("LogDemo","最近一次上传位置的时间:"+lastPostTime);
-                        } else {
-                            lastPostTime = Common.currentTime();
-                            Log.i("LogDemo","最近一次上传位置的时间:"+lastPostTime);
+                        if (code.equals("0")) {
+                            Log.i("LocationService","上传成功");
+                            if(datalist != null && datalist.size()>0) {
+                                lastPostTime = datalist.get(datalist.size()-1).getCreateTime();
+                                Log.i("LocationService","最近一次上传位置的时间:"+lastPostTime);
+                            } else {
+                                lastPostTime = Common.currentTime();
+                                Log.i("LocationService","最近一次上传位置的时间:"+lastPostTime);
+                            }
+                            datalist = null;
+                            Common.setPostTime(getApplicationContext(), lastPostTime);
                         }
-                        datalist = null;
-                        Common.setPostTime(getApplicationContext(), lastPostTime);
+                        if (code.equals("100")) {
+                            Log.i("LocationService", "登录超时");
+                            Message message = new Message();
+                            message.what = TOKEN_INVALID;
+                            mhandler.sendMessage(message);
+                        }
                     }
                 }
             });
@@ -428,9 +445,9 @@ public class LocationService extends Service implements AMapLocationListener{
             Log.i("LogDemo","有事件");
             eventsdata=GsonHelper.toJson(eventdatalist);
             // 上传用户事件:0发短信 1收短信 2打电话 3接电话 4拍照 5录像
-            PostPhoneEvents eventsDataThread = new PostPhoneEvents(mhandler,URL_EVENTDATA,eventsdata,
-                    Common.getDeviceId(getApplicationContext()));
-            eventsDataThread.start();
+//            PostPhoneEvents eventsDataThread = new PostPhoneEvents(mhandler,URL_EVENTDATA,eventsdata,
+//                    Common.getDeviceId(getApplicationContext()));
+//            eventsDataThread.start();
             eventdatalist=null;
             eventsdata=null;
         }
@@ -586,7 +603,7 @@ public class LocationService extends Service implements AMapLocationListener{
     }
     @Override
     public IBinder onBind(Intent intent) {
-        token = intent.getStringExtra("Token");
+        token = intent.getStringExtra("token");
         return binder;
     }
     // ？？？
@@ -649,11 +666,6 @@ public class LocationService extends Service implements AMapLocationListener{
         //showmessage("轨迹号变动->"+traceNo);
         Log.i("LogDemo", "traceID->"+traceID);
         this.traceID = traceID;
-    }
-
-    public void setLocalTraceID(long localTraceID) {
-        Log.i("LogDemo", "localTraceID->"+localTraceID);
-        this.localTraceID = localTraceID;
     }
 
     public boolean isWorking(){
@@ -719,28 +731,19 @@ public class LocationService extends Service implements AMapLocationListener{
                     data.setLatitude(aMapLocation.getLatitude());
                     data.setAltitude(aMapLocation.getAltitude());
                     data.setSpeed(aMapLocation.getSpeed());
-                    if (localTraceID != 0 && traceID != 0) {
-                        Log.i("LogDemo", "onLocationChanged, localTraceID:" + localTraceID + "; traceID:" + traceID);
-                        data.setTraceID(traceID);
-                    }else if (localTraceID != 0 && traceID == 0){
-                        Log.i("LogDemo", "onLocationChanged, localTraceID:" + localTraceID + "; traceID:" + traceID);
-                        data.setTraceID(localTraceID);
-                    }else if (localTraceID == 0 && traceID != 0) {
-                        Log.i("LogDemo", "onLocationChanged, localTraceID:" + localTraceID + "; traceID:" + traceID);
-                        data.setTraceID(traceID);
-                    }else {
-                        Log.i("LogDemo", "onLocationChanged, localTraceID:" + localTraceID + "; traceID:" + traceID);
-                        data.setTraceID(traceID);
-                    }
-                    data.setDeviceID(Common.getDeviceId(getApplicationContext()));
+                    data.setTraceID(traceID);
+//                    data.setDeviceID(Common.getDeviceId(getApplicationContext()));
                     data.setCityID(Integer.parseInt(aMapLocation.getCityCode()));
                     data.setSportType(sportType);
+                    data.setCreateTime(Common.currentTime());
                     if(helper.insertintoGps(data)==0){
                         //showmessage("成功插入一条位置记录");
-                        Log.i("LogDemo","成功插入一条位置记录:经纬度：(" + aMapLocation.getLongitude() + ","
+                        Log.i("LocationService","成功插入一条位置记录:经纬度：(" + aMapLocation.getLongitude() + ","
                                 + aMapLocation.getLatitude() + ")" + "海拔：" + aMapLocation.getAltitude() + "速度: "
                                 + aMapLocation.getSpeed() + "精度：" + aMapLocation.getAccuracy() +
-                                "CityCode: " + data.getCityID() + "TraceID: " + data.getTraceID());
+                                "; CityCode: " + data.getCityID() + "; TraceID: " + data.getTraceID()
+                                + "; UserID:" + data.getUserID() + "; CreateTime:" + data.getCreateTime()
+                                + "; SportType:" + data.getSportType() + "; DeviceID:" + data.getDeviceID());
                         ArrayList<GpsData> list = helper.queryfromGpsbytraceID(traceID, Common.getUserID(getApplicationContext()));
                         String traceInfo = GsonHelper.toJson(list);
                         Log.i("insertIntoGps:", "gpsInfo:" + traceInfo);

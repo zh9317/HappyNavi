@@ -57,7 +57,6 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.amap.api.maps.model.Polygon;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.maps.model.TileOverlay;
@@ -71,7 +70,7 @@ import com.trackersurvey.model.PoiChoiceModel;
 import com.trackersurvey.model.StepData;
 import com.trackersurvey.db.MyTraceDBHelper;
 import com.trackersurvey.http.ResponseData;
-import com.trackersurvey.http.UploadTraceRequest;
+import com.trackersurvey.http.StartTraceRequest;
 import com.trackersurvey.model.TraceData;
 import com.trackersurvey.db.PhotoDBHelper;
 import com.trackersurvey.db.PointOfInterestDBHelper;
@@ -157,9 +156,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     public  static final int MENU_NAVI = 1;
 
     private long traceID = 0;
-    private long localTraceID = 0;
     private int total_step = 0;   //走的总步数
     private TraceData tracedata = new TraceData(); // 轨迹信息
+    private String traceName = "";
     private StepData stepdata = new StepData(); // 步行轨迹的步数信息
     private List<GpsData> tracegps = new ArrayList<GpsData>();
     private MyBroadcastReceiver myReceiver = null;//用于接收后台发送的定位广播
@@ -195,20 +194,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     private String degreeLngStr, minuteLngStr, secondLngStr, degreeLatStr, minuteLatStr, secondLatStr, currentAltitudeStr;
     private double minuteLng1, secondLng1, minuteLat1, secondLat1;
     private PopupWindow mPopupWindow;
-
-    private Marker marker;					//手动画线的标注点对象（2017-7-16）
-    private MarkerOptions markerOption;		//手动画线的标注点设置对象
-    private List<Marker> markList;			//手动画线的标注点对象集合（在onCreat方法中初始化）
-    private List<LatLng> points2;			//手动画线的经纬度点集合（在onCreat方法中初始化）
-    private List<Polyline> polylineList;	//手动画线的画线对象集合（在onCreat方法中初始化）
-    private List<Polygon> polyGonList;		//手动画多边形的对象集合（在onCreat方法中初始化）（2017-7-18）
-    private boolean distanceMode = false;	//测距离模式
-    private boolean areaMode = false;		//测面积模式
-    private float distance;
-    private float totalDistance;			//总距离
-    private float area;
-    private float totalArea;				//总面积
-    //private ImageButton deletePoint;		//删除当前测量点
 
     private RelativeLayout showDistance;	//测量模式界面
     private RelativeLayout showTips;
@@ -434,7 +419,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         getActivity().registerReceiver(accuracyReciver, accuracyfilter);//注册广播
         // 定位服务
         locationServiceIntent = new Intent(getContext(),  LocationService.class);
-        locationServiceIntent.putExtra("Token", sp.getString("Token",""));
+        locationServiceIntent.putExtra("token", sp.getString("token",""));
         // 上传兴趣点服务
         commentServiceIntent = new Intent(getContext(), CommentUploadService.class); // 上传兴趣点Service
         //getActivity().startService(commentServiceIntent);
@@ -854,14 +839,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 if(pos != -1){ // 点击确定
                     //Toast.makeText(MainActivity.this, title[pos], 0).show();
 					// 设置轨迹信息
-                    localTraceID = System.currentTimeMillis(); // 手机端暂时生成一个轨迹号(就是一个时间戳)
+                    traceID = System.currentTimeMillis(); // 手机端暂时生成一个轨迹号(就是一个时间戳)
                     // 初始化轨迹信息，设置它的了6个属性
+                    traceName = dialog.gettraceName();
                     tracedata.setTraceName(dialog.gettraceName());          // 轨迹名称
                     tracedata.setSportTypes(pos);                            // 运动类型:1步行，2骑行...
                     tracedata.setStartTime(Common.currentTime());           // 开始时间
                     tracedata.setUserID(Common.getUserID(getContext()));    // 新的userID
                     tracedata.setShareType(0);                              // 分享类型
-                    tracedata.setTraceID(localTraceID);                          // 轨迹号
+                    tracedata.setTraceID(traceID);                          // 轨迹号
                     locationService.changeCurrentSportType(pos);
                     initStartInfo(); // 初始化轨迹信息
                     ToastUtil.show(getContext(), getResources().getString(R.string.tips_starttrace)); // 开始记录
@@ -890,35 +876,33 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
         aMap.setMyLocationStyle(myLocationStyle); // 改变定位模式为蓝点始终在屏幕中间
         stepdata.setUserID(Common.getUserID(getContext()));
-        stepdata.setTraceID(localTraceID);
-        Log.i("LogDemo", "starttrail,localTraceNo："+localTraceID+",id:"+Common.getUserId(getContext()));
+        stepdata.setTraceID(traceID);
+        Log.i("LogDemo", "starttrail,localTraceNo："+traceID+",id:"+Common.getUserId(getContext()));
         Log.i("LogDemo", "starttrail,traceNo："+traceID+",id:"+Common.getUserId(getContext()));
         List<TraceData> traceList = new ArrayList<>();
         traceList.add(tracedata);
         String traceInfo = GsonHelper.toJson(traceList);
 
-        // 先上传一次轨迹信息，获取轨迹号，在service中更改轨迹号。
-        UploadTraceRequest uploadTraceRequest = new UploadTraceRequest(String.valueOf(localTraceID),
-                sp.getString("Token", ""), Common.getDeviceId(getContext()), traceInfo);
-        uploadTraceRequest.requestHttpData(new ResponseData() {
+        // 先上传一次轨迹信息，获取轨迹号，在service中更改轨迹号。、
+        Log.i("mmmmmmmmmmmmmmm", "请求接口获取轨迹号");
+        StartTraceRequest startTraceRequest = new StartTraceRequest(sp.getString("token", ""),
+                tracedata.getTraceName(), tracedata.getStartTime(), String.valueOf(tracedata.getSportTypes()));
+        startTraceRequest.requestHttpData(new ResponseData() {
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
                     try {
-                        Log.i("LogDemo", "开始记录轨迹了！");
                         JSONObject object = new JSONObject((String) responseObject);
-                        traceID = Long.parseLong(object.getString(String.valueOf(localTraceID)));
+                        traceID = Long.parseLong(object.getString("traceID"));
                         // 一旦获取到traceID，发送给LocationService
                         tracedata.setTraceID(traceID);
                         stepdata.setTraceID(traceID);
                         locationService.setTraceID(traceID);
                         // 获取到traceID后
                         if (traceID != 0) {
-                            traceDBHelper.updateGpsByTraceID(localTraceID, traceID,
-                                    Common.getUserID(getContext()));
-                            traceDBHelper.updatetrail(tracedata, localTraceID, Common.getUserID(getContext()));
+                            traceDBHelper.updatetrail(tracedata, traceID, Common.getUserID(getContext()));
                             Log.i("mmmmmmmmmmmmmmm", "initStartInfo traceDBHelper.updatetrail(tracedata,traceID,Common.getUserID(getContext()));");
-                            traceDBHelper.updatesteps(stepdata, localTraceID,Common.getUserID(getContext()));
+                            traceDBHelper.updatesteps(stepdata, traceID,Common.getUserID(getContext()));
                             Log.i("LogDemo", "数据的TraceID替换成功");
                         }
                         Log.i("LogDemo", "获得了轨迹号traceID : " + traceID);
@@ -953,7 +937,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         ispause = false;
         //isend=false;
 
-        locationService.setLocalTraceID(localTraceID); // 改变轨迹号为当前时间戳
         Log.i("HomePage", "改变了轨迹号traceID : " + traceID);
         locationService.changeStatus(true); // 改为记录轨迹状态
         if(tracedata.getSportTypes() == 1){
@@ -1034,7 +1017,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
 
             //重新上传轨迹信息（更改轨迹号之后）
             UpLoadTraceUpdateRequest upLoadTraceUpdateRequest = new UpLoadTraceUpdateRequest(String.valueOf(traceID),
-                    sp.getString("Token",""),Common.getDeviceId(getContext()), traceInfo);
+                    sp.getString("token",""),Common.getDeviceId(getContext()), traceInfo);
             upLoadTraceUpdateRequest.requestHttpData(new ResponseData() {
                 @Override
                 public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
@@ -1083,8 +1066,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             ToastUtil.show(getContext(),getResources().getString(R.string.tips_recorderror_nogps));
         }
         traceID = 0;
-        localTraceID = 0;
-        locationService.setLocalTraceID(0);
         locationService.setTraceID(0);
         locationService.changeStatus(false); // 改为非记录状态
         if(tracedata.getSportTypes()==1){
@@ -1115,7 +1096,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         }
         Log.i("LogDemo", Common.getUserID(getContext()));
         Log.i("LogDemo", "refreshTrace: traceID:" + traceID);
-        Log.i("LogDemo", "refreshTrace: localTraceID:" + localTraceID);
         tracegps = traceDBHelper.queryfromGpsbytraceID(traceID, Common.getUserID(getContext()));
         Log.i("LogDemo", "tracegps coontent:" + GsonHelper.toJson(tracedata));
         Log.i("LogDemo", "tracegps size:" + tracegps.size());
@@ -1164,6 +1144,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             int poiCount = cursor.getCount();
             tracedata.setPoiCount(poiCount);
             Log.i("mmmmmmmmmmmmmmm", "traceID:" + traceID);
+            Log.i("mmmmmmmmmmmmmmm", "本地插入了一条轨迹");
             traceDBHelper.updatetrail(tracedata,traceID,Common.getUserID(getContext()));
             Log.i("mmmmmmmmmmmmmmm", "refresh traceDBHelper.updatetrail(tracedata,traceID,Common.getUserID(getContext()));");
             Log.i("LogDemo", "轨迹表更新数据了");

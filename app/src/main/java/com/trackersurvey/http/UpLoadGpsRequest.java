@@ -13,16 +13,12 @@ import okhttp3.RequestBody;
 
 public class UpLoadGpsRequest extends HttpUtil {
 
-    private String _appkey = "app";
-    private String _sign = "";
-    private String _timestamp = "";
-    private String Token = "";
-    private String data = ""; // 位置信息
+    private String token = "";
+    private String locations = ""; // 位置信息
 
-    public UpLoadGpsRequest(String _timestamp, String token, String data) {
-        this._timestamp = _timestamp;
-        Token = token;
-        this.data = data;
+    public UpLoadGpsRequest(String token, String locations) {
+        this.token = token;
+        this.locations = locations;
     }
 
     @Override
@@ -32,14 +28,9 @@ public class UpLoadGpsRequest extends HttpUtil {
 
     @Override
     public RequestBody parameter() {
-        _sign = HMAC_SHA1_Util.genHMAC(Common.secretKey+"_appkey"+Common._appkey+"_timestamp"+_timestamp+
-                "Token"+Token+"data"+data+Common.secretKey, Common.secretKey);
         RequestBody requestBody = new FormBody.Builder()
-                .add("_appkey", _appkey)
-                .add("_sign", _sign)
-                .add("_timestamp", _timestamp)
-                .add("Token", Token)
-                .add("data", data)
+                .add("token", token)
+                .add("locations", locations)
                 .build();
         return requestBody;
     }

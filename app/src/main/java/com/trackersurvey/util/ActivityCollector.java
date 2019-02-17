@@ -15,10 +15,12 @@ public class ActivityCollector {
 
     public static void addActivity(Activity activity){
         activities.add(activity);
+        Log.i("ActivityCollector", activity.getLocalClassName());
     }
 
     public static void removeActivity(Activity activity){
         activities.remove(activity);
+        Log.i("ActivityCollector", activity.getLocalClassName());
     }
 
     public static void finishActivity(String activityName){

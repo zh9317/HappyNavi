@@ -55,19 +55,21 @@ public class LoginModel {
         String registeritem8; //
         String registertime;
         int sex;
-        String userid;
+        int userid;
 
         public UserInfo(JSONObject object) {
             try {
+                userid = object.getInt("userid");
+                mobilephone = object.getString("mobilephone");
+                lastlogintime = object.getString("lastlogintime");
+                passwordmd5 = object.getString("passwordmd5");
                 birthdate = object.getString("birthdate");
                 headurl = object.getString("headurl");
                 isdelete = object.getString("isdelete");
-                lastlogintime = object.getString("lastlogintime");
-                mobilephone = object.getString("mobilephone");
                 mobileplatform = object.getString("mobileplatform");
                 nickname = object.getString("nickname");
-                passwordmd5 = object.getString("passwordmd5");
                 realname = object.getString("realname");
+                sex = object.getInt("sex");
                 registeritem2 = object.getString("registeritem2");
                 registeritem3 = object.getString("registeritem3");
                 registeritem4 = object.getString("registeritem4");
@@ -76,8 +78,6 @@ public class LoginModel {
                 registeritem7 = object.getString("registeritem7");
                 registeritem8 = object.getString("registeritem8");
                 registertime = object.getString("registertime");
-                sex = object.getInt("sex");
-                userid = object.getString("userid");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -227,11 +227,11 @@ public class LoginModel {
             this.sex = sex;
         }
 
-        public String getUserid() {
+        public int getUserid() {
             return userid;
         }
 
-        public void setUserid(String userid) {
+        public void setUserid(int userid) {
             this.userid = userid;
         }
     }

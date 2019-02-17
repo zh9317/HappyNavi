@@ -69,9 +69,7 @@ public class DataCleanManager {
         if (directory != null && directory.exists() && directory.isDirectory()) {
             Log.i("DataCleanManager", "directory name : "+directory.getName());
             for (File item : directory.listFiles()) {
-                if (item != null && item.exists()) {
-                    item.delete();
-                }
+                item.delete();
             }
         }
     }

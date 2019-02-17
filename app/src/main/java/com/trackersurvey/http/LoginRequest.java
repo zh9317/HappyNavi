@@ -65,6 +65,7 @@ public class LoginRequest extends HttpUtil {
         HttpUtil response = new HttpUtil();
         try {
             String result = DESUtil.decrypt(obj);
+            Log.i("LoginRequest", "decrypt result : " + result);
             JSONObject jsonObject = new JSONObject(result);
             LoginModel model = new LoginModel(jsonObject);
             response.responseObject = model;

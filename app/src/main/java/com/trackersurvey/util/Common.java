@@ -518,7 +518,7 @@ public class Common {
 
     public static  String  getUserID(Context context){
         SharedPreferences sp=context.getSharedPreferences("config",Context.MODE_PRIVATE);//私有参数
-        String lastId = sp.getString("userID", "0");
+        String lastId = String.valueOf(sp.getInt("userID", 0));
         return lastId;
     }
 

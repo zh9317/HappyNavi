@@ -106,6 +106,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 //        }
         Log.i("phonelog", "deviceID:" + Common.getDeviceId(getApplicationContext()));
         Log.i("phonelog","getDeviceName :"+Common.getDeviceName());
+        if (!sp.getString("token", "").equals("")) {
+            // token不为空字符串则挑过登录界面
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+
 //        if(!lastId.equals("0")){
 //            //Common.userId=lastId;
 //            if(!nickname.equals("")){
@@ -227,33 +233,59 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         } else {
                             if (isSuccess) {
                                 if (code.equals("0")) {
-//                                    login.setText("111");
                                     loginModel = (LoginModel) responseObject;
                                     token = loginModel.getToken();
                                     Log.i("HttpUtilDecrypt", "token:" + token);
-                                    String userID = loginModel.getUserInfo().getUserid(); // 这个userID是后台生成的，不是手机号
                                     SharedPreferences.Editor loginEditor = sp.edit();
                                     loginEditor.putString("token", token);
-                                    loginEditor.putString("userID", userID);
-                                    loginEditor.putString("userPhone", uid);
+                                    loginEditor.putInt("userID", loginModel.getUserInfo().getUserid());
+                                    loginEditor.putString("userPhone", loginModel.getUserInfo().getMobilephone());
                                     loginEditor.putString("birthDate", loginModel.getUserInfo().getBirthdate());
                                     loginEditor.putString("headurl", loginModel.getUserInfo().getHeadurl());
                                     loginEditor.putString("mobilePhone", loginModel.getUserInfo().getMobilephone());
                                     loginEditor.putString("nickname", loginModel.getUserInfo().getNickname());
                                     loginEditor.putString("realName", loginModel.getUserInfo().getRealname());
                                     loginEditor.putString("city", loginModel.getUserInfo().getRegisteritem2());
-//                                    loginEditor.putString("workPlace", loginModel.getUserInfo().getRegisteritem3());
-//                                    loginEditor.putString("education", loginModel.getUserInfo().getRegisteritem4());
-//                                    loginEditor.putString("income", loginModel.getUserInfo().getRegisteritem5());
-//                                    loginEditor.putString("occupation", loginModel.getUserInfo().getRegisteritem6());
-//                                    loginEditor.putString("marriage", loginModel.getUserInfo().getRegisteritem7());
-//                                    loginEditor.putString("childCount", loginModel.getUserInfo().getRegisteritem8());
+                                    loginEditor.putString("workPlace", loginModel.getUserInfo().getRegisteritem3());
+                                    loginEditor.putString("education", loginModel.getUserInfo().getRegisteritem4());
+                                    loginEditor.putString("income", loginModel.getUserInfo().getRegisteritem5());
+                                    loginEditor.putString("occupation", loginModel.getUserInfo().getRegisteritem6());
+                                    loginEditor.putString("marriage", loginModel.getUserInfo().getRegisteritem7());
+                                    loginEditor.putString("childCount", loginModel.getUserInfo().getRegisteritem8());
                                     loginEditor.putInt("sex", loginModel.getUserInfo().getSex());
                                     loginEditor.apply();
-                                    try {
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
+                                    Log.i("LoginActivity", "token:" + sp.getString("token", "")
+                                            + "; userID:" + sp.getInt("userID", 0)
+                                            + "; userPhone:" + sp.getString("userPhone", "")
+                                            + "; birthDate:" + sp.getString("birthDate", "")
+                                            + "; headurl:" + sp.getString("headurl", "")
+                                            + "; mobilePhone:" + sp.getString("mobilePhone", "")
+                                            + "; nickname:" + sp.getString("nickname", "")
+                                            + "; realName:" + sp.getString("realName", "")
+                                            + "; city:" + sp.getString("city", "")
+                                            + "; workPlace:" + sp.getString("workPlace", "")
+                                            + "; education:" + sp.getString("education", "")
+                                            + "; income:" + sp.getString("income", "")
+                                            + "; occupation:" + sp.getString("occupation", "")
+                                            + "; marriage:" +sp.getString("marriage", "")
+                                            + "; chileCount:" + sp.getString("childCount", "")
+                                            + "; sex:" + sp.getInt("sex", 0));
+                                    Log.i("LoginActivity", "token:" + token
+                                            + "; userID:" + loginModel.getUserInfo().getUserid()
+                                            + "; userPhone:" + loginModel.getUserInfo().getMobilephone()
+                                            + "; birthDate:" + loginModel.getUserInfo().getBirthdate()
+                                            + "; headurl:" + loginModel.getUserInfo().getHeadurl()
+                                            + "; mobilePhone:" + loginModel.getUserInfo().getMobilephone()
+                                            + "; nickname:" + loginModel.getUserInfo().getNickname()
+                                            + "; realName:" + loginModel.getUserInfo().getRealname()
+                                            + "; city:" + loginModel.getUserInfo().getRegisteritem2()
+                                            + "; workPlace:" + loginModel.getUserInfo().getRegisteritem3()
+                                            + "; education:" + loginModel.getUserInfo().getRegisteritem4()
+                                            + "; income:" + loginModel.getUserInfo().getRegisteritem5()
+                                            + "; occupation:" + loginModel.getUserInfo().getRegisteritem6()
+                                            + "; marriage:" + loginModel.getUserInfo().getRegisteritem7()
+                                            + "; chileCount:" + loginModel.getUserInfo().getRegisteritem8()
+                                            + "; sex:" + loginModel.getUserInfo().getSex());
                                     dismissDialog();
                                     runOnUiThread(new Runnable() {
                                         @Override
