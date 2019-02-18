@@ -9,7 +9,10 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -49,7 +52,7 @@ public class SetParameterActivity extends PreferenceActivity implements Preferen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final boolean isCustom = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+//        final boolean isCustom = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_set_parameter);
         // 切换中英文
@@ -69,15 +72,26 @@ public class SetParameterActivity extends PreferenceActivity implements Preferen
         resources.updateConfiguration(configure, dm);
         //-----------------------------------------------------//
 
-        instance = this;
-        if(isCustom){
-            //自定义顶部标题栏
-            getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
-        }
+//        instance = this;
+//        if(isCustom){
+//            //自定义顶部标题栏
+//            getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
+//        }
         //从xml文件中添加Preference项
 
         addPreferencesFromResource(R.xml.preferencesii);
 //        final boolean isCustom = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+
+        // 添加自定义导航栏
+        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+        Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
+        root.addView(bar, 0); // insert at top
+        bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         AppManager.getAppManager().addActivity(this);
 //        back = (LinearLayout) findViewById(R.id.title_back);

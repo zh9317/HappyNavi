@@ -535,6 +535,8 @@
     <string name="longitude">经度:</string>
     <string name="altitude">海拔:</string>
 
+    <string name="action_settings">设置</string>
+
     <string-array name="sex">
         <item>保密</item>
         <item>男</item>
