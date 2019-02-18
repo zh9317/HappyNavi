@@ -67,7 +67,6 @@ public class PostDeleteTrail extends Thread {
             if(httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
                 BufferedReader bin = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
                 String result = bin.readLine();
-                //Log.i("trailadapter", "PostTrailDetail,readLine:"+result);
                 if(result!=null){
                     if(result.equals("fail")){
                         msg.what = 5;

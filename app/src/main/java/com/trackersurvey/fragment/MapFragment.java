@@ -1014,11 +1014,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             showDialog(getResources().getString(R.string.tip),getResources().getString(R.string.tips_dlgmsg_login));
             points.clear();
             locationService.uploadGPS();
-            List<TraceData> tracelist = new ArrayList<TraceData>();
+//            List<TraceData> tracelist = new ArrayList<TraceData>();
             tracedata.setSteps(total_step);
-            tracelist.add(tracedata);
-            String traceInfo = GsonHelper.toJson(tracelist);
-            Log.i("HomePageFragment", "tracelist size:" + tracelist.size());
+//            tracelist.add(tracedata);
+            String traceInfo = GsonHelper.toJson(tracedata);
+//            Log.i("HomePageFragment", "tracelist size:" + tracelist.size());
             Log.i("HomePageFragment", "traceInfo:" + traceInfo);
             String stepInfo;
             if(tracedata.getSportTypes() == 1) {
@@ -1032,9 +1032,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             traceDBHelper.updateStatus( traceID, 2, Common.getUserID(getContext()));
 
             // 结束轨迹
-            EndTraceRequest upLoadTraceUpdateRequest = new EndTraceRequest(
+            EndTraceRequest endTraceRequest = new EndTraceRequest(
                     sp.getString("token",""), traceInfo);
-            upLoadTraceUpdateRequest.requestHttpData(new ResponseData() {
+            endTraceRequest.requestHttpData(new ResponseData() {
                 @Override
                 public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                     if (isSuccess) {

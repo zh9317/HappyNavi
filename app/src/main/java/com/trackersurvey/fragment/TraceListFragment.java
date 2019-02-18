@@ -32,10 +32,9 @@ import com.trackersurvey.db.MyTraceDBHelper;
 import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.DeleteTraceRequest;
 import com.trackersurvey.http.DownLoadTraceList;
+import com.trackersurvey.http.EndTraceRequest;
 import com.trackersurvey.http.ResponseData;
-import com.trackersurvey.httpconnection.PostEndTrail;
-import com.trackersurvey.httpconnection.PostGpsData;
-import com.trackersurvey.httpconnection.PostTrailDetail;
+import com.trackersurvey.http.UpLoadGpsRequest;
 import com.trackersurvey.model.GpsData;
 import com.trackersurvey.model.StepData;
 import com.trackersurvey.model.TraceData;
@@ -210,8 +209,6 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
         steps_Local = helper.getallSteps(userID);
     }
     private void initCloudTrace() {
-        /*PostTrailRough trailRough = new PostTrailRough(traceHandler,URL_GETTRAIL,userID,deviceID);
-        trailRough.start();*/
 
         // 测试请求轨迹列表
         Log.i("HttpUtilTraceList", "token:" + sp.getString("token",""));
@@ -458,11 +455,23 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
                             }
                             trace_Upload.add(traceData);
                             gpsData=helper.queryfromGpsbytraceID(traceNo,userID);
-                            PostGpsData gpsthread = new PostGpsData(uploadHandler,
-                                    URL_GPSDATA,
-                                    GsonHelper.toJson(gpsData),
-                                    deviceID);
-                            gpsthread.start();
+//                            PostGpsData gpsthread = new PostGpsData(uploadHandler,
+//                                    URL_GPSDATA,
+//                                    GsonHelper.toJson(gpsData),
+//                                    deviceID);
+//                            gpsthread.start();
+                            UpLoadGpsRequest upLoadGpsRequest = new UpLoadGpsRequest(sp.getString("token",""),
+                                    GsonHelper.toJson(gpsData));
+                            upLoadGpsRequest.requestHttpData(new ResponseData() {
+                                @Override
+                                public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                                    if (isSuccess) {
+                                        if (code.equals("0")) {
+                                            Log.i("ShowTraceFragment","上传位置数据成功");
+                                        }
+                                    }
+                                }
+                            });
                         }else if(!item.isLocal() && item.isCloud()){
                             //本地没有，云端有，下载到本地
                             downloadCount++;
@@ -476,12 +485,7 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
                                 }
                             }
                             // 下载轨迹，请求轨迹详细数据
-                            PostTrailDetail traildetail=new PostTrailDetail(traceHandler,
-                                    URL_GETTRAIL,
-                                    item.getTrace().getUserID(),
-                                    item.getTrace().getTraceID(),
-                                    deviceID);//2,3
-                            traildetail.start();
+                            // 原来的代码这里调用了下载轨迹接口PostEndTrail
 
                         }else{
                             bothSize++;
@@ -498,9 +502,19 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
                             stepinfo=GsonHelper.toJson(steps_Upload);
                         }
                         //Log.i("trailadapter","上传的轨迹："+traceinfo+","+stepinfo);
-                        PostEndTrail endTrailThread = new PostEndTrail(uploadHandler,
-                                URL_ENDTRAIL,traceinfo,stepinfo,deviceID);//2,3
-                        endTrailThread.start();
+//                        PostEndTrail endTrailThread = new PostEndTrail(uploadHandler,
+//                                URL_ENDTRAIL,traceinfo,stepinfo,deviceID);//2,3
+//                        endTrailThread.start();
+                        EndTraceRequest endTraceRequest = new EndTraceRequest(
+                                sp.getString("token",""), traceinfo);
+                        endTraceRequest.requestHttpData(new ResponseData() {
+                            @Override
+                            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                                if (isSuccess) {
+
+                                }
+                            }
+                        });
                     }
                 }else{
                     ToastUtil.show(getContext(), getResources().getString(R.string.tips_notraceselected));

@@ -8,6 +8,45 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppBaseTheme" parent="android:TextAppearance.WindowTitle">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme2" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    <style name="TitleTheme" parent="android:Theme.Light" >
+        <item name="android:windowTitleSize">45dp</item>
+        <item name="android:windowTitleBackgroundStyle">@mipmap/ic_launcher</item>
+    </style>
+
+    <style name="normalText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="normalText2" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#1e1e1e</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="normalText3" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="itemText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
     <style name="Dialog" parent="android:style/Theme.Dialog">
         <item name="android:background">#00000000</item>
         <item name="android:windowBackground">@android:color/transparent</item>

@@ -27,4 +27,16 @@ public class UrlHeader {
     public static final String DOWNLOAD_POI_LIST_URL = "poi/getPoiListPaging";// 下载兴趣点
     public static final String UPLOAD_USER_INFO_URL = "updUserInfo";// 更新个人信息
     public static final String DOWNLOAD_USER_INFO_URL = "getPersonalInfo";
+
+    // 老版本的接口还有这些：
+    // 删除兴趣点
+    // 用户是否上下线
+    // 用户加入或退出群组
+    // 搜索群
+    // 获取群信息
+    // 上传兴趣点文件
+    // 下载兴趣点原文件
+    // 下载兴趣点缩略图
+    // 版本更新
+    // 请求4个时间？？？
 }

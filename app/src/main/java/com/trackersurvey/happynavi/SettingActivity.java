@@ -59,6 +59,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.parameter_setting_layout:
+                Intent intent = new Intent(this, SetParameterActivity.class);
+                startActivity(intent);
                 break;
             case R.id.select_language_layout:
                 break;

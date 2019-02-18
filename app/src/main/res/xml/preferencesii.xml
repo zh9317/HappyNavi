@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android" 
+  android:title="@string/system_settings" >
+	<CheckBoxPreference 
+	    android:defaultValue="true" 
+	    android:key="@string/auto_update_switch_key" 
+	    android:summaryOff="@string/auto_update_switch_summary_off" 
+	    android:title="@string/auto_update_switch_title" 
+	    android:summaryOn="@string/auto_update_switch_summary_on"
+	    >
+	    
+	</CheckBoxPreference>
+	<CheckBoxPreference 
+	    android:defaultValue="false"
+	    android:summaryOn="@string/auto_upload_switch_summary_on" 
+	    android:summaryOff="@string/auto_upload_switch_summary_off" 
+	    android:key="@string/auto_upload_switch_key" 
+	    android:title="@string/auto_upload_switch_title" 
+	    />
+	<CheckBoxPreference 
+	    android:defaultValue="true"
+	    android:summaryOn="@string/auto_uploadpic_switch_summary_on" 
+	    android:title="@string/auto_uploadpic_switch_title" 
+	    android:summaryOff="@string/auto_uploadpic_switch_summary_off" 
+	    android:key="@string/auto_uploadpic_switch_key"/>
+	
+	<ListPreference 
+	    android:entries="@array/auto_update_frequency_entry" 
+	    android:negativeButtonText="@string/cancl" 
+	    android:entryValues="@array/auto_update_frequency_value" 
+	    android:dialogTitle="@string/auto_update_frequency_title" 
+	    android:summary="@string/auto_update_frequency_summary" 
+	    android:key="@string/auto_update_frequency_key" 
+	    android:title="@string/auto_update_frequency_title" 
+	    android:defaultValue="@string/auto_update_frequency_default_value">
+	    
+	</ListPreference>
+	<Preference 
+	    android:key="@string/auto_upload_frequency_key" 
+	    android:summary="@string/auto_upload_frequency_summary" 
+	    android:title="@string/auto_upload_frequency_title" 
+	    android:defaultValue="@string/auto_upload_frequency_default_value"/>
+	<Preference 
+	    android:key="@string/auto_record_loc_frequency_key" 
+	    android:summary="@string/auto_record_loc_frequency_summary" 
+	    android:title="@string/auto_record_loc_frequency_title" 
+	    android:defaultValue="@string/auto_record_loc_frequency_default_value"/>
+	<!-- <ListPreference 
+	    android:entries="@array/language_entry" 
+	    android:negativeButtonText="@string/cancl" 
+	    android:entryValues="@array/language_value" 
+	    android:dialogTitle="@string/language_title" 
+	    android:summary="@string/language_summary" 
+	    android:key="@string/language_key" 
+	    android:title="@string/language_title" 
+	    android:defaultValue="@string/language_default_value">
+	    
+	</ListPreference> -->
+</PreferenceScreen>

@@ -51,7 +51,6 @@ import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
-import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.route.BusRouteResult;
 import com.amap.api.services.route.DriveRouteResult;
@@ -63,6 +62,7 @@ import com.amap.api.services.route.WalkStep;
 import com.trackersurvey.adapter.ListBaseAdapter3;
 import com.trackersurvey.bean.TraceLatLng;
 import com.trackersurvey.http.ResponseData;
+import com.trackersurvey.http.UpLoadGpsRequest;
 import com.trackersurvey.model.GpsData;
 import com.trackersurvey.bean.ListItemData;
 import com.trackersurvey.bean.PointOfInterestData;
@@ -76,11 +76,8 @@ import com.trackersurvey.happynavi.LoginActivity;
 import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.DownloadTraceDetailRequest;
 import com.trackersurvey.httpconnection.PostDeleteTrail;
-import com.trackersurvey.httpconnection.PostEndTrail;
-import com.trackersurvey.httpconnection.PostGpsData;
 import com.trackersurvey.httpconnection.PostPointOfInterestData;
 import com.trackersurvey.httpconnection.PostPointOfInterestDataEn;
-import com.trackersurvey.httpconnection.PostTrailDetail;
 import com.trackersurvey.model.MyCommentModel;
 import com.trackersurvey.photoview.SlideListView;
 import com.trackersurvey.service.CommentUploadService;
@@ -365,10 +362,6 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             showDialog(getResources().getString(R.string.tips_dlgtle_init),
                     getResources().getString(R.string.tips_dlgmsg_inittrace));
             // Log.i("trailadapter", "在线获取");
-
-            /*PostTrailDetail traildetail = new PostTrailDetail(handler, URL_GETTRAIL, trailobj.getUserID(),
-                    trailobj.getTraceID(), Common.getDeviceId(context));
-            traildetail.start();*/
 
             // 测试下载轨迹详情
             DownloadTraceDetailRequest downloadTraceDetail = new DownloadTraceDetailRequest(
@@ -1505,18 +1498,32 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         List<TraceData> traces_upload = new ArrayList<TraceData>();
 
         traces_upload.add(trailobj);
-        PostGpsData gpsthread = new PostGpsData(shareHandler, URL_GPSDATA, GsonHelper.toJson(traces),
-                Common.getDeviceId(context));
-        gpsthread.start();
+        // 上传位置
+//        PostGpsData gpsthread = new PostGpsData(shareHandler, URL_GPSDATA, GsonHelper.toJson(traces),
+//                Common.getDeviceId(context));
+//        gpsthread.start();
+        UpLoadGpsRequest upLoadGpsRequest = new UpLoadGpsRequest(sp.getString("token",""),
+                GsonHelper.toJson(traces));
+        upLoadGpsRequest.requestHttpData(new ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                if (isSuccess) {
+                    if (code.equals("0")) {
+                        Log.i("ShowTraceFragment","上传成功");
+                    }
+                }
+            }
+        });
         String traceinfo = GsonHelper.toJson(traces_upload);
         String stepinfo = "";
         if (steps_upload.size() > 0) {
             stepinfo = GsonHelper.toJson(steps_upload);
         }
         // Log.i("trailadapter","上传的轨迹："+traceinfo+","+stepinfo);
-        PostEndTrail endTrailThread = new PostEndTrail(shareHandler, URL_ENDTRAIL, traceinfo, stepinfo,
-                Common.getDeviceId(context));
-        endTrailThread.start();
+//        PostEndTrail endTrailThread = new PostEndTrail(shareHandler, URL_ENDTRAIL, traceinfo, stepinfo,
+//                Common.getDeviceId(context));
+//        endTrailThread.start();
+
     }
 
     @SuppressLint("HandlerLeak")

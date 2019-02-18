@@ -43,10 +43,7 @@ import com.trackersurvey.model.TraceData;
 import com.trackersurvey.db.MyTraceDBHelper;
 import com.trackersurvey.happynavi.MainActivity;
 import com.trackersurvey.happynavi.R;
-import com.trackersurvey.httpconnection.PostEndTrail;
-import com.trackersurvey.httpconnection.PostGpsData;
 import com.trackersurvey.httpconnection.PostOnOffline;
-import com.trackersurvey.httpconnection.PostPhoneEvents;
 import com.trackersurvey.httpconnection.PostTimeValues;
 import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.Common;
@@ -452,7 +449,7 @@ public class LocationService extends Service implements AMapLocationListener{
             eventsdata=null;
         }
 
-        if(traceno_up.size()>0){
+        if(traceno_up.size()>0){ // 上传未上传的位置数据
             for(int i=0;i<traceno_up.size();i++){
                 trail_up = helper.queryfromTrailbytraceID(traceno_up.get(i),Common.getUserId(getApplicationContext()));
                 trails_up.add(trail_up);
@@ -465,9 +462,32 @@ public class LocationService extends Service implements AMapLocationListener{
                 // 按轨迹号查询位置数据
                 datalist_up = helper.queryfromGpsbytraceID(traceno_up.get(i),Common.getUserID(getApplicationContext()));
                 gpsData_up = GsonHelper.toJson(datalist_up);
-                PostGpsData gpsDataThread = new PostGpsData(mhandler,URL_GPSDATA,gpsData_up,
-                        Common.getDeviceId(getApplicationContext()));
-                gpsDataThread.start();
+                UpLoadGpsRequest upLoadGpsRequest = new UpLoadGpsRequest(sp.getString("token",""), gpsData_up);
+                upLoadGpsRequest.requestHttpData(new ResponseData() {
+                    @Override
+                    public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                        if (isSuccess) {
+                            if (code.equals("0")) {
+                                Log.i("LocationService","上传成功");
+                                if(datalist != null && datalist.size()>0) {
+                                    lastPostTime = datalist.get(datalist.size()-1).getCreateTime();
+                                    Log.i("LocationService","最近一次上传位置的时间:"+lastPostTime);
+                                } else {
+                                    lastPostTime = Common.currentTime();
+                                    Log.i("LocationService","最近一次上传位置的时间:"+lastPostTime);
+                                }
+                                datalist = null;
+                                Common.setPostTime(getApplicationContext(), lastPostTime);
+                            }
+                            if (code.equals("100")) {
+                                Log.i("LocationService", "登录超时");
+                                Message message = new Message();
+                                message.what = TOKEN_INVALID;
+                                mhandler.sendMessage(message);
+                            }
+                        }
+                    }
+                });
                 datalist_up = null;
                 gpsData_up = null;
             }
@@ -478,9 +498,9 @@ public class LocationService extends Service implements AMapLocationListener{
             }
             Log.i("trailadapter","自动上传的轨迹："+traceData_up+","+stepsdata_up);
             // 结束记录，上传轨迹信息，其中traceData_up为轨迹信息
-            PostEndTrail endTrailThread = new PostEndTrail(mhandler,URL_ENDTRAIL,traceData_up,stepsdata_up,
-                    Common.getDeviceId(getApplicationContext()));
-            endTrailThread.start();
+//            PostEndTrail endTrailThread = new PostEndTrail(mhandler,URL_ENDTRAIL,traceData_up,stepsdata_up,
+//                    Common.getDeviceId(getApplicationContext()));
+//            endTrailThread.start();
             trails_up.clear();
             steps_up.clear();
             traceData_up=null;
