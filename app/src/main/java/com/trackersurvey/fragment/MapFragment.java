@@ -65,7 +65,7 @@ import com.amap.api.maps.model.TileProvider;
 import com.trackersurvey.bean.FileInfoData;
 import com.trackersurvey.bean.PointOfInterestData;
 import com.trackersurvey.http.DownloadPoiChoices;
-import com.trackersurvey.http.UpLoadTraceUpdateRequest;
+import com.trackersurvey.http.EndTraceRequest;
 import com.trackersurvey.model.PoiChoiceModel;
 import com.trackersurvey.model.StepData;
 import com.trackersurvey.db.MyTraceDBHelper;
@@ -84,6 +84,7 @@ import com.trackersurvey.service.CommentUploadService;
 import com.trackersurvey.service.DownloadService;
 import com.trackersurvey.service.LocationService;
 import com.trackersurvey.service.StepCounterService;
+import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
 import com.trackersurvey.util.GsonHelper;
@@ -843,8 +844,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     // 初始化轨迹信息，设置它的了6个属性
                     traceName = dialog.gettraceName();
                     tracedata.setTraceName(dialog.gettraceName());          // 轨迹名称
-                    tracedata.setSportTypes(pos);                            // 运动类型:1步行，2骑行...
+                    tracedata.setSportTypes(pos);                           // 运动类型:1步行，2骑行...
                     tracedata.setStartTime(Common.currentTime());           // 开始时间
+                    tracedata.setEndTime(Common.currentTime());             // 结束时间
                     tracedata.setUserID(Common.getUserID(getContext()));    // 新的userID
                     tracedata.setShareType(0);                              // 分享类型
                     tracedata.setTraceID(traceID);                          // 轨迹号
@@ -891,24 +893,38 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
-                    try {
-                        JSONObject object = new JSONObject((String) responseObject);
-                        traceID = Long.parseLong(object.getString("traceID"));
-                        // 一旦获取到traceID，发送给LocationService
-                        tracedata.setTraceID(traceID);
-                        stepdata.setTraceID(traceID);
-                        locationService.setTraceID(traceID);
-                        // 获取到traceID后
-                        if (traceID != 0) {
-                            traceDBHelper.updatetrail(tracedata, traceID, Common.getUserID(getContext()));
-                            Log.i("mmmmmmmmmmmmmmm", "initStartInfo traceDBHelper.updatetrail(tracedata,traceID,Common.getUserID(getContext()));");
-                            traceDBHelper.updatesteps(stepdata, traceID,Common.getUserID(getContext()));
-                            Log.i("LogDemo", "数据的TraceID替换成功");
+                    if (code.equals("0")) {
+                        try {
+                            JSONObject object = new JSONObject((String) responseObject);
+                            traceID = Long.parseLong(object.getString("traceID"));
+                            // 一旦获取到traceID，发送给LocationService
+                            tracedata.setTraceID(traceID);
+                            stepdata.setTraceID(traceID);
+                            locationService.setTraceID(traceID);
+                            // 获取到traceID后
+                            if (traceID != 0) {
+                                traceDBHelper.updatetrail(tracedata, traceID, Common.getUserID(getContext()));
+                                Log.i("mmmmmmmmmmmmmmm", "initStartInfo traceDBHelper.updatetrail(tracedata,traceID,Common.getUserID(getContext()));");
+                                traceDBHelper.updatesteps(stepdata, traceID,Common.getUserID(getContext()));
+                                Log.i("LogDemo", "数据的TraceID替换成功");
+                            }
+                            Log.i("LogDemo", "获得了轨迹号traceID : " + traceID);
+                            traceIDchanged(true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        Log.i("LogDemo", "获得了轨迹号traceID : " + traceID);
-                        traceIDchanged(true);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    }
+                    if (code.equals("100") || code.equals("101")) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), "登录信息过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("token", ""); // 清空token
+                                editor.apply();
+                                ActivityCollector.finishActivity("MainActivity");
+                            }
+                        });
                     }
                 } else {
                     ToastUtil.show(getContext(), "上传轨迹失败，轨迹保存在本地");
@@ -1015,9 +1031,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             //Log.i("LogDemo", "endtrail,"+traceInfo+","+stepInfo);
             traceDBHelper.updateStatus( traceID, 2, Common.getUserID(getContext()));
 
-            //重新上传轨迹信息（更改轨迹号之后）
-            UpLoadTraceUpdateRequest upLoadTraceUpdateRequest = new UpLoadTraceUpdateRequest(String.valueOf(traceID),
-                    sp.getString("token",""),Common.getDeviceId(getContext()), traceInfo);
+            // 结束轨迹
+            EndTraceRequest upLoadTraceUpdateRequest = new EndTraceRequest(
+                    sp.getString("token",""), traceInfo);
             upLoadTraceUpdateRequest.requestHttpData(new ResponseData() {
                 @Override
                 public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {

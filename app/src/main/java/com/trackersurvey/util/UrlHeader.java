@@ -9,13 +9,14 @@ public class UrlHeader {
     public static final String LOGIN_URL_OLD = "userLogin.aspx";
 //    public static final String BASE_URL_NEW = "http://211.87.235.26:8080/footPrint/";
 //    public static final String BASE_URL_NEW = "http://121.250.210.80:8080/footPrint/";
+
     public static final String BASE_URL_NEW = "http://211.87.227.204:8089/";
     public static final String GET_MSG_CODE_URL = "user/sendSMSCode"; //获取短信验证码
     public static final String REGISTER_URL = "user/register"; // 注册
     public static final String LOGIN_URL_NEW = "user/login"; // 登录
     public static final String UPLOAD_LOCATION_URL = "location/uploadLocation";// 上传位置
-    public static final String UPLOAD_TRACE_URL = "trace/upload";// 上传轨迹(初始化)
-    public static final String UPLOAD_TRACE_UPDATE_URL = "trace/updateInfo";// 更新轨迹(记录结束时)
+    public static final String UPLOAD_TRACE_URL = "trace/startTrace";// 开始轨迹
+    public static final String UPLOAD_TRACE_UPDATE_URL = "trace/endTrace";// 结束轨迹
 
     public static final String DOWNLOAD_TRACE_LIST = "trace/getTraceList";// 下载轨迹列表
     public static final String DELETE_TRACE = "trace/deleteTrace";// 删除轨迹
