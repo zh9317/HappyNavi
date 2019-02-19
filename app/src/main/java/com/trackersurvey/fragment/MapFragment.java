@@ -241,10 +241,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         }else{
             Common.url = getResources().getString(R.string.url);
         }
-        URL_ENDTRAIL=Common.url+"reqTraceNo.aspx";
+        URL_ENDTRAIL = Common.url+"reqTraceNo.aspx";
         URL_CHECKUPDATE=Common.url+"request.aspx";
         URL_GETPOI = Common.url + "requestInfo.aspx";
-//        initPOI(); // 获取兴趣点列表选项
+        initPOI(); // 获取兴趣点列表选项
 //        int l = TabHost_Main.l;
 //        if(l==0){
 //            initPOI();//下载添加兴趣点下拉列表选项内容
@@ -744,7 +744,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     }
                     //traceService.changeGpsTime(Common.getRecLocFrequenct(getApplicationContext()));
                     startTrail.setVisibility(View.INVISIBLE);
-                    changeSportTypeIb.setVisibility(View.VISIBLE);
+//                    changeSportTypeIb.setVisibility(View.VISIBLE);
                     // pauseTrail.setVisibility(View.VISIBLE);
                     // takephoto.setVisibility(View.VISIBLE);
                     endTrail.setVisibility(View.VISIBLE);
@@ -754,7 +754,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 }
                 break;
             case R.id.change_sport_type_ib:
-                changeSportType();
+//                changeSportType();
                 break;
             case R.id.imgbtn_endtrail:
                 //Toast.makeText(MainActivity.this, "结束记录",Toast.LENGTH_SHORT).show();
@@ -932,20 +932,20 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             }
         });
         startTrail.setVisibility(View.INVISIBLE);
-        if (sportType == 1) {
-            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_walking);
-        } else if (sportType == 2) {
-            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_cycling);
-        } else if (sportType == 3) {
-            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_rollerblading);
-        } else if (sportType == 4) {
-            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_driving);
-        } else if (sportType == 5) {
-            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_train);
-        } else if (sportType == 6) {
-            changeSportTypeIb.setBackgroundResource(R.mipmap.others);
-        }
-        changeSportTypeIb.setVisibility(View.VISIBLE);
+//        if (sportType == 1) {
+//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_walking);
+//        } else if (sportType == 2) {
+//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_cycling);
+//        } else if (sportType == 3) {
+//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_rollerblading);
+//        } else if (sportType == 4) {
+//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_driving);
+//        } else if (sportType == 5) {
+//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_train);
+//        } else if (sportType == 6) {
+//            changeSportTypeIb.setBackgroundResource(R.mipmap.others);
+//        }
+//        changeSportTypeIb.setVisibility(View.VISIBLE);
         //pauseTrail.setVisibility(View.VISIBLE);
         takePhoto.setVisibility(View.VISIBLE);
         endTrail.setVisibility(View.VISIBLE);
@@ -1094,7 +1094,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         }
         //traceService.changeGpsTime(Common.getNoRecLocFrequenct(getApplicationContext()));
         startTrail.setVisibility(View.VISIBLE);
-        changeSportTypeIb.setVisibility(View.INVISIBLE);
+//        changeSportTypeIb.setVisibility(View.INVISIBLE);
         //pauseTrail.setVisibility(View.INVISIBLE);
         endTrail.setVisibility(View.INVISIBLE);
         stepTv.setVisibility(View.INVISIBLE);
@@ -1404,8 +1404,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         //从服务器下载停留时长、行为类型、同伴人数、关系等选项的数据
         //PostPointOfInterestData pointOfInterest = new PostPointOfInterestData(poiHandler, URL_GETPOI);
         //pointOfInterest.start();
-        DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(String.valueOf(System.currentTimeMillis()),
-                sp.getString("Token", ""), "ZH_CN");
+        DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(sp.getString("token", ""));
         downloadPoiChoices.requestHttpData(new ResponseData() {
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
@@ -1417,23 +1416,23 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     relationData = new PointOfInterestData();
                     poiDBHelper.delete();
                     for (int i = 0; i < poiChoiceModel.getActivityTypeList().size(); i++) {
-                        behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivitytype());
-                        behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityname());
+                        behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivityType());
+                        behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityName());
                         poiDBHelper.insertBehaviour(behaviourData);
                     }
                     for (int i = 0; i < poiChoiceModel.getRetentionTypeList().size(); i++) {
-                        durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentiontype());
-                        durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentiontypename());
+                        durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentionType());
+                        durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentionTypeName());
                         poiDBHelper.insertDuration(durationData);
                     }
                     for (int i = 0; i < poiChoiceModel.getCompanionTypeList().size(); i++) {
-                        partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompaniontype());
-                        partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompaniontypename());
+                        partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompanionType());
+                        partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompanionTypeName());
                         poiDBHelper.insertPartnerNum(partnerNumData);
                     }
                     for (int i = 0; i < poiChoiceModel.getRelationTypeList().size(); i++) {
-                        relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationtype());
-                        relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationtypename());
+                        relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationType());
+                        relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationTypeName());
                         poiDBHelper.insertPartnerRelation(relationData);
                     }
                 }
@@ -1444,8 +1443,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         //英文版
         //PostPointOfInterestDataEn pointOfInterestEn = new PostPointOfInterestDataEn(poiHandler, URL_GETPOI);
         //pointOfInterestEn.start();
-        DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(String.valueOf(System.currentTimeMillis()),
-                sp.getString("Token", ""), "EN");
+        DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(sp.getString("Token", ""));
         downloadPoiChoices.requestHttpData(new ResponseData() {
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
@@ -1457,23 +1455,23 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     relationData = new PointOfInterestData();
                     poiDBHelper.delete();
                     for (int i = 0; i < poiChoiceModel.getActivityTypeList().size(); i++) {
-                        behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivitytype());
-                        behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityname());
+                        behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivityType());
+                        behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityName());
                         poiDBHelper.insertBehaviour(behaviourData);
                     }
                     for (int i = 0; i < poiChoiceModel.getRetentionTypeList().size(); i++) {
-                        durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentiontype());
-                        durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentiontypename());
+                        durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentionType());
+                        durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentionTypeName());
                         poiDBHelper.insertDuration(durationData);
                     }
                     for (int i = 0; i < poiChoiceModel.getCompanionTypeList().size(); i++) {
-                        partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompaniontype());
-                        partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompaniontypename());
+                        partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompanionType());
+                        partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompanionTypeName());
                         poiDBHelper.insertPartnerNum(partnerNumData);
                     }
                     for (int i = 0; i < poiChoiceModel.getRelationTypeList().size(); i++) {
-                        relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationtype());
-                        relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationtypename());
+                        relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationType());
+                        relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationTypeName());
                         poiDBHelper.insertPartnerRelation(relationData);
                     }
                 }

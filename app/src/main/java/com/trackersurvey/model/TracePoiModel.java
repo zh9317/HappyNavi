@@ -6,6 +6,7 @@ package com.trackersurvey.model;
 
 public class TracePoiModel {
     private String CreateTime;
+    private int UserID;
     private String DeviceID;
     private long TraceID;
     private int PoiNo;
@@ -27,12 +28,12 @@ public class TracePoiModel {
     public TracePoiModel() {
     }
 
-    public TracePoiModel(String createTime, String deviceID, long traceID, int poiNo, String comment,
-                         String country, String province, String city, String placeName,
-                         double longitude, double latitude, double altitude, int motionType,
-                         int activityType, int retentionType, int companionType, int relationType,
-                         int stateType) {
+    public TracePoiModel(String createTime, int userID, String deviceID, long traceID, int poiNo, String comment,
+                         String country, String province, String city, String placeName, double longitude,
+                         double latitude, double altitude, int motionType, int activityType, int retentionType,
+                         int companionType, int relationType, int stateType) {
         CreateTime = createTime;
+        UserID = userID;
         DeviceID = deviceID;
         TraceID = traceID;
         PoiNo = poiNo;
@@ -58,6 +59,14 @@ public class TracePoiModel {
 
     public void setCreateTime(String createTime) {
         CreateTime = createTime;
+    }
+
+    public int getUserID() {
+        return UserID;
+    }
+
+    public void setUserID(int userID) {
+        UserID = userID;
     }
 
     public String getDeviceID() {

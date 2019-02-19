@@ -30,7 +30,7 @@ public class PoiChoiceModel {
             JSONArray relationTypeArr = jsonObject.getJSONArray("RelationType");
             JSONArray activityTypeArr = jsonObject.getJSONArray("ActivityType");
             JSONArray motionTypeArr = jsonObject.getJSONArray("MotionType");
-            JSONArray retentionTypeArr = jsonObject.getJSONArray("RetentionType");
+            JSONArray retentionTypeArr = jsonObject.getJSONArray("RetentionTimeType");
             for (int i = 0; i < companionArr.length(); i++) {
                 CompanionType companionType = new CompanionType(companionArr.getJSONObject(i));
                 companionTypeList.add(companionType);
@@ -97,147 +97,187 @@ public class PoiChoiceModel {
     }
 
     public class CompanionType {
-        private int companiontype;
-        private String companiontypename;
+        private String companionTypeName_E;
+        private int companionType;
+        private String companionTypeName;
         public CompanionType(JSONObject jsonObject){
             try {
-                companiontype = jsonObject.getInt("companiontype");
-                companiontypename = jsonObject.getString("companiontypename");
+                companionTypeName_E = jsonObject.getString("CompanionTypeName_E");
+                companionType = jsonObject.getInt("CompanionType");
+                companionTypeName = jsonObject.getString("CompanionTypeName");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        public int getCompaniontype() {
-            return companiontype;
+        public String getCompanionTypeName_E() {
+            return companionTypeName_E;
         }
 
-        public void setCompaniontype(int companiontype) {
-            this.companiontype = companiontype;
+        public void setCompanionTypeName_E(String companionTypeName_E) {
+            this.companionTypeName_E = companionTypeName_E;
         }
 
-        public String getCompaniontypename() {
-            return companiontypename;
+        public int getCompanionType() {
+            return companionType;
         }
 
-        public void setCompaniontypename(String companiontypename) {
-            this.companiontypename = companiontypename;
+        public void setCompanionType(int companionType) {
+            this.companionType = companionType;
+        }
+
+        public String getCompanionTypeName() {
+            return companionTypeName;
+        }
+
+        public void setCompanionTypeName(String companionTypeName) {
+            this.companionTypeName = companionTypeName;
         }
     }
     public class RelationType {
-        private int relationtype;
-        private String relationtypename;
+        private int relationType;
+        private String relationTypeName;
+        private String relationTypeName_E;
 
         public RelationType(JSONObject jsonObject) {
             try {
-                relationtype = jsonObject.getInt("relationtype");
-                relationtypename = jsonObject.getString("relationtypename");
+                relationType = jsonObject.getInt("RelationType");
+                relationTypeName = jsonObject.getString("RelationTypeName");
+                relationTypeName_E = jsonObject.getString("RelationTypeName_E");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        public int getRelationtype() {
-            return relationtype;
+        public int getRelationType() {
+            return relationType;
         }
 
-        public void setRelationtype(int relationtype) {
-            this.relationtype = relationtype;
+        public void setRelationType(int relationType) {
+            this.relationType = relationType;
         }
 
-        public String getRelationtypename() {
-            return relationtypename;
+        public String getRelationTypeName() {
+            return relationTypeName;
         }
 
-        public void setRelationtypename(String relationtypename) {
-            this.relationtypename = relationtypename;
+        public void setRelationTypeName(String relationTypeName) {
+            this.relationTypeName = relationTypeName;
+        }
+
+        public String getRelationTypeName_E() {
+            return relationTypeName_E;
+        }
+
+        public void setRelationTypeName_E(String relationTypeName_E) {
+            this.relationTypeName_E = relationTypeName_E;
         }
     }
     public class ActivityType {
-        private int activitytype;
-        private String activityname;
+        private int activityType;
+        private String activityName;
+        private String activityName_EN;
 
         public ActivityType(JSONObject jsonObject) {
             try {
-                activitytype = jsonObject.getInt("activitytype");
-                activityname = jsonObject.getString("activityname");
+                activityType = jsonObject.getInt("ActivityType");
+                activityName = jsonObject.getString("ActivityName_ZH_CN");
+                activityName_EN = jsonObject.getString("ActivityName_EN");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        public int getActivitytype() {
-            return activitytype;
+        public int getActivityType() {
+            return activityType;
         }
 
-        public void setActivitytype(int activitytype) {
-            this.activitytype = activitytype;
+        public void setActivityType(int activityType) {
+            this.activityType = activityType;
         }
 
-        public String getActivityname() {
-            return activityname;
+        public String getActivityName() {
+            return activityName;
         }
 
-        public void setActivityname(String activityname) {
-            this.activityname = activityname;
+        public void setActivityName(String activityName) {
+            this.activityName = activityName;
+        }
+
+        public String getActivityName_EN() {
+            return activityName_EN;
+        }
+
+        public void setActivityName_EN(String activityName_EN) {
+            this.activityName_EN = activityName_EN;
         }
     }
     public class MotionType {
-        private int motiontype;
-        private String motiontypename;
+        private int motionType;
+        private String motionTypeName;
 
         public MotionType(JSONObject jsonObject) {
             try {
-                motiontype = jsonObject.getInt("motiontype");
-                motiontypename = jsonObject.getString("motiontypename");
+                motionType = jsonObject.getInt("MotionType");
+                motionTypeName = jsonObject.getString("MotionTypeName");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        public int getMotiontype() {
-            return motiontype;
+        public int getMotionType() {
+            return motionType;
         }
 
-        public void setMotiontype(int motiontype) {
-            this.motiontype = motiontype;
+        public void setMotionType(int motionType) {
+            this.motionType = motionType;
         }
 
-        public String getMotiontypename() {
-            return motiontypename;
+        public String getMotionTypeName() {
+            return motionTypeName;
         }
 
-        public void setMotiontypename(String motiontypename) {
-            this.motiontypename = motiontypename;
+        public void setMotionTypeName(String motionTypeName) {
+            this.motionTypeName = motionTypeName;
         }
     }
     public class RetentionType {
-        private int retentiontype;
-        private String retentiontypename;
+        private int retentionType;
+        private String retentionTypeName;
+        private String retentionTypeName_E;
 
         public RetentionType(JSONObject jsonObject) {
             try {
-                retentiontype = jsonObject.getInt("retentiontype");
-                retentiontypename = jsonObject.getString("retentiontypename");
+                retentionType = jsonObject.getInt("RetentionType");
+                retentionTypeName = jsonObject.getString("RetentionTypeName");
+                retentionTypeName_E = jsonObject.getString("RetentionTypeName_E");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        public int getRetentiontype() {
-            return retentiontype;
+        public int getRetentionType() {
+            return retentionType;
         }
 
-        public void setRetentiontype(int retentiontype) {
-            this.retentiontype = retentiontype;
+        public void setRetentionType(int retentionType) {
+            this.retentionType = retentionType;
         }
 
-        public String getRetentiontypename() {
-            return retentiontypename;
+        public String getRetentionTypeName() {
+            return retentionTypeName;
         }
 
-        public void setRetentiontypename(String retentiontypename) {
-            this.retentiontypename = retentiontypename;
+        public void setRetentionTypeName(String retentionTypeName) {
+            this.retentionTypeName = retentionTypeName;
+        }
+
+        public String getRetentionTypeName_E() {
+            return retentionTypeName_E;
+        }
+
+        public void setRetentionTypeName_E(String retentionTypeName_E) {
+            this.retentionTypeName_E = retentionTypeName_E;
         }
     }
 }

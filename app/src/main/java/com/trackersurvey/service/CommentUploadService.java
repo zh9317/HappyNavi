@@ -147,6 +147,7 @@ public class CommentUploadService extends Service {
         TracePoiModel tracePoiModel = new TracePoiModel();
         if (cursor.moveToNext()) {
             tracePoiModel.setCreateTime(createTime);
+            tracePoiModel.setUserID(cursor.getInt(14));
             tracePoiModel.setPoiNo(cursor.getInt(1));
             tracePoiModel.setLatitude(cursor.getDouble(2));
             tracePoiModel.setLongitude(cursor.getDouble(3));
@@ -173,7 +174,8 @@ public class CommentUploadService extends Service {
         fileNames.append("");
         int fileType = 0;
         // 测试上传兴趣点
-        if (!fileCache.isEmpty() && fileCache.size() > 0) {
+        if (fileCache.size() > 0) {
+            Log.i("CommentActivity", "有文件");
             Iterator<?> iterator = fileCache.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, ?> entry = (Map.Entry<String, ?>) iterator.next();
@@ -192,8 +194,7 @@ public class CommentUploadService extends Service {
             }
         }
         Log.i("UpdPoiPic", fileNameList.toString());
-        UploadPoiRequest uploadPoiRequest = new UploadPoiRequest(String.valueOf(System.currentTimeMillis()),
-                sp.getString("Token", ""), String.valueOf(share), tracePoi, fileNames.toString(), fileNameList, fileType);
+        UploadPoiRequest uploadPoiRequest = new UploadPoiRequest(sp.getString("token", ""), tracePoi, fileNames.toString(), fileNameList, fileType);
         uploadPoiRequest.requestHttpData(new ResponseData() {
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
@@ -222,8 +223,7 @@ public class CommentUploadService extends Service {
             Map<String, ?> cache = uploadCache.getAll();
 
             // 存储文件个数的sp
-            fileCache = getSharedPreferences(
-                    SHAREDFILES, MODE_PRIVATE).getAll();
+            fileCache = getSharedPreferences(SHAREDFILES, MODE_PRIVATE).getAll();
             upFileNum = fileCache.size();
             uploadedNum = 0;
 

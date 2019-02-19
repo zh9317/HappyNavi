@@ -52,6 +52,7 @@ public class SetParameterActivity extends PreferenceActivity implements Preferen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // 老代码使用这种方法，但现在会报错
 //        final boolean isCustom = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_set_parameter);

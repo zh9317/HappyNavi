@@ -996,7 +996,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             + Common.getUserId(getApplicationContext()),
                     pathImage.get(i));
         }
-        edit.commit();
+        edit.apply();
         // 视频
         if (videoPath != null) {
             comment.setVideoCount(1);
@@ -1013,7 +1013,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             + Common.getUserId(getApplicationContext()),
                     videoPath);
         }
-        edit.commit();
+        edit.apply();
     }
 
     private void commitEvent() {

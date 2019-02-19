@@ -17,14 +17,10 @@ import okhttp3.RequestBody;
 
 public class DownloadPoiChoices extends HttpUtil {
 
-    private String _timestamp;
-    private String Token;
-    private String Lang;
+    private String token;
 
-    public DownloadPoiChoices(String _timestamp, String token, String lang) {
-        this._timestamp = _timestamp;
-        Token = token;
-        Lang = lang;
+    public DownloadPoiChoices(String token) {
+        this.token = token;
     }
 
     @Override
@@ -34,14 +30,8 @@ public class DownloadPoiChoices extends HttpUtil {
 
     @Override
     public RequestBody parameter() {
-        String _sign = HMAC_SHA1_Util.genHMAC(Common.secretKey+"_appkey"+Common._appkey
-                +"_timestamp"+_timestamp+"Token"+Token+"Lang"+Lang+Common.secretKey,Common.secretKey);
         RequestBody requestBody = new FormBody.Builder()
-                .add("_appkey", Common._appkey)
-                .add("_sign", _sign)
-                .add("_timestamp", _timestamp)
-                .add("Token", Token)
-                .add("Lang", Lang)
+                .add("token", token)
                 .build();
         return requestBody;
     }

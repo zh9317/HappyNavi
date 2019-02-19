@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_stop"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/imgbtn_starttrail"
+            android:layout_centerHorizontal="true"
             android:background="@null"
             android:layout_marginBottom="20dp"/>
 

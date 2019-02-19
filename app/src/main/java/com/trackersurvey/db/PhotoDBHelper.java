@@ -24,7 +24,7 @@ public class PhotoDBHelper {
 
     private static final String USEREVENT_TABLE = "UserEvent";
     public  static final String[] COLUMNS_UE = { "CreateTime", "PoiNo", "Longitude",
-            "Latitude", "Altitude", "Country", "Province", "City", "PlaceName", "Context", "TraceNo",
+            "Latitude", "Altitude", "Country", "Province", "City", "PlaceName", "Context", "TraceID",
             "FileNum", "Video", "Audio", "UserID","Feeling","Behaviour",
             "Duration","Companion","Relationship", "StateType", "Share"};
 
@@ -47,7 +47,7 @@ public class PhotoDBHelper {
                 + COLUMNS_UE[10] + " integer not null," + COLUMNS_UE[11]
                 + " integer not null, " + COLUMNS_UE[12] + " integer,"
                 + COLUMNS_UE[13] + " integer," + COLUMNS_UE[14] + " text, "
-                + COLUMNS_UE[15] + " integer default 0, "
+                + COLUMNS_UE[15] + " integer default 0,"
                 + COLUMNS_UE[16] + " integer default 0,"
                 + COLUMNS_UE[17] + " integer default 0,"
                 + COLUMNS_UE[18] + " integer default 0,"
