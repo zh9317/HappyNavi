@@ -7,6 +7,9 @@ import com.trackersurvey.util.Common;
 import com.trackersurvey.util.HMAC_SHA1_Util;
 import com.trackersurvey.util.UrlHeader;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.List;
 
@@ -23,22 +26,10 @@ public class UploadPoiRequest extends HttpUtil {
 
     private String token;
     private String tracePoi;
-    private String File;
-    private List<String> picList;
-    private int fileType;
 
-    public UploadPoiRequest(String token, String tracePoi, String file) {
+    public UploadPoiRequest(String token, String tracePoi) {
         this.token = token;
         this.tracePoi = tracePoi;
-        File = file;
-    }
-
-    public UploadPoiRequest(String token, String tracePoi, String file, List<String> picList, int fileType) {
-        this.token = token;
-        this.tracePoi = tracePoi;
-        File = file;
-        this.picList = picList;
-        this.fileType = fileType;
     }
 
     @Override
@@ -48,27 +39,38 @@ public class UploadPoiRequest extends HttpUtil {
 
     @Override
     public RequestBody parameter() {
-        MediaType MEDIA_TYPE_PNG = MediaType.parse("image/jpg");
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        File file = new File(File);
-        builder.addFormDataPart("token", token);
-        builder.addFormDataPart("tracePoi", tracePoi);
-        if (!File.equals("")) { // 有文件
-            if (fileType == 1) {
-                for (int i = 0; i < picList.size(); i++) {
-                    builder.addFormDataPart("file" + i, picList.get(i), RequestBody.create(MEDIA_TYPE_PNG, file));
-                }
-            }
-        }else { // 没有文件
-            Log.i("UploadPoi", "这里执行了，没有上传文件");
-//            builder.addFormDataPart("file", File);
-        }
-        RequestBody requestBody = builder.build();
+//        MediaType MEDIA_TYPE_PNG = MediaType.parse("image/jpg");
+//        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+//        File file = new File(File);
+//        builder.addFormDataPart("token", token);
+//        builder.addFormDataPart("tracePoi", tracePoi);
+//        if (!File.equals("")) { // 有文件
+//            if (fileType == 1) {
+//                for (int i = 0; i < picList.size(); i++) {
+//                    builder.addFormDataPart("file" + i, picList.get(i), RequestBody.create(MEDIA_TYPE_PNG, file));
+//                }
+//            }
+//        }else { // 没有文件
+//            Log.i("UploadPoi", "这里执行了，没有上传文件");
+////            builder.addFormDataPart("file", File);
+//        }
+//        RequestBody requestBody = builder.build();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("tracePoi", tracePoi)
+                .build();
         return requestBody;
     }
 
     @Override
     public HttpUtil handleData(String obj) {
-        return super.handleData(obj);
+        HttpUtil response = new HttpUtil();
+        try {
+            JSONObject jsonObject = new JSONObject(obj);
+            response.responseObject = jsonObject.getInt("poiID");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 }

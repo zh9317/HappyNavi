@@ -23,8 +23,9 @@ public class UrlHeader {
     public static final String DELETE_TRACE = "trace/deleteTrace";// 删除轨迹
     public static final String DOWNLOAD_TRACE_DETAIL = "location/getTraceLocation";// 下载轨迹详情
     // 兴趣点
-    public static final String DOWNLOAD_POI_CHOICES = "poi/getPoiChoices";// 下载兴趣点选项列表
-    public static final String UPLOAD_POI_URL = "/poi/uploadPoi";// 上传兴趣点
+    public static final String DOWNLOAD_POI_CHOICES = "poi/getPoiChoices"; // 下载兴趣点选项列表
+    public static final String UPLOAD_POI_URL = "poi/uploadPoi"; // 上传兴趣点
+    public static final String UPLOAD_FILE_URL = "poi/uploadFile"; // 上传文件
     public static final String DOWNLOAD_POI_LIST_URL = "poi/getPoiListPaging";// 下载兴趣点
 
     public static final String QUESTIONARY_URL = "questionnaire/wx_getQuestionnaireList";// 调查问卷

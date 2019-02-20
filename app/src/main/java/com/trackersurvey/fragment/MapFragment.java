@@ -1409,31 +1409,45 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
-                    poiChoiceModel = (PoiChoiceModel) responseObject;
-                    behaviourData = new PointOfInterestData();
-                    durationData = new PointOfInterestData();
-                    partnerNumData = new PointOfInterestData();
-                    relationData = new PointOfInterestData();
-                    poiDBHelper.delete();
-                    for (int i = 0; i < poiChoiceModel.getActivityTypeList().size(); i++) {
-                        behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivityType());
-                        behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityName());
-                        poiDBHelper.insertBehaviour(behaviourData);
+                    if (code.equals("0")) {
+                        poiChoiceModel = (PoiChoiceModel) responseObject;
+                        behaviourData = new PointOfInterestData();
+                        durationData = new PointOfInterestData();
+                        partnerNumData = new PointOfInterestData();
+                        relationData = new PointOfInterestData();
+                        poiDBHelper.delete();
+                        for (int i = 0; i < poiChoiceModel.getActivityTypeList().size(); i++) {
+                            behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivityType());
+                            behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityName());
+                            poiDBHelper.insertBehaviour(behaviourData);
+                        }
+                        for (int i = 0; i < poiChoiceModel.getRetentionTypeList().size(); i++) {
+                            durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentionType());
+                            durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentionTypeName());
+                            poiDBHelper.insertDuration(durationData);
+                        }
+                        for (int i = 0; i < poiChoiceModel.getCompanionTypeList().size(); i++) {
+                            partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompanionType());
+                            partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompanionTypeName());
+                            poiDBHelper.insertPartnerNum(partnerNumData);
+                        }
+                        for (int i = 0; i < poiChoiceModel.getRelationTypeList().size(); i++) {
+                            relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationType());
+                            relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationTypeName());
+                            poiDBHelper.insertPartnerRelation(relationData);
+                        }
                     }
-                    for (int i = 0; i < poiChoiceModel.getRetentionTypeList().size(); i++) {
-                        durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentionType());
-                        durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentionTypeName());
-                        poiDBHelper.insertDuration(durationData);
-                    }
-                    for (int i = 0; i < poiChoiceModel.getCompanionTypeList().size(); i++) {
-                        partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompanionType());
-                        partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompanionTypeName());
-                        poiDBHelper.insertPartnerNum(partnerNumData);
-                    }
-                    for (int i = 0; i < poiChoiceModel.getRelationTypeList().size(); i++) {
-                        relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationType());
-                        relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationTypeName());
-                        poiDBHelper.insertPartnerRelation(relationData);
+                    if (code.equals("100") || code.equals("101")) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), "登录信息过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("token", ""); // 清空token
+                                editor.apply();
+                                ActivityCollector.finishActivity("MainActivity");
+                            }
+                        });
                     }
                 }
             }
