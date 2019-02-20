@@ -26,7 +26,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -44,7 +43,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
@@ -76,16 +74,16 @@ import java.util.TreeMap;
 
 public class CommentActivity extends BaseActivity implements View.OnClickListener, GeocodeSearch.OnGeocodeSearchListener{
 
-    // 用于onActivityResult()方法判断由那个页面返回当前页面
-    public  final int REQUEST_PICTURE = 1;//从相册中选照片
-    public  final int REQUEST_TAKEPIC = 2;//调用相机拍照
-    public  final int REQUEST_PLACE = 3;//选择或编辑地名
-    public  final int REQUEST_VIDEO = 4;//在相册中选择录像
-    public  final int REQUEST_CAMERA = 5;//调用相机录像
-    public  final String SHAREDFILES = "uploadFiles";
+    // 用于onActivityResult()方法判断由哪个页面返回当前页面
+    public final int REQUEST_PICTURE = 1; //从相册中选照片
+    public final int REQUEST_TAKEPIC = 2; //调用相机拍照
+    public final int REQUEST_PLACE = 3;   //选择或编辑地名
+    public final int REQUEST_VIDEO = 4;   //在相册中选择录像
+    public final int REQUEST_CAMERA = 5;  //调用相机录像
+    public final String SHAREDFILES = "uploadFiles";
     // gridView使用的多个HashMap的一个常用key
-    private  final String keyOfBitmap = "itemImage";
-    private  final int gviewCol = 3; // gridView列数
+    private final String keyOfBitmap = "itemImage";
+    private final int gviewCol = 3; // gridView列数
 
     private GridView gview; // 网格显示缩略图
     private ArrayList<HashMap<String, Object>> imageItem; // gridView 组件集
@@ -94,10 +92,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     // 选择的多张照片的id和Uri
     private SelectedTreeMap selectPictures;
-    private  ArrayList<String> pathImage; // 选择的所有图片路径
-    private  ArrayList<String> cacheImages;
+    private ArrayList<String> imagePathList; // 选择的所有图片路径
+    private ArrayList<String> thumbnailPathList; // 所有缩略图的路径
     private ArrayList<String> durationData, behaviourData, partnerNumData, relationData;
-    private  String cacheVideo;
+    private String cacheVideo;
     private ArrayList<String> selectImages; // 选择的图片的绝对路径
     private int hasVideo = -1;
     private int clickPosition;
@@ -210,8 +208,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         gview = (GridView) findViewById(R.id.gridPicture);
 
         itemNo = 0;
-        pathImage = new ArrayList<String>();
-        cacheImages = new ArrayList<String>();
+        imagePathList = new ArrayList<String>();
+        thumbnailPathList = new ArrayList<String>();
         imageItem = new ArrayList<HashMap<String, Object>>();
         selectImages = new ArrayList<String>();
         addSymbol();
@@ -404,7 +402,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             Intent intent = new Intent(CommentActivity.this,
                     SelectedPictureActivity.class);
             intent.putStringArrayListExtra(
-                    SelectedPictureActivity.PIC_PATH, pathImage);
+                    SelectedPictureActivity.PIC_PATH, imagePathList);
             int imgPos =  clickPosition ;
             if(hasVideo != -1 && imgPos >hasVideo){
                 imgPos--;
@@ -573,12 +571,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     Set<Long> keys = selectPics.keySet();
 
                     // 清空已有图片，重新添加
-                    pathImage.clear();
+                    imagePathList.clear();
                     // 删除本地缩略图
-                    for (int i = 0; i < cacheImages.size(); i++) {
-                        new File(cacheImages.get(i)).delete();
+                    for (int i = 0; i < thumbnailPathList.size(); i++) {
+                        new File(thumbnailPathList.get(i)).delete();
                     }
-                    cacheImages.clear();
+                    thumbnailPathList.clear();
                     if (hasVideo >= 0) {
                         HashMap<String, Object> video = imageItem.get(hasVideo);
                         imageItem.clear();
@@ -736,7 +734,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     Toast.LENGTH_LONG).show();
         }
         Log.i("comment", "onActivityResult hasViewo=" + hasVideo + ",itemNo=" + itemNo
-                +",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",pathImage size "+pathImage.size());
+                +",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",imagePathList size "+ imagePathList.size());
 
     }
 
@@ -744,7 +742,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     protected void onResume() {
         //if(selectImages != null && imageItem!=null){
         //Log.i("comment", "before resume hasViewo=" + hasVideo + ",itemNo=" + itemNo
-        //	+",selectImages size "+selectImages.size()+",imageItem size "+imageItem.size()+",pathImage size "+pathImage.size());
+        //	+",selectImages size "+selectImages.size()+",imageItem size "+imageItem.size()+",imagePathList size "+imagePathList.size());
         //}
         if (selectImages.size() > 0) {
             if (itemNo < 9 && itemNo < imageItem.size()) {
@@ -785,8 +783,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 }
 
                 // 原图与缩略图成对出现，成对添加，成对删除
-                pathImage.add(selectImages.get(i));
-                cacheImages.add(cacheFileName);
+                imagePathList.add(selectImages.get(i));
+                thumbnailPathList.add(cacheFileName);
 
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 map.put(keyOfBitmap, addbmp); // 添加要显示的缩略图到GridView
@@ -803,7 +801,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         }
 //		if(selectImages != null && imageItem!=null){
 //			Log.i("comment", "after resume hasViewo=" + hasVideo + ",itemNo=" + itemNo
-//				+",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",pathImage size "+pathImage.size());
+//				+",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",imagePathList size "+imagePathList.size());
 //		}
         super.onResume();
     }
@@ -822,8 +820,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onBackPressed() {
         // 删除本地缩略图
-        for (int i = 0; i < cacheImages.size(); i++) {
-            new File(cacheImages.get(i)).delete();
+        for (int i = 0; i < thumbnailPathList.size(); i++) {
+            new File(thumbnailPathList.get(i)).delete();
         }
         if (hasVideo >= 0) {
             new File(cacheVideo).delete();
@@ -876,15 +874,15 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             if(hasVideo != -1 && pos >hasVideo){
                                 pos--;
                             }
-                            if(pos >= imageItem.size() || pos >= pathImage.size()){
-                                Log.i("comment","delete error :"+pos+"/"+pathImage.size());
+                            if(pos >= imageItem.size() || pos >= imagePathList.size()){
+                                Log.i("comment","delete error :"+pos+"/"+ imagePathList.size());
                                 return;
                             }
-                            Log.i("comment","delete  :"+pos+"/"+pathImage.size());
+                            Log.i("comment","delete  :"+pos+"/"+ imagePathList.size());
 
                             imageItem.remove(position);
                             // 成对删除
-                            String path = pathImage.get(pos);
+                            String path = imagePathList.get(pos);
                             StringBuffer buff = new StringBuffer();
                             buff.append("(").append(MediaStore.Images.ImageColumns.DATA)
                                     .append("=").append("'" + path + "'")
@@ -900,9 +898,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 selectPictures.setTreeMap(tree);
                             }
                             cursor.close();
-                            pathImage.remove(pos);
-                            new File(cacheImages.get(pos)).delete();
-                            cacheImages.remove(pos);
+                            imagePathList.remove(pos);
+                            new File(thumbnailPathList.get(pos)).delete();
+                            thumbnailPathList.remove(pos);
                             simpleAdapter.notifyDataSetChanged();
                             itemNo--;
 
@@ -916,7 +914,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             addSymbol();
                         }
                         Log.i("comment", "delete hasViewo=" + hasVideo + ",itemNo=" + itemNo
-                                +",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",pathImage size "+pathImage.size());
+                                +",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",imagePathList size "+ imagePathList.size());
 
 
                     }
@@ -987,14 +985,14 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             files[i] = new CommentMediaFilesData();
             files[i].setFileNo(i);
             files[i].setDateTime(createTime);
-            files[i].setFileName(pathImage.get(i));
-            files[i].setThumbnailName(cacheImages.get(i));
+            files[i].setFileName(imagePathList.get(i));
+            files[i].setThumbnailName(thumbnailPathList.get(i));
             files[i].setFileType(1);
             edit.putString(
                     createTime + File.separator + i + File.separator + 1
                             + File.separator
                             + Common.getUserId(getApplicationContext()),
-                    pathImage.get(i));
+                    imagePathList.get(i));
         }
         edit.apply();
         // 视频

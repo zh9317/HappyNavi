@@ -777,6 +777,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     }
 
     private void initMarker() {
+        Log.i("ShowTrace", "initMarker");
         myComment.setTimeRegion(trailobj.getStartTime(), trailobj.getEndTime());
         myComment.initMarkerItemsFromDB();
 

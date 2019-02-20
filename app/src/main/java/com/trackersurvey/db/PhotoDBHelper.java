@@ -13,6 +13,7 @@ import com.trackersurvey.bean.InterestMarkerData;
 
 /**
  * Created by zh931 on 2018/5/11.
+ * 兴趣点本地数据库
  */
 
 public class PhotoDBHelper {

@@ -19,7 +19,7 @@ public class UrlHeader {
     public static final String UPLOAD_TRACE_URL = "trace/startTrace";// 开始轨迹
     public static final String UPLOAD_TRACE_UPDATE_URL = "trace/endTrace";// 结束轨迹
     // 轨迹和位置展示
-    public static final String DOWNLOAD_TRACE_LIST = "trace/getTraceList";// 下载轨迹列表
+    public static final String DOWNLOAD_TRACE_LIST = "trace/getTraceList";// 下载轨迹列表（分页获取）
     public static final String DELETE_TRACE = "trace/deleteTrace";// 删除轨迹
     public static final String DOWNLOAD_TRACE_DETAIL = "location/getTraceLocation";// 下载轨迹详情
     // 兴趣点

@@ -2,7 +2,6 @@ package com.trackersurvey.service;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -26,7 +26,6 @@ import com.trackersurvey.db.PhotoDBHelper;
 import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.UploadPoiRequest;
-import com.trackersurvey.httpconnection.MyTask;
 import com.trackersurvey.httpconnection.PostCommentFile;
 import com.trackersurvey.model.TracePoiModel;
 import com.trackersurvey.util.Common;
@@ -44,9 +43,9 @@ public class CommentUploadService extends Service {
     private SharedPreferences uploadCache;
     private SharedPreferences sp;
     private  boolean hasUploadComment = false;
-    private  int upFileNum = 0;
-    private  int uploadedNum = 0;
-    public   final String SHAREDFILES = "uploadFiles";
+    private int upFileNum = 0;
+    private int uploadedNum = 0;
+    public final String SHAREDFILES = "uploadFiles";
     private int share;
     private Map<String, ?> fileCache;
     private List<String> fileNameList;
@@ -131,11 +130,8 @@ public class CommentUploadService extends Service {
     }
     public void uploadComment(String userID, final String createTime, Map<String, ?> fileCache) {
         Log.i("upfile","from service "+ "一次上传,createTime = " + createTime);
-//        MyTask commentTask = new MyTask(CommentUploadService.this, userID, createTime,
-//                new CommentHandler(createTime),Common.getDeviceId(getApplicationContext()));
-//        commentTask.start();
 
-        // 得到评论Activity传来的事件时间
+        // 得到CommentActivity传来的事件时间
         PhotoDBHelper dbHelper = new PhotoDBHelper(this, PhotoDBHelper.DBREAD);
         // 查找事件时间对应的事件
         Cursor cursor = dbHelper.selectEvent(null, "datetime("
@@ -200,7 +196,6 @@ public class CommentUploadService extends Service {
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
                     uploadCache.edit().remove(createTime).commit();
-                    hasUploadComment = false;
                     uploadWhenConnect();
                     Message message = new Message();
                     message.what = 1;
@@ -232,12 +227,12 @@ public class CommentUploadService extends Service {
             if (!cache.isEmpty() && cache.size() > 0) {
                 Map.Entry<String, ?> entry = cache.entrySet().iterator().next();
                 uploadComment((String) entry.getValue(), entry.getKey(), fileCache);
+            } else {
+
             }
-//            else {
-//                upFileWhenConnect();
-//            }
         }
     }
+
     /**
      * @author 易 上传评论的回调
      */
@@ -282,6 +277,9 @@ public class CommentUploadService extends Service {
 
     /**
      * 上传所有文件 一次只能有一个文件上传
+     *
+     * @param command
+     * @param cache
      */
     @SuppressWarnings("unchecked")
     private void uploadFiles(int command, Map<String, ?> cache) {
@@ -374,8 +372,8 @@ public class CommentUploadService extends Service {
                 default:
                     break;
             }
-        }
-    }
+        };
+    };
 
     public void uploadError(final int fileID, final String key,
                             final String text) {
@@ -392,6 +390,8 @@ public class CommentUploadService extends Service {
 
             @Override
             public void run() {
+                // TODO Auto-generated method stub
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(CommentUploadService.this);
                 builder.setMessage(getResources().getString(R.string.tips_uploadfaildlg_msg1)
                         + (fileID + 1) + getResources().getString(R.string.tips_uploadfaildlg_msg2)
@@ -434,7 +434,6 @@ public class CommentUploadService extends Service {
                 dialog.show();
             }
         });
-
     }
 
     /**

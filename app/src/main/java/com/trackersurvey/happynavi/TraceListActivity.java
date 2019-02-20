@@ -190,7 +190,7 @@ public class TraceListActivity extends BaseActivity implements View.OnClickListe
 
         // 测试请求轨迹列表
         DownLoadTraceList downLoadTraceList = new DownLoadTraceList(sp.getString("Token",""),
-                1, 100, "");
+                String.valueOf(1), String.valueOf(100));
         downLoadTraceList.requestHttpData(new ResponseData() {
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {

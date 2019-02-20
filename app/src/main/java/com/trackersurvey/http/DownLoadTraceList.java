@@ -20,18 +20,14 @@ import okhttp3.RequestBody;
 
 public class DownLoadTraceList extends HttpUtil {
 
-    private String Token = "";
-    private int PageIndex;
-    private int PageSize;
-    private String keyWord = "";
-    private String _appkey = "app";
-    private String _sign = "";
+    private String token;
+    private String pageIndex;
+    private String pageSize;
 
-    public DownLoadTraceList(String token, int pageIndex, int pageSize, String keyWord) {
-        Token = token;
-        PageIndex = pageIndex;
-        PageSize = pageSize;
-        this.keyWord = keyWord;
+    public DownLoadTraceList(String token, String pageIndex, String pageSize) {
+        this.token = token;
+        this.pageIndex = pageIndex;
+        this.pageSize = pageSize;
     }
 
     @Override
@@ -40,29 +36,30 @@ public class DownLoadTraceList extends HttpUtil {
     }
 
     @Override
-    public String parameterGet() {
-        _sign = HMAC_SHA1_Util.genHMAC("footprint2018"+"Token"+Token+"PageIndex"+PageIndex+"PageSize"+PageSize+
-                "keyWord"+keyWord+"_appkey"+_appkey+"footprint2018","footprint2018");
-        String parameter = "?Token="+Token+"&PageIndex="+PageIndex+"&PageSize="+PageSize+"&keyWord="+keyWord+
-                "&_appkey="+_appkey+"&_sign="+_sign;
-        return parameter;
+    public RequestBody parameter() {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("token", token)
+                .add("pageIndex", pageIndex)
+                .add("pageSize", pageSize)
+                .build();
+        return requestBody;
     }
 
     @Override
     public HttpUtil handleData(String obj) {
         HttpUtil response = new HttpUtil();
-        try {
-            JSONArray jsonArray = new JSONArray(obj);
-            List<TraceData> list = new ArrayList<>();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                TraceData traceData = new TraceData(jsonObject);
-                list.add(traceData);
-            }
-            response.responseObject = list;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            JSONArray jsonArray = new JSONArray(obj);
+//            List<TraceData> list = new ArrayList<>();
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                TraceData traceData = new TraceData(jsonObject);
+//                list.add(traceData);
+//            }
+//            response.responseObject = list;
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
         return response;
     }
 }
