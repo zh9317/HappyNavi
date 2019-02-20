@@ -218,27 +218,27 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
-//                    trace_Cloud = (ArrayList<TraceData>) responseObject;
-//                    Log.i("TraceListActivity", "请求到的轨迹条数："+trace_Cloud.size());
-//                    for (int i = 0; i < trace_Cloud.size(); i++) {
-//                        StepData stepData = new StepData();
-//                        stepData.setUserID(trace_Cloud.get(i).getUserID());
-//                        stepData.setTraceID(trace_Cloud.get(i).getTraceID());
-//                        stepData.setSteps(trace_Cloud.get(i).getSteps());
-//                        steps_Cloud.add(stepData);
-//                    }
-//                    getActivity().runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            dismissDialog();
-//                            //Toast.makeText(TraceListActivity.this, "获取轨迹列表成功", Toast.LENGTH_SHORT).show();
-//                            if (trace_Cloud != null) {
-//                                initBothTrace();
-//                            }
-//                            //adapter.notifyDataSetChanged();
-//                            mPullToRefreshView.onHeaderRefreshComplete("更新于:"+new Date().toLocaleString());
-//                        }
-//                    });
+                    trace_Cloud = (ArrayList<TraceData>) responseObject;
+                    Log.i("TraceListActivity", "请求到的轨迹条数："+trace_Cloud.size());
+                    for (int i = 0; i < trace_Cloud.size(); i++) {
+                        StepData stepData = new StepData();
+                        stepData.setUserID(trace_Cloud.get(i).getUserID());
+                        stepData.setTraceID(trace_Cloud.get(i).getTraceID());
+                        stepData.setSteps(trace_Cloud.get(i).getSteps());
+                        steps_Cloud.add(stepData);
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissDialog();
+                            Toast.makeText(getContext(), "获取轨迹列表成功", Toast.LENGTH_SHORT).show();
+                            if (trace_Cloud != null) {
+                                initBothTrace();
+                            }
+                            //adapter.notifyDataSetChanged();
+                            mPullToRefreshView.onHeaderRefreshComplete("更新于:"+new Date().toLocaleString());
+                        }
+                    });
                 } else {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override

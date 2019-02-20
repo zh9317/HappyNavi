@@ -376,7 +376,7 @@ public class MyCommentModel {
 
                     DownloadPoiListRequest downloadPoiListRequest = new DownloadPoiListRequest(
                             String.valueOf(System.currentTimeMillis()),
-                            sp.getString("Token", ""), 1, 100, "");
+                            sp.getString("token", ""), 1, 100, "");
                     downloadPoiListRequest.requestHttpData(new ResponseData() {
                         @Override
                         public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {

@@ -365,8 +365,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
             // 测试下载轨迹详情
             DownloadTraceDetailRequest downloadTraceDetail = new DownloadTraceDetailRequest(
-                    String.valueOf(System.currentTimeMillis()), sp.getString("Token", ""),
-                    String.valueOf(trailobj.getTraceID()));
+                    sp.getString("token", ""), String.valueOf(trailobj.getTraceID()));
             downloadTraceDetail.requestHttpData(new ResponseData() {
                 @Override
                 public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {

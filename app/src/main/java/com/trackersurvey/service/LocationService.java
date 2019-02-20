@@ -104,7 +104,7 @@ public class LocationService extends Service implements AMapLocationListener{
     private ArrayList<GpsData> dataList = new ArrayList<>();
     private ArrayList<GpsData> datalist_up=new ArrayList<>();
     private List<TraceData> trails_up=new ArrayList<>();
-    private TraceData trail_up=new TraceData();
+    private TraceData trail_up = new TraceData();
     private List<Long> traceno_up=new ArrayList<>();
 
     private List<StepData> steps_up=new ArrayList<>();

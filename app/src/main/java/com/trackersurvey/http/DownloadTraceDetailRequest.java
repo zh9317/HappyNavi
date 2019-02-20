@@ -21,14 +21,12 @@ import okhttp3.RequestBody;
 
 public class DownloadTraceDetailRequest extends HttpUtil {
 
-    private String _timestamp;
-    private String Token;
-    private String TraceID;
+    private String token;
+    private String traceID;
 
-    public DownloadTraceDetailRequest(String _timestamp, String token, String traceID) {
-        this._timestamp = _timestamp;
-        Token = token;
-        TraceID = traceID;
+    public DownloadTraceDetailRequest(String token, String traceID) {
+        this.token = token;
+        this.traceID = traceID;
     }
 
     @Override
@@ -38,14 +36,9 @@ public class DownloadTraceDetailRequest extends HttpUtil {
 
     @Override
     public RequestBody parameter() {
-        String _sign = HMAC_SHA1_Util.genHMAC(Common.secretKey+"_appkey"+Common._appkey
-                +"_timestamp"+_timestamp+"Token"+Token+"TraceID"+TraceID+Common.secretKey, Common.secretKey);
         RequestBody requestBody = new FormBody.Builder()
-                .add("_appkey", Common._appkey)
-                .add("_sign", _sign)
-                .add("_timestamp", _timestamp)
-                .add("Token", Token)
-                .add("TraceID", TraceID)
+                .add("token", token)
+                .add("traceID", traceID)
                 .build();
         return requestBody;
     }

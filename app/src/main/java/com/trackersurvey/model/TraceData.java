@@ -9,17 +9,18 @@ import org.json.JSONObject;
 
 public class TraceData {
     private String userID;
-    private String TraceName;
-    private long TraceID;
-    private String StartTime;
-    private String EndTime;
-    private long Duration;
-    private double Distance;
-    private int SportTypes;
-    private int ShareType;
-    private int Calorie;
-    private int PoiCount;
-    private int Steps;
+    private String traceName;
+    private long traceID;
+    private String startTime;
+    private String endTime;
+    private long duration;
+    private double distance;
+    private int sportTypes;
+    private int shareType;
+    private int calorie;
+    private int poiCount;
+    private int steps;
+    // isDelete, deviceID, deleteTime, coverPicUrl
 
     public TraceData() {
     }
@@ -28,33 +29,33 @@ public class TraceData {
                      long duration, double distance, int sportTypes, int shareType, int calorie, int poiCount,
                      int steps) {
         this.userID = userID;
-        TraceName = traceName;
-        TraceID = traceID;
-        StartTime = startTime;
-        EndTime = endTime;
-        Duration = duration;
-        Distance = distance;
-        SportTypes = sportTypes;
-        ShareType = shareType;
-        Calorie = calorie;
-        PoiCount = poiCount;
-        Steps = steps;
+        this.traceName = traceName;
+        this.traceID = traceID;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.duration = duration;
+        this.distance = distance;
+        this.sportTypes = sportTypes;
+        this.shareType = shareType;
+        this.calorie = calorie;
+        this.poiCount = poiCount;
+        this.steps = steps;
     }
 
     public TraceData(JSONObject object) {
         try {
-            TraceID = object.getLong("traceid");
-            TraceName = object.getString("tracename");
-            userID = object.getString("userid");
-            StartTime = object.getString("starttime");
-            EndTime = object.getString("endtime");
-            Duration = object.getLong("duration");
-            SportTypes = object.getInt("sporttypes");
-            ShareType = object.getInt("sharetype");
-            Distance = object.getDouble("distance");
-            Calorie = object.getInt("calorie");
-            Steps = object.getInt("steps");
-            PoiCount = object.getInt("poicount");
+            traceID = object.getLong("TraceID");
+            traceName = object.getString("TraceName");
+            userID = object.getString("UserID");
+            startTime = object.getString("StartTime");
+            endTime = object.getString("EndTime");
+            duration = object.getLong("Duration");
+            sportTypes = object.getInt("SportTypes");
+            shareType = object.getInt("ShareType");
+            distance = object.getDouble("Distance");
+            calorie = object.getInt("Calorie");
+            steps = object.getInt("Steps");
+            poiCount = object.getInt("PoiCount");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -69,90 +70,90 @@ public class TraceData {
     }
 
     public String getTraceName() {
-        return TraceName;
+        return traceName;
     }
 
     public void setTraceName(String traceName) {
-        TraceName = traceName;
+        this.traceName = traceName;
     }
 
     public long getTraceID() {
-        return TraceID;
+        return traceID;
     }
 
     public void setTraceID(long traceID) {
-        TraceID = traceID;
+        this.traceID = traceID;
     }
 
     public String getStartTime() {
-        return StartTime;
+        return startTime;
     }
 
     public void setStartTime(String startTime) {
-        StartTime = startTime;
+        this.startTime = startTime;
     }
 
     public String getEndTime() {
-        return EndTime;
+        return endTime;
     }
 
     public void setEndTime(String endTime) {
-        EndTime = endTime;
+        this.endTime = endTime;
     }
 
     public long getDuration() {
-        return Duration;
+        return duration;
     }
 
     public void setDuration(long duration) {
-        Duration = duration;
+        this.duration = duration;
     }
 
     public double getDistance() {
-        return Distance;
+        return distance;
     }
 
     public void setDistance(double distance) {
-        Distance = distance;
+        this.distance = distance;
     }
 
     public int getSportTypes() {
-        return SportTypes;
+        return sportTypes;
     }
 
     public void setSportTypes(int sportTypes) {
-        SportTypes = sportTypes;
+        this.sportTypes = sportTypes;
     }
 
     public int getShareType() {
-        return ShareType;
+        return shareType;
     }
 
     public void setShareType(int shareType) {
-        ShareType = shareType;
+        this.shareType = shareType;
     }
 
     public int getCalorie() {
-        return Calorie;
+        return calorie;
     }
 
     public void setCalorie(int calorie) {
-        Calorie = calorie;
+        this.calorie = calorie;
     }
 
     public int getPoiCount() {
-        return PoiCount;
+        return poiCount;
     }
 
     public void setPoiCount(int poiCount) {
-        PoiCount = poiCount;
+        this.poiCount = poiCount;
     }
 
     public int getSteps() {
-        return Steps;
+        return steps;
     }
 
     public void setSteps(int steps) {
-        Steps = steps;
+        this.steps = steps;
     }
 }

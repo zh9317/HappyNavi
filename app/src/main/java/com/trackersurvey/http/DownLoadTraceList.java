@@ -48,18 +48,18 @@ public class DownLoadTraceList extends HttpUtil {
     @Override
     public HttpUtil handleData(String obj) {
         HttpUtil response = new HttpUtil();
-//        try {
-//            JSONArray jsonArray = new JSONArray(obj);
-//            List<TraceData> list = new ArrayList<>();
-//            for (int i = 0; i < jsonArray.length(); i++) {
-//                JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                TraceData traceData = new TraceData(jsonObject);
-//                list.add(traceData);
-//            }
-//            response.responseObject = list;
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            JSONArray jsonArray = new JSONArray(obj);
+            List<TraceData> list = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                TraceData traceData = new TraceData(jsonObject);
+                list.add(traceData);
+            }
+            response.responseObject = list;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 }

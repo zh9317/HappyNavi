@@ -10,53 +10,53 @@ import org.json.JSONObject;
 
 public class GpsData {
     private String userID;
-    private String CreateTime;
-    private double Altitude;
-    private double Latitude;
-    private double Longitude;
-    private double Speed;
-    private long TraceID;
-    private int CityID;
-    private String DeviceID;
-    private int SportType;
+    private String createTime;
+    private double altitude;
+    private double latitude;
+    private double longitude;
+    private double speed;
+    private long traceID;
+    private int cityID;
+    private String deviceID;
+    private int sportType;
 
     public GpsData(String userID, String createTime, double altitude, double latitude, double longitude,
                    double speed, long traceID) {
         this.userID = userID;
-        CreateTime = createTime;
-        Altitude = altitude;
-        Latitude = latitude;
-        Longitude = longitude;
-        Speed = speed;
-        TraceID = traceID;
+        this.createTime = createTime;
+        this.altitude = altitude;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.speed = speed;
+        this.traceID = traceID;
     }
 
     public GpsData(String userID, String createTime, double altitude, double latitude, double longitude,
                    double speed, long traceID, int cityID, String deviceID, int sportType) {
         this.userID = userID;
-        CreateTime = createTime;
-        Altitude = altitude;
-        Latitude = latitude;
-        Longitude = longitude;
-        Speed = speed;
-        TraceID = traceID;
-        CityID = cityID;
-        DeviceID = deviceID;
-        SportType = sportType;
+        this.createTime = createTime;
+        this.altitude = altitude;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.speed = speed;
+        this.traceID = traceID;
+        this.cityID = cityID;
+        this.deviceID = deviceID;
+        this.sportType = sportType;
     }
 
     public GpsData(JSONObject jsonObject) {
         try {
-            userID = jsonObject.getString("userid");
-            CreateTime = jsonObject.getString("createtime");
-            Altitude = jsonObject.getDouble("altitude");
-            Latitude = jsonObject.getDouble("latitude");
-            Longitude = jsonObject.getDouble("longitude");
-            Speed = jsonObject.getDouble("speed");
-            TraceID = jsonObject.getLong("traceid");
-            CityID = jsonObject.getInt("cityid");
-            DeviceID = jsonObject.getString("deviceid");
-            SportType = jsonObject.getInt("sporttype");
+            userID = jsonObject.getString("UserID");
+            createTime = jsonObject.getString("CreateTime");
+            altitude = jsonObject.getDouble("Altitude");
+            latitude = jsonObject.getDouble("Latitude");
+            longitude = jsonObject.getDouble("Longitude");
+            speed = jsonObject.getDouble("Speed");
+            traceID = jsonObject.getLong("TraceID");
+            cityID = jsonObject.getInt("CityID");
+            deviceID = jsonObject.getString("DeviceId");
+            sportType = jsonObject.getInt("SportType");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -74,74 +74,74 @@ public class GpsData {
     }
 
     public String getCreateTime() {
-        return CreateTime;
+        return createTime;
     }
 
     public void setCreateTime(String createTime) {
-        CreateTime = createTime;
+        this.createTime = createTime;
     }
 
     public double getAltitude() {
-        return Altitude;
+        return altitude;
     }
 
     public void setAltitude(double altitude) {
-        Altitude = altitude;
+        this.altitude = altitude;
     }
 
     public double getLatitude() {
-        return Latitude;
+        return latitude;
     }
 
     public void setLatitude(double latitude) {
-        Latitude = latitude;
+        this.latitude = latitude;
     }
 
     public double getLongitude() {
-        return Longitude;
+        return longitude;
     }
 
     public void setLongitude(double longitude) {
-        Longitude = longitude;
+        this.longitude = longitude;
     }
 
     public double getSpeed() {
-        return Speed;
+        return speed;
     }
 
     public void setSpeed(double speed) {
-        Speed = speed;
+        this.speed = speed;
     }
 
     public long getTraceID() {
-        return TraceID;
+        return traceID;
     }
 
     public void setTraceID(long traceID) {
-        TraceID = traceID;
+        this.traceID = traceID;
     }
 
     public int getCityID() {
-        return CityID;
+        return cityID;
     }
 
     public void setCityID(int cityID) {
-        CityID = cityID;
+        this.cityID = cityID;
     }
 
     public String getDeviceID() {
-        return DeviceID;
+        return deviceID;
     }
 
     public void setDeviceID(String deviceID) {
-        DeviceID = deviceID;
+        this.deviceID = deviceID;
     }
 
     public int getSportType() {
-        return SportType;
+        return sportType;
     }
 
     public void setSportType(int sportType) {
-        SportType = sportType;
+        this.sportType = sportType;
     }
 }
