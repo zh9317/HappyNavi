@@ -296,6 +296,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                     // 登录成功后跳转到MainActivity，首先显示地图界面
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
+                                    finish();
                                 }
                                 if (code.equals("200")) {
                                     // 该用户名不存在或已停用!

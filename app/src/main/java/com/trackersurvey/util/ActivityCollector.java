@@ -15,17 +15,17 @@ public class ActivityCollector {
 
     public static void addActivity(Activity activity){
         activities.add(activity);
-        Log.i("ActivityCollector", activity.getLocalClassName());
+        Log.i("ActivityCollector", "Add " + activity.getLocalClassName());
     }
 
     public static void removeActivity(Activity activity){
         activities.remove(activity);
-        Log.i("ActivityCollector", activity.getLocalClassName());
+        Log.i("ActivityCollector", "Remove " + activity.getLocalClassName());
     }
 
     public static void finishActivity(String activityName){
         for (Activity activity : activities){
-            Log.i("ActivityCollector", activity.getLocalClassName());
+            Log.i("ActivityCollector", "Finish " + activity.getLocalClassName());
             if (activityName.equals(activity.getLocalClassName())) {
                 activity.finish();
             }

@@ -28,9 +28,7 @@ import com.trackersurvey.http.DownloadPoiListRequest;
 import com.trackersurvey.http.DownloadPoiRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.DeleteCloudComment;
-import com.trackersurvey.httpconnection.GetAlbum;
 import com.trackersurvey.httpconnection.GetCloudPicture;
-import com.trackersurvey.httpconnection.GetComment;
 import com.trackersurvey.httpconnection.GetThumbPic;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.GsonHelper;
@@ -630,14 +628,14 @@ public class MyCommentModel {
      */
     public void downloadComment(String dateTime) {
         isAddingComment = true;
-        GetComment downComment = new GetComment(refreshComment,
-                Common.URL_DOWNEVENT, Common.getUserId(context),
-                startTime, endTime, Common.getDeviceId(context));
+//        GetComment downComment = new GetComment(refreshComment,
+//                Common.URL_DOWNEVENT, Common.getUserId(context),
+//                startTime, endTime, Common.getDeviceId(context));
 		/*GetComment downComment = new GetComment(refreshComment,
 				Common.URL_DOWNEVENT, Common.getUserId(context),
 				dateTime,Common.getDeviceId(context));*/
         Log.i("Eaa", "downloadComment:" + dateTime);
-        downComment.start();
+//        downComment.start();
 
     }
     /**

@@ -28,7 +28,6 @@
                     android:id="@+id/user_head_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/user_info_head"
                     android:layout_centerHorizontal="true"/>
 
             </RelativeLayout>

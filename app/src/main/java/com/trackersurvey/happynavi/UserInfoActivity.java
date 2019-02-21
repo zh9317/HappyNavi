@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.githang.statusbar.StatusBarCompat;
 import com.trackersurvey.http.DownloadUserInfo;
+import com.trackersurvey.http.LogoutRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.AppManager;
@@ -51,7 +52,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         }
         AppManager.getAppManager().addActivity(this);
         sp = getSharedPreferences("config", MODE_PRIVATE);
-        ImageView userHeadIv =findViewById(R.id.user_head_img);
+        ImageView userHeadIv = findViewById(R.id.user_info_head_img);
         TextView nicknameTv = findViewById(R.id.user_info_nickname);
         TextView realNameTv = findViewById(R.id.user_info_real_name);
         TextView userIdTv = findViewById(R.id.user_info_id);
@@ -62,7 +63,9 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         Button changeInfoBtn = findViewById(R.id.change_user_info_btn);
         Button changePwdBtn = findViewById(R.id.change_password_btn);
         Button logoutBtn = findViewById(R.id.logout_btn);
-//        Glide.with(this).load(sp.getString("headurl", "")).into(userHeadIv);
+        Glide.with(this).load("http://211.87.227.204:8089"
+                + sp.getString("headurl", "") + "?token="
+                + sp.getString("token", "")).into(userHeadIv);
         if (sp.getInt("sex", 0) == 0) {
             sexStr = "保密";
         } else if (sp.getInt("sex", 0) == 1) {
@@ -93,20 +96,20 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
-                    String userInfo = (String) responseObject;
-                    Log.i("getUserInfo", "getUserInfo:"+userInfo);
-                    try {
-                        JSONObject jsonObject = new JSONObject(userInfo);
-                        String myUserInfo = jsonObject.getString("userInfo");
-                        try {
-                            myUserInfo = DESUtil.decrypt(myUserInfo);
-                            Log.i("getUserInfo", "myUserInfo:"+myUserInfo);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+//                    String userInfo = (String) responseObject;
+//                    Log.i("getUserInfo", "getUserInfo:"+userInfo);
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(userInfo);
+//                        String myUserInfo = jsonObject.getString("userInfo");
+//                        try {
+//                            myUserInfo = DESUtil.decrypt(myUserInfo);
+//                            Log.i("getUserInfo", "myUserInfo:"+myUserInfo);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             }
         });
@@ -129,9 +132,9 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
             case R.id.change_password_btn:
                 break;
             case R.id.logout_btn:
-                String msg=getResources().getString(R.string.exitdlg1);
+                String msg = getResources().getString(R.string.exitdlg1);
                 if(Common.isRecording){
-                    msg=getResources().getString(R.string.exitdlg2);
+                    msg = getResources().getString(R.string.exitdlg2);
                 }
                 CustomDialog.Builder builder_logout = new CustomDialog.Builder(this);
                 builder_logout.setTitle(getResources().getString(R.string.exit));
@@ -146,33 +149,42 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                 builder_logout.setPositiveButton(getResources().getString(R.string.confirm),new DialogInterface.OnClickListener() {
 
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Common.sendOffline(Common.getDeviceId(getApplicationContext()),UserInfoActivity.this);
-                        //Common.userId="0";
-                        Common.layerid_main=0;
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("Token", "");
-                        editor.putString("userID", "");
-                        editor.putString("userPhone", "0");
-                        editor.putString("mobilePhone", "");
-                        editor.putString("birthDate", "");
-                        editor.putString("headurl", "");
-                        editor.putString("nickname", "");
-                        editor.putString("realName", "");
-                        editor.putString("city", "");
-                        editor.putString("workPlace", "");
-                        editor.putString("education", "");
-                        editor.putString("income", "");
-                        editor.putString("occupation", "");
-                        editor.putString("marriage", "");
-                        editor.putString("childCount", "");
-                        editor.putInt("sex", 0);
-                        editor.apply();
-                        dialog.dismiss();
-                        //AppManager.getAppManager().finishActivity(MainActivity.class);
+                    public void onClick(final DialogInterface dialog, int which) {
+//                        Common.sendOffline(Common.getDeviceId(getApplicationContext()),getApplication());
+//                        //Common.userId="0";
+//                        Common.layerid_main=0;
+                        LogoutRequest logoutRequest = new LogoutRequest(sp.getString("token", ""));
+                        logoutRequest.requestHttpData(new ResponseData() {
+                            @Override
+                            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                                if (isSuccess) {
+                                    if (code.equals("0")) {
+                                        SharedPreferences.Editor loginEditor = sp.edit();
+                                        loginEditor.putString("token", "");
+                                        loginEditor.putInt("userID", 0);
+                                        loginEditor.putString("userPhone", "");
+                                        loginEditor.putString("birthDate", "");
+                                        loginEditor.putString("headurl", "");
+                                        loginEditor.putString("mobilePhone", "");
+                                        loginEditor.putString("nickname", "");
+                                        loginEditor.putString("realName", "");
+                                        loginEditor.putString("city", "");
+                                        loginEditor.putString("workPlace", "");
+                                        loginEditor.putString("education", "");
+                                        loginEditor.putString("income", "");
+                                        loginEditor.putString("occupation", "");
+                                        loginEditor.putString("marriage", "");
+                                        loginEditor.putString("childCount", "");
+                                        loginEditor.putInt("sex", 0);
+                                        loginEditor.apply();
+                                        dialog.dismiss();
+                                    }
+                                }
+                            }
+                        });
                         // 这个Activity之前只有MainActivity
                         ActivityCollector.finishActivity("MainActivity");
-                        Intent intent = new Intent(UserInfoActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                         //intent.setClass(UserInfoActivity.this, SplashActivity.class);
                         //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);

@@ -2,32 +2,40 @@ package com.trackersurvey.happynavi;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.githang.statusbar.StatusBarCompat;
+import com.trackersurvey.http.LogoutRequest;
+import com.trackersurvey.http.ResponseData;
+import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
 import com.trackersurvey.util.DataCleanManager;
 import com.trackersurvey.util.ToastUtil;
 
 import java.io.File;
+import java.io.IOException;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
     private TextView titleTv;
     private TextView titleRightTv;
     private TextView cacheSizeTv;
+    private SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        sp = getSharedPreferences("coffig", MODE_PRIVATE);
         StatusBarCompat.setStatusBarColor(this, Color.BLACK); // 修改状态栏颜色
         // 隐藏原始标题栏
         ActionBar actionBar = getSupportActionBar();
@@ -49,10 +57,12 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         LinearLayout languageLayout = findViewById(R.id.select_language_layout);
         LinearLayout clearCacheLayout = findViewById(R.id.clear_cache_layout);
         LinearLayout backgroundRunLayout = findViewById(R.id.background_run_layout);
+        Button logoutBtn = findViewById(R.id.logout_btn);
         parameterLayout.setOnClickListener(this);
         languageLayout.setOnClickListener(this);
         clearCacheLayout.setOnClickListener(this);
         backgroundRunLayout.setOnClickListener(this);
+        logoutBtn.setOnClickListener(this);
     }
 
     @Override
@@ -103,6 +113,68 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.tips_netdisconnect), Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.logout_btn:
+                String msg = getResources().getString(R.string.exitdlg1);
+                if(Common.isRecording){
+                    msg = getResources().getString(R.string.exitdlg2);
+                }
+                CustomDialog.Builder builder_logout = new CustomDialog.Builder(this);
+                builder_logout.setTitle(getResources().getString(R.string.exit));
+                builder_logout.setMessage(msg);
+                builder_logout.setNegativeButton(getResources().getString(R.string.cancl),new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder_logout.setPositiveButton(getResources().getString(R.string.confirm),new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+//                        Common.sendOffline(Common.getDeviceId(getApplicationContext()),getApplication());
+//                        //Common.userId="0";
+//                        Common.layerid_main=0;
+                        LogoutRequest logoutRequest = new LogoutRequest(sp.getString("token", ""));
+                        logoutRequest.requestHttpData(new ResponseData() {
+                            @Override
+                            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                                if (isSuccess) {
+                                    if (code.equals("0")) {
+                                        SharedPreferences.Editor loginEditor = sp.edit();
+                                        loginEditor.putString("token", "");
+                                        loginEditor.putInt("userID", 0);
+                                        loginEditor.putString("userPhone", "");
+                                        loginEditor.putString("birthDate", "");
+                                        loginEditor.putString("headurl", "");
+                                        loginEditor.putString("mobilePhone", "");
+                                        loginEditor.putString("nickname", "");
+                                        loginEditor.putString("realName", "");
+                                        loginEditor.putString("city", "");
+                                        loginEditor.putString("workPlace", "");
+                                        loginEditor.putString("education", "");
+                                        loginEditor.putString("income", "");
+                                        loginEditor.putString("occupation", "");
+                                        loginEditor.putString("marriage", "");
+                                        loginEditor.putString("childCount", "");
+                                        loginEditor.putInt("sex", 0);
+                                        loginEditor.apply();
+                                        dialog.dismiss();
+                                    }
+                                }
+                            }
+                        });
+                        // 这个Activity之前只有MainActivity
+                        ActivityCollector.finishActivity("MainActivity");
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        //intent.setClass(UserInfoActivity.this, SplashActivity.class);
+                        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                builder_logout.create().show();
                 break;
         }
     }
