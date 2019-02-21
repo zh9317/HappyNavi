@@ -33,7 +33,7 @@ public class DownloadPoiListRequest extends HttpUtil {
 
     @Override
     public String getUrl() {
-        return UrlHeader.DOWNLOAD_POI_LIST_URL;
+        return UrlHeader.DOWNLOAD_ALL_POI_URL;
     }
 
     @Override
@@ -62,6 +62,6 @@ public class DownloadPoiListRequest extends HttpUtil {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return super.handleData(obj);
+        return response;
     }
 }

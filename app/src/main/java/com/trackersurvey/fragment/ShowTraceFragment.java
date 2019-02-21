@@ -213,7 +213,6 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     private Bundle params;
     //private MyIUilistener mIUilistener;//用于qq空间分享
 
-    public static long currentTraceID;
 
     @Nullable
     @Override
@@ -346,8 +345,8 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         // Log.i("trailadapter", "initPathData,"+trail);
         // Gson gson=new Gson();
         trailobj = GsonHelper.parseJson(trail, TraceData.class);
-        currentTraceID = trailobj.getTraceID();
-        Log.i("trailobj", "startTime:" + trailobj.getStartTime() + "endTime" + trailobj.getEndTime() + "currentTraceID" + currentTraceID);
+
+        Log.i("trailobj", "startTime:" + trailobj.getStartTime() + "endTime" + trailobj.getEndTime());
         if (!"--".equals(stepstr)) {
             stepdata = GsonHelper.parseJson(stepstr, StepData.class);
             stepstr = stepdata.getSteps() + "";
@@ -780,11 +779,10 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
     private void initMarker() {
         Log.i("ShowTrace", "initMarker");
-        Log.i("dongsiyuan", "initMarker: " + currentTraceID);
         myComment.setTimeRegion(trailobj.getStartTime(), trailobj.getEndTime());
 //        myComment.initMarkerItemsFromDB();
 
-        myComment.initItemsByTime(trailobj.getTraceID());
+        myComment.initItemsByTraceID(trailobj.getTraceID());
 
         //创建或打开数据库，如果数据库中没有数据就从服务器请求兴趣点数据
         PhotoDBHelper phelper = new PhotoDBHelper(context, PhotoDBHelper.DBREAD);
@@ -794,7 +792,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         String from = traces.get(0).getCreateTime();
         String to = traces.get(traces.size() - 1).getCreateTime();
 
-        Log.i("trailobjinitMarker", "startTime:" + trailobj.getStartTime() + "endTime" + trailobj.getEndTime() + "currentTraceID" + currentTraceID);
+        Log.i("trailobjinitMarker", "startTime:" + trailobj.getStartTime() + "endTime" + trailobj.getEndTime());
         Log.i("trailobjinitMarker", "initMarker: " + from + " " + to);
 
 //        cursor = phelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
@@ -816,6 +814,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         drawMarker();
         Intent intent = new Intent();
         intent.setAction(UPDATEUI_ACTION);
+        Log.i("dongsiyuansendBroadcast", "sendBroadcast: ");
         context.sendBroadcast(intent);
     }
 
@@ -824,7 +823,13 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             // 网络连接，更新本地标注信息
             Log.i("mark", "更新标注");
             Log.i("trailobj", "trailobj:"+trailobj);
-            myComment.initMarkerItemsOnline(trailobj.getTraceID());
+
+            myComment.refreshMarkerItemsOnline(trailobj.getTraceID());
+
+            Intent intent = new Intent();
+            intent.setAction(UPDATEUI_ACTION);
+            Log.i("dongsiyuansendBroadcast", "sendBroadcast: ");
+            context.sendBroadcast(intent);
             //drawMarker();
             Log.i("itemsss", "ShowTraceFragment:"+myComment.getItems().toString());
         } else {

@@ -28,6 +28,7 @@ public class UrlHeader {
     public static final String DOWNLOAD_POI_CHOICES = "poi/getPoiChoices"; // 下载兴趣点选项列表（已调试）
     public static final String UPLOAD_POI_URL = "poi/uploadPoi"; // 上传兴趣点（已调试）
     public static final String UPLOAD_FILE_URL = "poi/uploadFile"; // 上传文件（已调试）
+
     public static final String DOWNLOAD_POI_LIST_URL = "poi/getPoiList";// 下载所有兴趣点
     public static final String DOWNLOAD_POI_URL = "poi/getPoiByTraceID"; // 下载轨迹上的兴趣点
     public static final String DELETE_POI_URL = ""; // 删除兴趣点
