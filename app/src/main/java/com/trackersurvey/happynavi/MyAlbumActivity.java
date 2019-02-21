@@ -15,13 +15,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,9 +28,10 @@ import com.trackersurvey.adapter.MyAlbumListBaseAdapter;
 import com.trackersurvey.bean.PointOfInterestData;
 import com.trackersurvey.db.PhotoDBHelper;
 import com.trackersurvey.db.PointOfInterestDBHelper;
-import com.trackersurvey.httpconnection.PostPointOfInterestData;
-import com.trackersurvey.httpconnection.PostPointOfInterestDataEn;
+import com.trackersurvey.http.DownloadPoiChoices;
+import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.model.MyCommentModel;
+import com.trackersurvey.model.PoiChoiceModel;
 import com.trackersurvey.photoview.SlideListView;
 import com.trackersurvey.util.AppManager;
 import com.trackersurvey.util.Common;
@@ -67,6 +66,8 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
     private String URL_GETPOI = null;
     private Cursor cursor = null;
 
+    private SharedPreferences sp;
+
     /**
      * onCreate从本地数据库读取评论并显示 如果本地数据库空，提示同步云端数据
      */
@@ -74,6 +75,7 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_album);
+        sp = getSharedPreferences("config", MODE_PRIVATE);
 
         StatusBarCompat.setStatusBarColor(this, Color.BLACK); // 修改状态栏颜色
         // 隐藏原始标题栏
@@ -495,12 +497,41 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
     };
     private void initPOI(){
         //从服务器下载停留时长、行为类型、同伴人数、关系等选项的数据
-        PostPointOfInterestData pointOfInterest = new PostPointOfInterestData(handler, URL_GETPOI);
-        pointOfInterest.start();
-    }
-    private void initPOIEN(){
-        //英文版
-        PostPointOfInterestDataEn pointOfInterestEn = new PostPointOfInterestDataEn(handler, URL_GETPOI);
-        pointOfInterestEn.start();
+        DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(sp.getString("token", ""));
+        downloadPoiChoices.requestHttpData(new ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                if (isSuccess) {
+                    if (code.equals("0")) {
+                        PoiChoiceModel poiChoiceModel = (PoiChoiceModel) responseObject;
+                        behaviourData = new PointOfInterestData();
+                        durationData = new PointOfInterestData();
+                        partnerNumData = new PointOfInterestData();
+                        relationData = new PointOfInterestData();
+                        helper.delete();
+                        for (int i = 0; i < poiChoiceModel.getActivityTypeList().size(); i++) {
+                            behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivityType());
+                            behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityName());
+                            helper.insertBehaviour(behaviourData);
+                        }
+                        for (int i = 0; i < poiChoiceModel.getRetentionTypeList().size(); i++) {
+                            durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentionType());
+                            durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentionTypeName());
+                            helper.insertDuration(durationData);
+                        }
+                        for (int i = 0; i < poiChoiceModel.getCompanionTypeList().size(); i++) {
+                            partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompanionType());
+                            partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompanionTypeName());
+                            helper.insertPartnerNum(partnerNumData);
+                        }
+                        for (int i = 0; i < poiChoiceModel.getRelationTypeList().size(); i++) {
+                            relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationType());
+                            relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationTypeName());
+                            helper.insertPartnerRelation(relationData);
+                        }
+                    }
+                }
+            }
+        });
     }
 }

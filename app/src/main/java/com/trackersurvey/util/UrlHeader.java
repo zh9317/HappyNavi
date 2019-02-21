@@ -14,6 +14,7 @@ public class UrlHeader {
     public static final String GET_MSG_CODE_URL = "user/sendSMSCode"; //获取短信验证码（已调试）
     public static final String REGISTER_URL = "user/register"; // 注册（已调试）
     public static final String LOGIN_URL_NEW = "user/login"; // 登录（已调试）
+    public static final String LOGOUT_URL = "user/logout"; // 退出登录
     // 轨迹和位置上传
     public static final String UPLOAD_LOCATION_URL = "location/uploadLocation";// 上传位置（已调试）
     public static final String UPLOAD_START_TRACE_URL = "trace/startTrace";// 开始轨迹（已调试）
@@ -27,8 +28,8 @@ public class UrlHeader {
     public static final String DOWNLOAD_POI_CHOICES = "poi/getPoiChoices"; // 下载兴趣点选项列表（已调试）
     public static final String UPLOAD_POI_URL = "poi/uploadPoi"; // 上传兴趣点（已调试）
     public static final String UPLOAD_FILE_URL = "poi/uploadFile"; // 上传文件（已调试）
-    public static final String DOWNLOAD_POI_LIST_URL = "poi/getPoiListPaging";// 下载所有兴趣点
-    public static final String DOWNLOAD_ALL_POI_URL = "/poi/getPoiList";
+
+    public static final String DOWNLOAD_POI_LIST_URL = "poi/getPoiList";// 下载所有兴趣点
     public static final String DOWNLOAD_POI_URL = "poi/getPoiByTraceID"; // 下载轨迹上的兴趣点
     public static final String DELETE_POI_URL = ""; // 删除兴趣点
 

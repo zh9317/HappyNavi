@@ -61,11 +61,14 @@ import com.amap.api.services.route.WalkRouteResult;
 import com.amap.api.services.route.WalkStep;
 import com.trackersurvey.adapter.ListBaseAdapter3;
 import com.trackersurvey.bean.TraceLatLng;
+import com.trackersurvey.http.DeleteTraceRequest;
+import com.trackersurvey.http.DownloadPoiChoices;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.UpLoadGpsRequest;
 import com.trackersurvey.model.GpsData;
 import com.trackersurvey.bean.ListItemData;
 import com.trackersurvey.bean.PointOfInterestData;
+import com.trackersurvey.model.PoiChoiceModel;
 import com.trackersurvey.model.StepData;
 import com.trackersurvey.model.TraceData;
 import com.trackersurvey.db.PhotoDBHelper;
@@ -75,13 +78,11 @@ import com.trackersurvey.happynavi.CommentActivity;
 import com.trackersurvey.happynavi.LoginActivity;
 import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.DownloadTraceDetailRequest;
-import com.trackersurvey.httpconnection.PostDeleteTrail;
-import com.trackersurvey.httpconnection.PostPointOfInterestData;
-import com.trackersurvey.httpconnection.PostPointOfInterestDataEn;
 import com.trackersurvey.model.MyCommentModel;
 import com.trackersurvey.photoview.SlideListView;
 import com.trackersurvey.service.CommentUploadService;
 import com.trackersurvey.util.AMapUtil;
+import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
 import com.trackersurvey.util.GsonHelper;
@@ -1471,9 +1472,44 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             tobedeleteNo.add(trailobj.getTraceID());
             String tobedelete = GsonHelper.toJson(tobedeleteNo);
             // Log.i("trailadapter","删除:"+tobedelete);
-            PostDeleteTrail deletetrail = new PostDeleteTrail(handler, URL_GETTRAIL, Common.getUserId(context),
-                    tobedelete, Common.getDeviceId(context));
-            deletetrail.start();
+            DeleteTraceRequest deleteTraceRequest = new DeleteTraceRequest(sp.getString("token", ""),
+                    String.valueOf(trailobj.getTraceID()));
+            deleteTraceRequest.requestHttpData(new ResponseData() {
+                @Override
+                public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                    if (isSuccess) {
+                        if (code.equals("0")) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtil.show(context, getResources().getString(R.string.tips_deletesuccess));
+                                    Intent intent = new Intent();
+                                    intent.setAction(REFRESH_ACTION);
+                                    context.sendBroadcast(intent);
+                                    getActivity().finish();
+                                }
+                            });
+                        }
+                        if (code.equals("100") || code.equals("101")) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getContext(), "登录信息过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    editor.putString("token", ""); // 清空token
+                                    editor.apply();
+                                    ActivityCollector.finishActivity("TraceDetailActivity");
+                                    ActivityCollector.finishActivity("TraceListActivity");
+                                    ActivityCollector.finishActivity("MainActivity");
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+//            PostDeleteTrail deletetrail = new PostDeleteTrail(handler, URL_GETTRAIL, Common.getUserId(context),
+//                    tobedelete, Common.getDeviceId(context));
+//            deletetrail.start();
         }
         // 删本地
         helper.deleteTrailByTraceNo(trailobj.getTraceID(), Common.getUserId(context));
@@ -2043,13 +2079,42 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     }
     private void initPOI(){
         //从服务器下载停留时长、行为类型、同伴人数、关系等选项的数据
-        PostPointOfInterestData pointOfInterest = new PostPointOfInterestData(handler1, URL_GETPOI);
-        pointOfInterest.start();
-    }
-    private void initPOIEN(){
-        //英文版
-        PostPointOfInterestDataEn pointOfInterestEn = new PostPointOfInterestDataEn(handler1, URL_GETPOI);
-        pointOfInterestEn.start();
+        DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(sp.getString("token", ""));
+        downloadPoiChoices.requestHttpData(new ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                if (isSuccess) {
+                    if (code.equals("0")) {
+                        PoiChoiceModel poiChoiceModel = (PoiChoiceModel) responseObject;
+                        behaviourData = new PointOfInterestData();
+                        durationData = new PointOfInterestData();
+                        partnerNumData = new PointOfInterestData();
+                        relationData = new PointOfInterestData();
+                        helper2.delete();
+                        for (int i = 0; i < poiChoiceModel.getActivityTypeList().size(); i++) {
+                            behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivityType());
+                            behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityName());
+                            helper2.insertBehaviour(behaviourData);
+                        }
+                        for (int i = 0; i < poiChoiceModel.getRetentionTypeList().size(); i++) {
+                            durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentionType());
+                            durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentionTypeName());
+                            helper2.insertDuration(durationData);
+                        }
+                        for (int i = 0; i < poiChoiceModel.getCompanionTypeList().size(); i++) {
+                            partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompanionType());
+                            partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompanionTypeName());
+                            helper2.insertPartnerNum(partnerNumData);
+                        }
+                        for (int i = 0; i < poiChoiceModel.getRelationTypeList().size(); i++) {
+                            relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationType());
+                            relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationTypeName());
+                            helper2.insertPartnerRelation(relationData);
+                        }
+                    }
+                }
+            }
+        });
     }
     /*private class MyIUilistener implements IUiListener{
 
