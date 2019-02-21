@@ -1,5 +1,8 @@
 package com.trackersurvey.bean;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by zh931 on 2018/5/11.
  */
@@ -28,6 +31,16 @@ public class InterestMarkerData {
     private int Share;
     private String UserId;  //用户ID
     private String CommentId;  //同步云端个人评论时用到的id
+
+    private long   traceID;
+    private int    PoiID;
+    private String AnalyseWords;
+    private int    RetentionType;
+    private int    CompanionType;
+    private int    RelationType;
+    private int    ImageCount;
+    private int    AudioCount;
+    private int    DeviceID;
 
     public InterestMarkerData() {
     }
@@ -61,6 +74,63 @@ public class InterestMarkerData {
         Share = share;
         UserId = userId;
         CommentId = commentId;
+    }
+
+    public InterestMarkerData(JSONObject jsonObject) {
+        try {
+
+            PoiID = jsonObject.getInt("PoiID");
+            UserId = jsonObject.getString("UserID");
+            PoiNo = jsonObject.getInt("PoiNo");
+            traceID = jsonObject.getLong("TraceID");
+            Cmt = jsonObject.getString("Comment");
+//            AnalyseWords = jsonObject.getString("AnalyseWords");
+            Country = jsonObject.getString("Country");
+            Province = jsonObject.getString("Province");
+            City = jsonObject.getString("City");
+            PlaceName = jsonObject.getString("PlaceName");
+            Longitude = jsonObject.getDouble("Longitude");
+            Latitude = jsonObject.getDouble("Latitude");
+            Altitude = jsonObject.getDouble("Altitude");
+            MotionType = jsonObject.getInt("MotionType");
+            ActivityType = jsonObject.getInt("ActivityType");
+            RetentionType = jsonObject.getInt("RetentionType");
+            CompanionType = jsonObject.getInt("CompanionType");
+            RelationType = jsonObject.getInt("RelationType");
+            ImageCount = jsonObject.getInt("ImageCount");
+            VideoCount = jsonObject.getInt("VideoCount");
+            AudioCount = jsonObject.getInt("AudioCount");
+            StateType = jsonObject.getInt("StateType");
+//            DeviceID = jsonObject.getInt("DeviceID");
+            CreateTime = jsonObject.getString("CreateTime");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getPoiID() {
+        return PoiID;
+    }
+
+    public void setPoiID(int poiID) {
+        PoiID = poiID;
+    }
+
+    public long getTraceID() {
+        return traceID;
+    }
+
+    public void setTraceID(long traceID) {
+        this.traceID = traceID;
+    }
+
+    public String getAnalyseWords() {
+        return AnalyseWords;
+    }
+
+    public void setAnalyseWords(String analyseWords) {
+        AnalyseWords = analyseWords;
     }
 
     public String getCreateTime() {
@@ -245,5 +315,123 @@ public class InterestMarkerData {
 
     public void setShare(int share) {
         Share = share;
+    }
+
+    public String getCmt() {
+        return Cmt;
+    }
+
+    public void setCmt(String cmt) {
+        Cmt = cmt;
+    }
+
+    public int getSoundCount() {
+        return SoundCount;
+    }
+
+    public void setSoundCount(int soundCount) {
+        SoundCount = soundCount;
+    }
+
+    public int getMotionType() {
+        return MotionType;
+    }
+
+    public void setMotionType(int motionType) {
+        MotionType = motionType;
+    }
+
+    public int getActivityType() {
+        return ActivityType;
+    }
+
+    public void setActivityType(int activityType) {
+        ActivityType = activityType;
+    }
+
+    public int getRetentionTime() {
+        return RetentionTime;
+    }
+
+    public void setRetentionTime(int retentionTime) {
+        RetentionTime = retentionTime;
+    }
+
+    public int getRetentionType() {
+        return RetentionType;
+    }
+
+    public void setRetentionType(int retentionType) {
+        RetentionType = retentionType;
+    }
+
+    public int getCompanionType() {
+        return CompanionType;
+    }
+
+    public void setCompanionType(int companionType) {
+        CompanionType = companionType;
+    }
+
+    public int getRelationType() {
+        return RelationType;
+    }
+
+    public void setRelationType(int relationType) {
+        RelationType = relationType;
+    }
+
+    public int getImageCount() {
+        return ImageCount;
+    }
+
+    public void setImageCount(int imageCount) {
+        ImageCount = imageCount;
+    }
+
+    public int getDeviceID() {
+        return DeviceID;
+    }
+
+    public void setDeviceID(int deviceID) {
+        DeviceID = deviceID;
+    }
+
+    @Override
+    public String toString() {
+        return "InterestMarkerData{" +
+                "CreateTime='" + CreateTime + '\'' +
+                ", PoiNo=" + PoiNo +
+                ", Longitude=" + Longitude +
+                ", Latitude=" + Latitude +
+                ", Altitude=" + Altitude +
+                ", Country='" + Country + '\'' +
+                ", Province='" + Province + '\'' +
+                ", City='" + City + '\'' +
+                ", PlaceName='" + PlaceName + '\'' +
+                ", Cmt='" + Cmt + '\'' +
+                ", TraceNo=" + TraceNo +
+                ", PicCount=" + PicCount +
+                ", VideoCount=" + VideoCount +
+                ", SoundCount=" + SoundCount +
+                ", MotionType=" + MotionType +
+                ", ActivityType=" + ActivityType +
+                ", RetentionTime=" + RetentionTime +
+                ", CompanionCount=" + CompanionCount +
+                ", Relationship=" + Relationship +
+                ", StateType=" + StateType +
+                ", Share=" + Share +
+                ", UserId='" + UserId + '\'' +
+                ", CommentId='" + CommentId + '\'' +
+                ", traceID=" + traceID +
+                ", PoiID=" + PoiID +
+                ", AnalyseWords='" + AnalyseWords + '\'' +
+                ", RetentionType=" + RetentionType +
+                ", CompanionType=" + CompanionType +
+                ", RelationType=" + RelationType +
+                ", ImageCount=" + ImageCount +
+                ", AudioCount=" + AudioCount +
+                ", DeviceID=" + DeviceID +
+                '}';
     }
 }

@@ -23,7 +23,9 @@ import com.trackersurvey.bean.TraceData;
 import com.trackersurvey.db.PhotoDBHelper;
 import com.trackersurvey.db.PointOfInterestDBHelper;
 import com.trackersurvey.db.TraceDBHelper;
+import com.trackersurvey.fragment.ShowTraceFragment;
 import com.trackersurvey.http.DownloadPoiListRequest;
+import com.trackersurvey.http.DownloadPoiRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.DeleteCloudComment;
 import com.trackersurvey.httpconnection.GetAlbum;
@@ -42,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by zh931 on 2018/5/19.
@@ -75,6 +78,9 @@ public class MyCommentModel {
     private String from = null;//判断是谁调用了此类
     private String startTime;
     private String endTime;
+
+    private long currentTraceID = ShowTraceFragment.currentTraceID;
+
     public ArrayList<HashMap<String, Object>> getItems() {
         return items;
     }
@@ -188,6 +194,7 @@ public class MyCommentModel {
                 + Common.getUserID(context), null, null, null, "datetime("
                 + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
 
+        Log.i("dongsiyuaninitItems", "initItems: " + items.size() + "cursor: " + cursor.getCount());
         // 增加首行背景
         listAddBackgroud(bgImageName);
         // 搜索数据库中项目
@@ -198,6 +205,7 @@ public class MyCommentModel {
             }
         }
 
+        Log.i("dongsiyuaninitItems", "initItems: " + items.size() + "cursor: " + cursor.getCount());
         // 增加末行提示
         listAddHint();
         //cursor.close();
@@ -211,9 +219,125 @@ public class MyCommentModel {
         endTime = to;
         Log.i("starttoend", "start3:"+from+"; end3:"+to);
     }
-    public void initMarkerItemsOnline(){
+    public void initMarkerItemsOnline(final long traceID){
 
-        downloadComment(Common.currentTime());
+        currentTraceID = traceID;
+        DownloadPoiRequest downloadPoiRequest = new DownloadPoiRequest(sp.getString("token", ""),
+                1, 100, traceID);
+
+        Log.i("dongsiyuan", "initMarkerItemsOnline: " + traceID);
+
+        downloadPoiRequest.requestHttpData(new ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                if (isSuccess) {
+
+                    List<InterestMarkerData> interestMarkerDataList = (ArrayList<InterestMarkerData>) responseObject;
+                    Log.i("dongsiyuan", "onResponseData: " + interestMarkerDataList.size());
+                    for (int i = 0; i < interestMarkerDataList.size(); i++) {
+                        Log.i("dongsiyuan", "onResponseData: " + interestMarkerDataList.get(i).toString());
+                    }
+
+                    int eventsNum = interestMarkerDataList.size();
+                    // 同步云端和数据内容
+                    int index = 0;
+                    cursor.moveToFirst();
+                    // 获得一个可写的数据库，进行插入删除操作
+                    PhotoDBHelper writedDbHelper = new PhotoDBHelper(context, PhotoDBHelper.DBWRITE);
+                    // createTime
+                    String eventCTDB;
+                    String eventCTCloud;
+                    // 本地数据中有内容,
+                    if (cursor.getCount() > 0) {
+                        // 云端也有内容
+                        if (eventsNum > 0) {
+                            while (index < eventsNum) {
+                                eventCTDB = cursor.getString(0);
+                                eventCTCloud = interestMarkerDataList.get(index).getCreateTime();
+                                Log.i("POI createTime", "" + eventCTDB + "," + eventCTCloud);
+                                long leventCTDB = Common.timeStamp(eventCTDB);
+                                long leventCTCloud = Common.timeStamp(eventCTCloud);
+                                if (leventCTDB == leventCTCloud) {
+                                    // 数据库中的一行和云端一行相等证明这一行数据已经同步，数据库和云端数据皆前移一行
+                                    Log.i("Eaa_equal", "" + eventCTDB);
+                                    index++;
+                                    if (!cursor.moveToNext()) {
+                                        break;
+                                    }
+                                } else if (leventCTDB > leventCTCloud) {
+                                    // 数据库中一行大于云端的一行，该行数据已经被其它设备删除，删除数据库中这一行,云端不前移
+                                    writedDbHelper
+                                            .deleteEvent("datetime(CreateTime) = datetime('"
+                                                    + eventCTDB + "')");
+                                    Log.i("Eaa_delete",
+                                            "getComment delete event:"
+                                                    + eventCTDB);
+                                    if (!cursor.moveToNext()) {
+                                        break;
+                                    }
+                                } else {
+                                    // 数据库中的一行小于云端的一行，云端一行本地没有，插入该行,数据库cursor不前移
+                                    writedDbHelper.insertEvent(interestMarkerDataList.get(index));
+                                    Log.i("Eaa_insert", "getComment insert event:" + eventCTCloud);
+                                    // 插入文件表
+                                    int fileNum = interestMarkerDataList.get(index).getImageCount();
+                                    for (int j = 0; j < fileNum; j++) {
+                                        CommentMediaFilesData ev = new CommentMediaFilesData();
+                                        ev.setDateTime(interestMarkerDataList.get(index)
+                                                .getCreateTime());
+                                        ev.setFileNo(j);
+                                        ev.setFileType(CommentMediaFilesData.TYPE_PIC);
+                                        writedDbHelper.inserFile(ev);
+                                    }
+                                    index++;
+                                }
+                            }
+                            if (!cursor.isAfterLast() && !cloudMore) {
+                                // 如果本地数据多于云端，删除本地数据多出的部分
+
+                                do {
+                                    eventCTDB = cursor.getString(0);
+                                    writedDbHelper
+                                            .deleteEvent("datetime(CreateTime) = datetime('"
+                                                    + eventCTDB + "')");
+
+                                } while (cursor.moveToNext());
+                            }
+
+                        } else { // 如果云端没有内容，删除本地所有内容
+                            writedDbHelper.deleteEvent(null);
+                            Log.i("dongiyuan", "deleteEvent: " + "success");
+                        }
+                    }
+
+                    // 将本地没有的几行插入数据库
+                    for (int i = index; i < eventsNum; i++) {
+                        writedDbHelper.insertEvent(interestMarkerDataList.get(i));
+
+                        int fileNum = interestMarkerDataList.get(i).getPicCount();
+                        // 插入文件表
+                        for (int j = 0; j < fileNum; j++) {
+                            CommentMediaFilesData ev = new CommentMediaFilesData();
+                            ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
+                            ev.setFileNo(j);
+                            ev.setFileType(CommentMediaFilesData.TYPE_PIC);
+                            writedDbHelper.inserFile(ev);
+                        }
+                    }
+
+                    if (from.equals("album")) {
+                        initItems();
+                    } else if (from.equals("mark")) {
+                        initItemsByTime(startTime, endTime);
+                        initItemsByTime(traceID);
+                        Log.i("mark", "更新标注handler");
+                    }
+                    writedDbHelper.closeDB();
+                }
+            }
+        });
+
+//        downloadComment(Common.currentTime());
 //		downloadAlbum(Common.currentTime());
         if(cursor != null && !cursor.isClosed()){
             cursor.close();
@@ -240,10 +364,21 @@ public class MyCommentModel {
         if(cursor != null && !cursor.isClosed()){
             cursor.close();
         }
+        //        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
+        //                + Common.getUserId(context) + " and datetime("
+        //                + PhotoDBHelper.COLUMNS_UE[0] + ") between '" + from +
+        //                "' and '" + to + "'", null, null, null, null);
+
+//        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
+//                + currentTraceID + " and datetime("
+//                + PhotoDBHelper.COLUMNS_UE[0] + ") between '" + from +
+//                "' and '" + to + "'", null, null, null, null);
+
         cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
-                + Common.getUserId(context)+" and datetime("
-                + PhotoDBHelper.COLUMNS_UE[0] + ") between '"+from+
-                "' and '"+to+"'", null, null, null, null);
+                + currentTraceID, null, null, null, "datetime("
+                + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
+
+        Log.i("itemsssinitItemsByTime", "cursor:" + cursor.getCount() + " " + currentTraceID);
 
         numOfUE = cursor.getCount();
         if (numOfUE > 0) {
@@ -253,6 +388,27 @@ public class MyCommentModel {
         }
         Log.i("mark", "cursor.getCount() : "+cursor.getCount()+",items size : "+items.size());
     }
+
+    public void initItemsByTime(long traceID) {
+        items.removeAll(items);
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
+                + traceID, null, null, null, "datetime("
+                + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
+
+        Log.i("itemsssinitItemsByTime", "cursor:" + cursor.getCount() + " " + traceID);
+        numOfUE = cursor.getCount();
+        if (numOfUE > 0) {
+            while (!cursor.isLast()) {
+                items.add(listAddGrid());
+            }
+        }
+        Log.i("mark", "cursor.getCount() : " + cursor.getCount() + ",items size : " + items.size());
+    }
+
     /**
      * 从数据库查询数据
      */
@@ -268,44 +424,50 @@ public class MyCommentModel {
      * @return
      */
     private HashMap<String, Object> listAddGrid() {
-        cursor.moveToNext();
-        InterestMarkerData event = new InterestMarkerData();
-        String eventTime = cursor.getString(0);
-        event.setCreateTime(eventTime);
-        event.setLongitude(cursor.getDouble(2));
-        event.setLatitude(cursor.getDouble(3));
-        event.setAltitude(cursor.getDouble(4));
-        event.setPlaceName(cursor.getString(8));
-        event.setComment(cursor.getString(9));
-        event.setTraceNo(cursor.getLong(10));
-        event.setPicCount(cursor.getInt(11));
-        event.setVideoCount(cursor.getInt(12));
-        event.setAudioCount(cursor.getInt(13));
-        event.setUserId(cursor.getString(14));
-        event.setFeeling(cursor.getInt(15));
-        event.setBehaviour(cursor.getInt(16));
-        event.setDuration(cursor.getInt(17));
-        event.setCompanionCount(cursor.getInt(18));
-        event.setRelationship(cursor.getInt(19));
-        Cursor fileCursor = dbHelper.selectFiles(null, "datetime("
-                + PhotoDBHelper.COLUMNS_FILE[2] + ")=datetime('" + eventTime
-                + "')", null, null, null, null);
-        CommentMediaFilesData files[] = new CommentMediaFilesData[fileCursor.getCount()];
-        Log.i("album", "评论 = " + cursor.getString(5)+",traceNo:"+cursor.getLong(6)
-                +",filenum:"+cursor.getInt(7)+ ",filesdb :" + files.length);
-        int index = 0;
-        while (fileCursor.moveToNext()) {
-            files[index] = new CommentMediaFilesData(fileCursor.getInt(0),
-                    fileCursor.getString(1), fileCursor.getString(2),
-                    fileCursor.getInt(3), fileCursor.getString(4));
-            // Log.i("Eaa_fileCursor", "" + index);
-            index++;
+        if (cursor.getCount() - 1 >= 0) {
+            cursor.moveToNext();
+            InterestMarkerData event = new InterestMarkerData();
+            String eventTime = cursor.getString(0);
+            event.setCreateTime(eventTime);
+            event.setLongitude(cursor.getDouble(2));
+            event.setLatitude(cursor.getDouble(3));
+            event.setAltitude(cursor.getDouble(4));
+            event.setPlaceName(cursor.getString(8));
+            event.setComment(cursor.getString(9));
+            event.setTraceID(cursor.getLong(10));
+            event.setImageCount(cursor.getInt(11));
+            event.setVideoCount(cursor.getInt(12));
+            event.setAudioCount(cursor.getInt(13));
+            event.setUserId(cursor.getString(14));
+            event.setFeeling(cursor.getInt(15));
+            event.setBehaviour(cursor.getInt(16));
+            event.setDuration(cursor.getInt(17));
+            event.setCompanionType(cursor.getInt(18));
+            event.setRelationType(cursor.getInt(19));
+
+            Cursor fileCursor = dbHelper.selectFiles(null, "datetime("
+                    + PhotoDBHelper.COLUMNS_FILE[2] + ")=datetime('" + eventTime
+                    + "')", null, null, null, null);
+
+            CommentMediaFilesData files[] = new CommentMediaFilesData[fileCursor.getCount()];
+            Log.i("album", "Country = " + cursor.getString(5) + ",traceNo:" + cursor.getLong(14)
+                    + ",filenum:" + cursor.getInt(7) + ",filesdb :" + files.length);
+            int index = 0;
+            while (fileCursor.moveToNext()) {
+                files[index] = new CommentMediaFilesData(fileCursor.getInt(0),
+                        fileCursor.getString(1), fileCursor.getString(2),
+                        fileCursor.getInt(3), fileCursor.getString(4));
+                // Log.i("Eaa_fileCursor", "" + index);
+                index++;
+            }
+            HashMap<String, Object> listItem = new HashMap<String, Object>();
+            ListItemData data = new ListItemData(event, files);        //兴趣点列表数据类型的数据data
+            listItem.put("listItem", data);
+            fileCursor.close();
+            return listItem;
         }
-        HashMap<String, Object> listItem = new HashMap<String, Object>();
-        ListItemData data = new ListItemData(event, files);        //兴趣点列表数据类型的数据data
-        listItem.put("listItem", data);
-        fileCursor.close();
-        return listItem;
+
+        return null;
     }
 
     /**
@@ -375,21 +537,74 @@ public class MyCommentModel {
                     }
 
                     DownloadPoiListRequest downloadPoiListRequest = new DownloadPoiListRequest(
-                            String.valueOf(System.currentTimeMillis()),
-                            sp.getString("token", ""), 1, 100, "");
+                            sp.getString("token", ""), 1, 100);
                     downloadPoiListRequest.requestHttpData(new ResponseData() {
                         @Override
                         public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                             if (isSuccess) {
+                                List<InterestMarkerData> interestMarkerDataList = (ArrayList<InterestMarkerData>) responseObject;
+                                Log.i("dongsiyuan", "onResponseData: " + interestMarkerDataList.size());
+                                for (int i = 0; i < interestMarkerDataList.size(); i++) {
+                                    Log.i("dongstoString()", "onReta: " + interestMarkerDataList.get(i).toString());
+                                }
 
+                                // 获得一个可写的数据库，进行插入删除操作
+                                PhotoDBHelper writedDbHelper = new PhotoDBHelper(context,
+                                        PhotoDBHelper.DBWRITE);
+                                // 同步云端和数据内容
+                                int eventsNum = interestMarkerDataList.size();
+
+                                // 将本地没有的几行插入数据库
+                                for (int i = 0; i < eventsNum; i++) {
+                                    writedDbHelper.insertEvent(interestMarkerDataList.get(i));
+                                    int fileNum = interestMarkerDataList.get(i).getImageCount();
+                                    // 插入文件表
+                                    for (int j = 0; j < fileNum; j++) {
+                                        CommentMediaFilesData ev = new CommentMediaFilesData();
+                                        ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
+                                        ev.setFileNo(j);
+                                        ev.setFileType(CommentMediaFilesData.TYPE_PIC);
+                                        writedDbHelper.inserFile(ev);
+                                    }
+                                }
+
+                                // 重新查询本地数据
+                                if (cursor != null && !cursor.isClosed()) {
+                                    cursor.close();
+                                }
+                                cursor = dbHelper.selectEvent(null,
+                                        PhotoDBHelper.COLUMNS_UE[14] + "=" + Common.getUserId(context),
+                                        null, null, null, "datetime("
+                                                + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
+
+                                Log.i("dongsiyuanautoAddtoList", "onResponseData: " + cursor.getCount());
+
+                                cursor.moveToPosition(numOfUE - 1);
+                                numOfUE = cursor.getCount();
+
+                                // 记录当前滚动到的位置
+                                // int setPosition = lView.getFirstVisiblePosition() + 1;
+                                int addNum = 0;
+                                while (!cursor.isLast() && addNum < listOneTime) {
+                                    items.add(items.size() - 1, listAddGrid());
+                                    addNum++;
+                                }
+
+                                if (!cloudMore) {
+                                    // 删除末栏提示再添加以更改提示文本
+                                    items.get(items.size() - 1).put("listItem", "nomore");
+                                }
+                                //cursor.close();
+                                writedDbHelper.closeDB();
                             }
                         }
                     });
+                    isAddingComment = false;
+                    //                    GetAlbum gct = new GetAlbum(requestAlbum,
+                    //                            Common.URL_DOWNEVENT, Common.getUserId(context),
+                    //                            lastTime, Common.getDeviceId(context), "no");
+                    //                    gct.start();
 
-                    GetAlbum gct = new GetAlbum(requestAlbum,
-                            Common.URL_DOWNEVENT, Common.getUserId(context),
-                            lastTime,Common.getDeviceId(context),"no");
-                    gct.start();
 					/*GetComment gct = new GetComment(requestComment,
 							Common.URL_DOWNEVENT, Common.getUserId(context),
 							lastTime,Common.getDeviceId(context));
@@ -432,24 +647,77 @@ public class MyCommentModel {
      */
     public void downloadAlbum(String dateTime){
         isAddingComment = true;
-        GetAlbum downAlbum = new GetAlbum(refreshAlbum,
-                Common.URL_DOWNEVENT, Common.getUserId(context),
-                dateTime, Common.getDeviceId(context), "yes");
-        Log.i("Eaa", "downloadaAlbum:"+dateTime);
-        downAlbum.start();
+//        GetAlbum downAlbum = new GetAlbum(refreshAlbum,
+//                Common.URL_DOWNEVENT, Common.getUserId(context),
+//                dateTime, Common.getDeviceId(context), "yes");
+//        Log.i("Eaa", "downloadaAlbum:"+dateTime);
+//        downAlbum.start();
 
         // 测试下载兴趣点
         DownloadPoiListRequest downloadPoiListRequest = new DownloadPoiListRequest(
-                String.valueOf(System.currentTimeMillis()),
-                sp.getString("Token", ""), 1, 100, "");
+                sp.getString("token", ""), 1, 100);
         downloadPoiListRequest.requestHttpData(new ResponseData() {
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
+                    List<InterestMarkerData> interestMarkerDataList = (ArrayList<InterestMarkerData>) responseObject;
+                    Log.i("dongsiyuan", "onResponseData: " + interestMarkerDataList.size());
+                    for (int i = 0; i < interestMarkerDataList.size(); i++) {
+                        Log.i("dongstoString()", "onReta: " + interestMarkerDataList.get(i).toString());
+                    }
 
+                    // 获得一个可写的数据库，进行插入删除操作
+                    PhotoDBHelper writedDbHelper = new PhotoDBHelper(context,
+                            PhotoDBHelper.DBWRITE);
+                    // 同步云端和数据内容
+                    int eventsNum = interestMarkerDataList.size();
+
+                    // 将本地没有的几行插入数据库
+                    for (int i = 0; i < eventsNum; i++) {
+                        writedDbHelper.insertEvent(interestMarkerDataList.get(i));
+                        int fileNum = interestMarkerDataList.get(i).getImageCount();
+                        // 插入文件表
+                        for (int j = 0; j < fileNum; j++) {
+                            CommentMediaFilesData ev = new CommentMediaFilesData();
+                            ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
+                            ev.setFileNo(j);
+                            ev.setFileType(CommentMediaFilesData.TYPE_PIC);
+                            writedDbHelper.inserFile(ev);
+                        }
+                    }
+
+                    // 重新查询本地数据
+                    if (cursor != null && !cursor.isClosed()) {
+                        cursor.close();
+                    }
+                    cursor = dbHelper.selectEvent(null,
+                            PhotoDBHelper.COLUMNS_UE[14] + "=" + Common.getUserId(context),
+                            null, null, null, "datetime("
+                                    + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
+
+                    Log.i("dongsiyuanautoAddtoList", "onResponseData: " + cursor.getCount());
+
+                    cursor.moveToPosition(numOfUE - 1);
+                    numOfUE = cursor.getCount();
+
+                    // 记录当前滚动到的位置
+                    // int setPosition = lView.getFirstVisiblePosition() + 1;
+                    int addNum = 0;
+                    while (!cursor.isLast() && addNum < listOneTime) {
+                        items.add(items.size() - 1, listAddGrid());
+                        addNum++;
+                    }
+
+                    if (!cloudMore) {
+                        // 删除末栏提示再添加以更改提示文本
+                        items.get(items.size() - 1).put("listItem", "nomore");
+                    }
+                    //cursor.close();
+                    writedDbHelper.closeDB();
                 }
             }
         });
+        isAddingComment = false;
 
     }
 
