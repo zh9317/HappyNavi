@@ -38,34 +38,34 @@ import java.util.HashMap;
  */
 
 public class ListBaseAdapter extends BaseAdapter {
-    private static final int ItemType_image = 0;
-    private static final int ItemType_grid = 1;
-    private static final int ItemType_text = 2;
-    private static final int typeCount = ItemType_text + 1;
-    private static final int leftBlankWidth = 105; // 左边空白的宽度
-    private static final int gridColumn = 4; // gridView的列数
-    private static int colWidth = (Common.winWidth - leftBlankWidth - gridColumn * 5)
+    private static final int                                ItemType_image = 0;
+    private static final int                                ItemType_grid  = 1;
+    private static final int                                ItemType_text  = 2;
+    private static final int                                typeCount      = ItemType_text + 1;
+    private static final int                                leftBlankWidth = 105; // 左边空白的宽度
+    private static final int                                gridColumn     = 4; // gridView的列数
+    private static       int                                colWidth       = (Common.winWidth - leftBlankWidth - gridColumn * 5)
             / gridColumn - 5; // gridView的列宽
-    private Context context;
-    private ArrayList<HashMap<String, Object>> items;
-    private HashMap<String, ProgressBar> downloadingFiles;
-    private HashMap<Integer, GridItemAdapter> downloadingThumbs;
-    private HashMap<String, String> picture;
-    private ImageView backImage;
-    private String bgImageName = "bgImage.jpg";
+    private              Context                            context;
+    private              ArrayList<HashMap<String, Object>> items;
+    private              HashMap<String, ProgressBar>       downloadingFiles;
+    private              HashMap<Integer, GridItemAdapter>  downloadingThumbs;
+    private              HashMap<String, String>            picture;
+    private              ImageView                          backImage;
+    private              String                             bgImageName    = "bgImage.jpg";
 
     private BackImageListener mbackImageListener;
     // private ButtomTextListener buttomTextListener;
-    private DeleCommListener deleCommentListener;
+    private DeleCommListener  deleCommentListener;
 
     private MyCommentModel myComment;
-    private String from;//谁使用了这个适配器
-    private int posInItems = -1;
+    private String         from;//谁使用了这个适配器
+    private int            posInItems = -1;
     //	private ArrayList<String> pathes = new ArrayList<String>();
-//	private ArrayList<String> thumbpathes = new ArrayList<String>();
-//	private int count;
-    private Intent intent;
-//	private String dataComment = "";
+    //	private ArrayList<String> thumbpathes = new ArrayList<String>();
+    //	private int count;
+    private Intent         intent;
+    //	private String dataComment = "";
 
     public ListBaseAdapter(Context context, MyCommentModel model,
                            ArrayList<HashMap<String, Object>> items, String from) {
@@ -79,6 +79,7 @@ public class ListBaseAdapter extends BaseAdapter {
         myComment.setmDownThumbFile(thumbDownloaded);
         myComment.setmDownFile(fileDownloaded);
     }
+
     public ListBaseAdapter(Context context, MyCommentModel model,
                            ArrayList<HashMap<String, Object>> items, String from, int posInItems) {
         this.context = context;
@@ -95,18 +96,18 @@ public class ListBaseAdapter extends BaseAdapter {
 
     public void setItems(ArrayList<HashMap<String, Object>> items) {
         this.items = items;
-//		pathes.clear();
-//		thumbpathes.clear();
-//		for(int i = 0;i<items.size();i++){
-//        	CommentMediaFiles[] lid = ((ListItemData) items.get(i)
-//					.get("listItem")).getFiles();
-//        	for(int j = 0;j<lid.length;j++){
-//        		String pathName = lid[j].getFileName();
-//        		String thumbName = lid[j].getThumbnailName();
-//        		pathes.add(pathName);
-//        		thumbpathes.add(thumbName);
-//        	}
-//        }
+        //		pathes.clear();
+        //		thumbpathes.clear();
+        //		for(int i = 0;i<items.size();i++){
+        //        	CommentMediaFiles[] lid = ((ListItemData) items.get(i)
+        //					.get("listItem")).getFiles();
+        //        	for(int j = 0;j<lid.length;j++){
+        //        		String pathName = lid[j].getFileName();
+        //        		String thumbName = lid[j].getThumbnailName();
+        //        		pathes.add(pathName);
+        //        		thumbpathes.add(thumbName);
+        //        	}
+        //        }
 
     }
 
@@ -155,7 +156,7 @@ public class ListBaseAdapter extends BaseAdapter {
 
 
         int type = getItemViewType(listPosition);
-        if(from.equals("mark")){
+        if (from.equals("mark")) {
             type = ItemType_grid;
         }
         switch (type) {
@@ -180,7 +181,7 @@ public class ListBaseAdapter extends BaseAdapter {
                     // Log.i("Eaa_bgImg", "未设置我的相册背景图片");
                 } catch (NullPointerException e) {
                     // Log.i("Eaa_bgImg", "未设置我的相册背景图片");
-                } catch (OutOfMemoryError e){
+                } catch (OutOfMemoryError e) {
 
                 }
                 backImage.setOnClickListener(new View.OnClickListener() {
@@ -216,8 +217,8 @@ public class ListBaseAdapter extends BaseAdapter {
                             .findViewById(R.id.myCommentGridView);
                     holder.delete = (RelativeLayout) convertView
                             .findViewById(R.id.listview_delete);
-//				holder.trace = (RelativeLayout) convertView
-//						.findViewById(R.id.listview_path);
+                    //				holder.trace = (RelativeLayout) convertView
+                    //						.findViewById(R.id.listview_path);
                     convertView.setTag(holder);
                 } else {
                     holder = (ListViewHolder) convertView.getTag();
@@ -253,7 +254,7 @@ public class ListBaseAdapter extends BaseAdapter {
         }
         //Log.i("Eaa", "listPosition" + listPosition + " ||");
         itemEntity = (ListItemData) items.get(listPosition).get("listItem");
-        Log.i("itemEntity", "itemEntity = "+itemEntity.toString());
+        Log.i("itemEntity", "itemEntity = " + itemEntity.toString());
         ArrayList<String> partnerNum = new ArrayList<String>();
         ArrayList<String> relation = new ArrayList<String>();
         ArrayList<String> duration = new ArrayList<String>();
@@ -266,7 +267,7 @@ public class ListBaseAdapter extends BaseAdapter {
         holder.tv_time.setText(itemEntity.getTime());
         holder.tv_place.setText(itemEntity.getPlace());
         holder.tv_comment.setText(itemEntity.getComment());
-        if(partnerNum!=null&&relation!=null&&duration!=null&&behaviour!=null){
+        if (partnerNum != null && relation != null && duration != null && behaviour != null) {
             holder.tv_partner_num.setText(partnerNum.get(itemEntity.getCompanion()));
             holder.tv_relation.setText(relation.get(itemEntity.getRelation()));
             holder.tv_duration.setText(duration.get(itemEntity.getDuration()));
@@ -298,19 +299,19 @@ public class ListBaseAdapter extends BaseAdapter {
             }
         });
 
-//		holder.trace.setVisibility(View.GONE);
+        //		holder.trace.setVisibility(View.GONE);
 
         // 用户事件文件
         CommentMediaFilesData imageUrls[] = itemEntity.getFiles();
         ArrayList<HashMap<String, String>> imageItems = new ArrayList<HashMap<String, String>>();
         holder.gridview.setVisibility(View.VISIBLE);
         if (imageUrls == null || imageUrls.length == 0) { // 没有图片资源就隐藏GridView
-            Log.i("album", "position = "+listPosition+","+itemEntity.getComment()+",files = 0");
+            Log.i("album", "position = " + listPosition + "," + itemEntity.getComment() + ",files = 0");
             holder.gridview.setVisibility(View.GONE);
             holder.delete.setLayoutParams(new LinearLayout.LayoutParams(
                     ActionBar.LayoutParams.MATCH_PARENT, 0, 3));
-//			holder.trace.setLayoutParams(new LinearLayout.LayoutParams(
-//					LayoutParams.MATCH_PARENT, 0, 3));
+            //			holder.trace.setLayoutParams(new LinearLayout.LayoutParams(
+            //					LayoutParams.MATCH_PARENT, 0, 3));
         } else {
             for (int i = 0; i < imageUrls.length; i++) {
                 String thumbPic = imageUrls[i].getThumbnailName();
@@ -345,10 +346,10 @@ public class ListBaseAdapter extends BaseAdapter {
                     //计算所点击的item之前的所有照片数
                     int count = 0;
                     CommentMediaFilesData[] lid1 = null;
-                    for(int j=0;j<listPosition;j++){
+                    for (int j = 0; j < listPosition; j++) {
                         lid1 = ((ListItemData) items.get(j)
                                 .get("listItem")).getFiles();
-                        for(int k = 0;k<lid1.length;k++){
+                        for (int k = 0; k < lid1.length; k++) {
                             count++;
                         }
                     }
@@ -364,13 +365,13 @@ public class ListBaseAdapter extends BaseAdapter {
                     ArrayList<String> thumbpathes = new ArrayList<String>();
 
                     //下载所有未下载的图片
-                    for(int j = 0;j<items.size();j++){
+                    for (int j = 0; j < items.size(); j++) {
                         CommentMediaFilesData[] lid = ((ListItemData) items.get(j)
                                 .get("listItem")).getFiles();
-                        Log.i("lidddd", ""+lid.length);
-                        for(int i = 0;i<lid.length;i++){
+                        Log.i("lidddd", "" + lid.length);
+                        for (int i = 0; i < lid.length; i++) {
                             int type = lid[i].getFileType();
-                            if(type == clickedType){
+                            if (type == clickedType) {
                                 String pathName = lid[i].getFileName();
                                 String thumbpathName = lid[i].getThumbnailName();
                                 pathes.add(pathName);
@@ -382,21 +383,21 @@ public class ListBaseAdapter extends BaseAdapter {
                                     ProgressBar pb = (ProgressBar) view
                                             .findViewById(R.id.down_img_pb);
                                     pb.setVisibility(View.VISIBLE);          //出现一个环形进度条
-                                    if(posInItems > -1){
+                                    if (posInItems > -1) {
                                         downFile(posInItems, i, type, pb);
-                                        Log.i("pos", "posInItems="+posInItems);
-                                    }else{
+                                        Log.i("pos", "posInItems=" + posInItems);
+                                    } else {
                                         downFile(j, i, type, pb);
                                     }
                                     view.setClickable(false);
                                     isDownloaded = false;
-                                    if(i == position){
+                                    if (i == position) {
                                         isClickedDownloaded = false;
                                     }
                                 }
-                                Log.i("bitmap", "isDownloaded="+isDownloaded);
-                                Log.i("bitmap", "isClickedDownloaded="+isClickedDownloaded);
-                                Log.i("bitmap", "pathes2="+pathes);
+                                Log.i("bitmap", "isDownloaded=" + isDownloaded);
+                                Log.i("bitmap", "isClickedDownloaded=" + isClickedDownloaded);
+                                Log.i("bitmap", "pathes2=" + pathes);
                             }
                         }
                     }
@@ -406,19 +407,19 @@ public class ListBaseAdapter extends BaseAdapter {
                                 SelectedPictureActivity.class);
                         intent.putStringArrayListExtra(
                                 SelectedPictureActivity.PIC_PATH, pathes);
-                        intent.putExtra(SelectedPictureActivity.PIC_POSITION, count+position);
-                        Log.i("bitmap", "pathes="+pathes);
+                        intent.putExtra(SelectedPictureActivity.PIC_POSITION, count + position);
+                        Log.i("bitmap", "pathes=" + pathes);
 
                         //将当前item的评论字符串传递出去
                         ListItemData itemEntity;
                         ArrayList<String> comment = new ArrayList<String>();
                         ArrayList<String> time = new ArrayList<String>();
                         ArrayList<Integer> feeling = new ArrayList<Integer>();
-                        for(int i = 0;i<items.size();i++){
+                        for (int i = 0; i < items.size(); i++) {
                             CommentMediaFilesData[] lid2 = ((ListItemData) items.get(i)
                                     .get("listItem")).getFiles();
                             itemEntity = (ListItemData) items.get(i).get("listItem");
-                            for(int k = 0;k<lid2.length;k++){
+                            for (int k = 0; k < lid2.length; k++) {
                                 comment.add(itemEntity.getComment());
                                 time.add(itemEntity.getTime());
                                 feeling.add(itemEntity.getFeeling());
@@ -434,23 +435,23 @@ public class ListBaseAdapter extends BaseAdapter {
                         }
                         Log.i("comment", comment.toString());
                         context.startActivity(intent);
-                    }else if (clickedType == CommentMediaFilesData.TYPE_PIC && !isDownloaded && isClickedDownloaded) {
-//							for(int i = 0;i<items.size();i++){
-//								Log.i("isDownloaded", "进入外循环"+i+"次："+"isDownloaded="+isDownloaded+"isClickedDownloaded="+isClickedDownloaded);
-//								CommentMediaFiles[] lid = ((ListItemData) items.get(i)
-//										.get("listItem")).getFiles();
-//								for(int j = 0;j<lid.length;j++){
-//									Log.i("isDownloaded", "进入内循环"+j+"次："+"isDownloaded="+isDownloaded+"isClickedDownloaded="+isClickedDownloaded);
-//									if(pathes.get(j)==null){
-//										Log.i("isDownloaded", "第"+j+"张照片下载失败");
-//										String replace = thumbpathes.get(j);
-//										pathes.set(j, replace);
-//										Log.i("isDownloaded", "插入了缩略图路径后：pathes="+pathes);
-//									}
-//								}
-//							}
-//							pathes.clear();
-//							pathes.add(clickedpathName);
+                    } else if (clickedType == CommentMediaFilesData.TYPE_PIC && !isDownloaded && isClickedDownloaded) {
+                        //							for(int i = 0;i<items.size();i++){
+                        //								Log.i("isDownloaded", "进入外循环"+i+"次："+"isDownloaded="+isDownloaded+"isClickedDownloaded="+isClickedDownloaded);
+                        //								CommentMediaFiles[] lid = ((ListItemData) items.get(i)
+                        //										.get("listItem")).getFiles();
+                        //								for(int j = 0;j<lid.length;j++){
+                        //									Log.i("isDownloaded", "进入内循环"+j+"次："+"isDownloaded="+isDownloaded+"isClickedDownloaded="+isClickedDownloaded);
+                        //									if(pathes.get(j)==null){
+                        //										Log.i("isDownloaded", "第"+j+"张照片下载失败");
+                        //										String replace = thumbpathes.get(j);
+                        //										pathes.set(j, replace);
+                        //										Log.i("isDownloaded", "插入了缩略图路径后：pathes="+pathes);
+                        //									}
+                        //								}
+                        //							}
+                        //							pathes.clear();
+                        //							pathes.add(clickedpathName);
                         String failed = "failed";
                         Intent intent = new Intent(context,
                                 SelectedPictureActivity.class);
@@ -459,19 +460,19 @@ public class ListBaseAdapter extends BaseAdapter {
                                 SelectedPictureActivity.PIC_PATH, pathes);
                         intent.putStringArrayListExtra(
                                 SelectedPictureActivity.THUMB_PATH, thumbpathes);
-                        intent.putExtra(SelectedPictureActivity.PIC_POSITION, count+position);
+                        intent.putExtra(SelectedPictureActivity.PIC_POSITION, count + position);
 
                         //将当前item的评论字符串传递出去
-                        Log.i("bitmap", "pathes3="+pathes);
+                        Log.i("bitmap", "pathes3=" + pathes);
                         ListItemData itemEntity;
                         ArrayList<String> comment = new ArrayList<String>();
                         ArrayList<String> time = new ArrayList<String>();
                         ArrayList<Integer> feeling = new ArrayList<Integer>();
-                        for(int i = 0;i<items.size();i++){
+                        for (int i = 0; i < items.size(); i++) {
                             CommentMediaFilesData[] lid2 = ((ListItemData) items.get(i)
                                     .get("listItem")).getFiles();
                             itemEntity = (ListItemData) items.get(i).get("listItem");
-                            for(int k = 0;k<lid2.length;k++){
+                            for (int k = 0; k < lid2.length; k++) {
                                 try {
                                     comment.add(itemEntity.getComment());
                                     time.add(itemEntity.getTime());
@@ -491,11 +492,10 @@ public class ListBaseAdapter extends BaseAdapter {
                             e.printStackTrace();
                         }
                         context.startActivity(intent);
-                        Log.i("isDownloaded", "这里执行了：isDownloaded="+isDownloaded+";isClickedDownloaded="+isClickedDownloaded);
-                        Log.i("isDownloaded", "这里执行了：pathes="+pathes);
-                        Log.i("isDownloaded", "这里执行了：thumbpathes="+thumbpathes);
-                    }
-                    else if (clickedType == CommentMediaFilesData.TYPE_VIDEO && isDownloaded) {
+                        Log.i("isDownloaded", "这里执行了：isDownloaded=" + isDownloaded + ";isClickedDownloaded=" + isClickedDownloaded);
+                        Log.i("isDownloaded", "这里执行了：pathes=" + pathes);
+                        Log.i("isDownloaded", "这里执行了：thumbpathes=" + thumbpathes);
+                    } else if (clickedType == CommentMediaFilesData.TYPE_VIDEO && isDownloaded) {
                         // 调用系统视频播放器
                         Uri uri = Uri.fromFile(new File(clickedpathName));
                         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -508,9 +508,9 @@ public class ListBaseAdapter extends BaseAdapter {
 
             // 如果不是全部缩略图都有
             if (!allThumb) {
-                if(posInItems > -1){
+                if (posInItems > -1) {
                     downThumbFile(holder.sAdapter, posInItems, dateTime);
-                }else{
+                } else {
                     downThumbFile(holder.sAdapter, listPosition, dateTime);
                 }
             }
@@ -536,7 +536,7 @@ public class ListBaseAdapter extends BaseAdapter {
         public void onFileDownload(int msg, int listPosition, int filePosition) {
             ProgressBar pb = downloadingFiles.remove("" + listPosition
                     + filePosition);
-            if(pb != null){
+            if (pb != null) {
                 pb.setVisibility(View.GONE);
             }
             if (msg != 0) {
@@ -617,26 +617,25 @@ public class ListBaseAdapter extends BaseAdapter {
      * listview组件复用，防止“卡顿”
      */
     class ListViewHolder {
-        private TextView tv_time;
-        private TextView tv_place;
-        private TextView tv_comment;
-        private TextView tv_partner_num;
-        private TextView tv_relation;
-        private TextView tv_duration;
-        private ImageView iv_feeling;
+        private TextView         tv_time;
+        private TextView         tv_place;
+        private TextView         tv_comment;
+        private TextView         tv_partner_num;
+        private TextView         tv_relation;
+        private TextView         tv_duration;
+        private ImageView        iv_feeling;
         //private TextView tv_feeling;
-        private TextView tv_behaviour;
+        private TextView         tv_behaviour;
         private NoScrollGridView gridview;
-        private GridItemAdapter sAdapter;
-        private RelativeLayout delete;
-//		private RelativeLayout trace;
+        private GridItemAdapter  sAdapter;
+        private RelativeLayout   delete;
+        //		private RelativeLayout trace;
     }
 
     /**
      * 设置改变背景图片的监听器
      *
      * @author 易
-     *
      */
     public interface BackImageListener {
         void backImageClick();

@@ -51,35 +51,33 @@ import java.util.List;
  */
 
 public class MyCommentModel {
-    private Context context;
-    private SharedPreferences sp;
+    private Context                            context;
+    private SharedPreferences                  sp;
     private ArrayList<HashMap<String, Object>> items; // 评论列表单元内容
-    private DownCommentListener mDownComment;
-    private DownFileListener mDownFile;
-    private DeleteCommentListener mDeleteComment;
-    private ChangeBackgroudListener mChangeBackgroud;
-    private DownThumbFileListener mDownThumbFile;
+    private DownCommentListener                mDownComment;
+    private DownFileListener                   mDownFile;
+    private DeleteCommentListener              mDeleteComment;
+    private ChangeBackgroudListener            mChangeBackgroud;
+    private DownThumbFileListener              mDownThumbFile;
 
     // 数据库操作类
-    private PhotoDBHelper dbHelper;
+    private PhotoDBHelper           dbHelper;
     private PointOfInterestDBHelper poiHelper;
-    private Cursor cursor = null;
+    private Cursor                  cursor = null;
 
-    private int numOfUE = 0; // 该用户本地的总评论
-    private String bgImageName = "bgImage.jpg";
-    private  final int listOnView = 10; // 列表行数初始最大值
-    private  boolean cloudMore = true; // 云端是否有更多评论
-    private  int listOneTime = 5; // 一次增加列表行数
+    private       int     numOfUE     = 0; // 该用户本地的总评论
+    private       String  bgImageName = "bgImage.jpg";
+    private final int     listOnView  = 10; // 列表行数初始最大值
+    private       boolean cloudMore   = true; // 云端是否有更多评论
+    private       int     listOneTime = 5; // 一次增加列表行数
 
     //是否在向list添加数据，如果是，则后来的操作取消
     private boolean isAddingComment = false;
     //dbHelper是否可用
-    private boolean isDBReady = false;
-    private String from = null;//判断是谁调用了此类
-    private String startTime;
-    private String endTime;
-
-    private long currentTraceID = ShowTraceFragment.currentTraceID;
+    private boolean isDBReady       = false;
+    private String  from            = null;//判断是谁调用了此类
+    private String  startTime;
+    private String  endTime;
 
     public ArrayList<HashMap<String, Object>> getItems() {
         return items;
@@ -167,15 +165,15 @@ public class MyCommentModel {
     /**
      * 构造模型时初始化数据
      */
-    public MyCommentModel(Context context,String from) {
+    public MyCommentModel(Context context, String from) {
         this.context = context;
         sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
         items = new ArrayList<HashMap<String, Object>>();
         selectDB();
         this.from = from;
-        if(from.equals("album")){
+        if (from.equals("album")) {
             initItems();
-        }else if(from.equals("mark")){
+        } else if (from.equals("mark")) {
 
         }
     }
@@ -186,7 +184,7 @@ public class MyCommentModel {
     private void initItems() {
         isAddingComment = true;
         items.removeAll(items);
-        if(cursor != null && !cursor.isClosed()){
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
 
@@ -205,23 +203,29 @@ public class MyCommentModel {
             }
         }
 
-        Log.i("dongsiyuaninitItems", "initItems: " + items.size() + "cursor: " + cursor.getCount());
+        Log.i("dongsiyuaninitItems", "listAddGridinitItems: " + items.size() + "cursor: numOfUE" + cursor.getCount());
         // 增加末行提示
         listAddHint();
         //cursor.close();
         isAddingComment = false;
     }
+
     /**
      * 设置时间区间
-     * */
-    public void setTimeRegion(String from,String to){
+     */
+    public void setTimeRegion(String from, String to) {
         startTime = from;
         endTime = to;
-        Log.i("starttoend", "start3:"+from+"; end3:"+to);
+        Log.i("starttoend", "start3:" + from + "; end3:" + to);
     }
-    public void initMarkerItemsOnline(final long traceID){
 
-        currentTraceID = traceID;
+    /**
+     * 初次请求兴趣点
+     *
+     * @param traceID
+     */
+    public void initMarkerItemsOnline(final long traceID) {
+
         DownloadPoiRequest downloadPoiRequest = new DownloadPoiRequest(sp.getString("token", ""),
                 1, 100, traceID);
 
@@ -238,23 +242,110 @@ public class MyCommentModel {
                         Log.i("dongsiyuan", "onResponseData: " + interestMarkerDataList.get(i).toString());
                     }
 
+                    cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[14] + "="
+                            + Common.getUserID(context), null, null, null, "datetime("
+                            + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
+
+                    cursor.moveToFirst();
+                    // 同步云端和数据内容
+                    int eventsNum = interestMarkerDataList.size();
+
+                    // 获得一个可写的数据库，进行插入删除操作
+                    PhotoDBHelper writedDbHelper = new PhotoDBHelper(context, PhotoDBHelper.DBWRITE);
+
+                    if (eventsNum > 0) {
+                        // 将本地没有的几行插入数据库
+                        for (int i = 0; i < eventsNum; i++) {
+                            writedDbHelper.insertEvent(interestMarkerDataList.get(i));
+                            Log.i("dongsiyuan", "onResponseData: 插入兴趣点数据" + i);
+
+                            int fileNum = interestMarkerDataList.get(i).getPicCount();
+                            // 插入文件表
+                            for (int j = 0; j < fileNum; j++) {
+                                CommentMediaFilesData ev = new CommentMediaFilesData();
+                                ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
+                                ev.setFileNo(j);
+                                ev.setFileType(CommentMediaFilesData.TYPE_PIC);
+                                writedDbHelper.inserFile(ev);
+                            }
+                        }
+                    } else {    // 服务器上没有该traceID的信息 删除本地数据
+                        if (cursor.getCount() > 0) {
+                            do {
+                                if (cursor.getString(10).equals(traceID)) {
+                                    writedDbHelper.deleteEvent(cursor.getColumnName(0), String.valueOf(traceID));
+                                }
+                            } while (cursor.moveToNext());
+                        }
+
+                    }
+
+                    if (from.equals("album")) {
+                        initItems();
+                    } else if (from.equals("mark")) {
+                        //                        initItemsByTime(startTime, endTime);
+                        initItemsByTraceID(traceID);
+                        Log.i("mark", "更新标注handler");
+                    }
+                    writedDbHelper.closeDB();
+                    isAddingComment = false;
+                }
+            }
+        });
+
+        //        downloadComment(Common.currentTime());
+        //		downloadAlbum(Common.currentTime());
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
+                + traceID, null, null, null, "datetime("
+                + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
+        Log.i("dongsiyuanitemsss", "cursor: dbHelper.selectEvent " + cursor.getCount());
+        Log.i("itemsss", "MyCommentModel里的items:" + items.toString());
+        Log.i("initMarkerItemsOnline", "initMarkerItemsOnline()运行");
+        Log.i("starttoend", "start2:" + startTime + "; end2:" + endTime);
+
+    }
+
+    /**
+     * 刷新兴趣点
+     *
+     * @param traceID
+     */
+    public void refreshMarkerItemsOnline(final long traceID) {
+        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
+                + traceID, null, null, null, "datetime("
+                + PhotoDBHelper.COLUMNS_UE[0] + ") asc");
+        DownloadPoiRequest downloadPoiRequest = new DownloadPoiRequest(sp.getString("token", ""),
+                1, 100, traceID);
+
+        downloadPoiRequest.requestHttpData(new ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                if (isSuccess) {
+
+                    List<InterestMarkerData> interestMarkerDataList = (ArrayList<InterestMarkerData>) responseObject;
+                    Log.i("dongsiyuan", "onResponseData: " + interestMarkerDataList.size());
+
                     int eventsNum = interestMarkerDataList.size();
                     // 同步云端和数据内容
                     int index = 0;
                     cursor.moveToFirst();
                     // 获得一个可写的数据库，进行插入删除操作
-                    PhotoDBHelper writedDbHelper = new PhotoDBHelper(context, PhotoDBHelper.DBWRITE);
-                    // createTime
+                    PhotoDBHelper writedDbHelper = new PhotoDBHelper(context,
+                            PhotoDBHelper.DBWRITE);
                     String eventCTDB;
                     String eventCTCloud;
-                    // 本地数据中有内容,
+                    // 本地数据中有内容
                     if (cursor.getCount() > 0) {
                         // 云端也有内容
                         if (eventsNum > 0) {
                             while (index < eventsNum) {
+                                // 根据CreateTime判断服务器上的哪些兴趣点本地还没有
                                 eventCTDB = cursor.getString(0);
                                 eventCTCloud = interestMarkerDataList.get(index).getCreateTime();
-                                Log.i("POI createTime", "" + eventCTDB + "," + eventCTCloud);
+                                //Log.i("album", ""+eventCTDB+","+eventCTCloud);
                                 long leventCTDB = Common.timeStamp(eventCTDB);
                                 long leventCTCloud = Common.timeStamp(eventCTCloud);
                                 if (leventCTDB == leventCTCloud) {
@@ -278,17 +369,12 @@ public class MyCommentModel {
                                 } else {
                                     // 数据库中的一行小于云端的一行，云端一行本地没有，插入该行,数据库cursor不前移
                                     writedDbHelper.insertEvent(interestMarkerDataList.get(index));
-                                    Log.i("Eaa_insert", "getComment insert event:" + eventCTCloud);
+                                    Log.i("Eaa_insert",
+                                            "getComment insert event:"
+                                                    + eventCTCloud);
                                     // 插入文件表
-                                    int fileNum = interestMarkerDataList.get(index).getImageCount();
-                                    for (int j = 0; j < fileNum; j++) {
-                                        CommentMediaFilesData ev = new CommentMediaFilesData();
-                                        ev.setDateTime(interestMarkerDataList.get(index)
-                                                .getCreateTime());
-                                        ev.setFileNo(j);
-                                        ev.setFileType(CommentMediaFilesData.TYPE_PIC);
-                                        writedDbHelper.inserFile(ev);
-                                    }
+                                    //
+                                    //
                                     index++;
                                 }
                             }
@@ -304,64 +390,52 @@ public class MyCommentModel {
                                 } while (cursor.moveToNext());
                             }
 
-                        } else { // 如果云端没有内容，删除本地所有内容
+                        } else {        // 云端没有内容
                             writedDbHelper.deleteEvent(null);
-                            Log.i("dongiyuan", "deleteEvent: " + "success");
                         }
-                    }
 
+                    }
                     // 将本地没有的几行插入数据库
                     for (int i = index; i < eventsNum; i++) {
                         writedDbHelper.insertEvent(interestMarkerDataList.get(i));
 
-                        int fileNum = interestMarkerDataList.get(i).getPicCount();
+                        //                            int fileNum = interestMarkerDataList.get(i).getFileNum();
                         // 插入文件表
-                        for (int j = 0; j < fileNum; j++) {
-                            CommentMediaFilesData ev = new CommentMediaFilesData();
-                            ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
-                            ev.setFileNo(j);
-                            ev.setFileType(CommentMediaFilesData.TYPE_PIC);
-                            writedDbHelper.inserFile(ev);
-                        }
+                        //
+                        //
                     }
 
                     if (from.equals("album")) {
                         initItems();
                     } else if (from.equals("mark")) {
-                        initItemsByTime(startTime, endTime);
-                        initItemsByTime(traceID);
+                        initItemsByTraceID(traceID);
                         Log.i("mark", "更新标注handler");
                     }
                     writedDbHelper.closeDB();
+                    isAddingComment = false;
                 }
             }
         });
-
-//        downloadComment(Common.currentTime());
-//		downloadAlbum(Common.currentTime());
-        if(cursor != null && !cursor.isClosed()){
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
-        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[14] + "="
-                + Common.getUserID(context), null, null, null, "datetime("
+        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
+                + traceID, null, null, null, "datetime("
                 + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
-        Log.i("itemsss", "cursor:"+cursor.getCount());
-        Log.i("itemsss", "MyCommentModel里的items:"+items.toString());
-        Log.i("initMarkerItemsOnline", "initMarkerItemsOnline()运行");
-        Log.i("starttoend", "start2:"+startTime+"; end2:"+endTime);
+    }
 
+    public void initMarkerItemsFromDB() {
+        initItemsByTime(startTime, endTime);
     }
-    public void initMarkerItemsFromDB(){
-        initItemsByTime(startTime,endTime);
-    }
+
     /**
      * 查询固定时间段内的标记（评论）信息
-     *
+     * <p>
      * P.S.数据库里有信息时才可查询
-     * */
-    private void initItemsByTime(String from,String to){
+     */
+    private void initItemsByTime(String from, String to) {
         items.removeAll(items);
-        if(cursor != null && !cursor.isClosed()){
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
         //        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
@@ -369,16 +443,16 @@ public class MyCommentModel {
         //                + PhotoDBHelper.COLUMNS_UE[0] + ") between '" + from +
         //                "' and '" + to + "'", null, null, null, null);
 
-//        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
-//                + currentTraceID + " and datetime("
-//                + PhotoDBHelper.COLUMNS_UE[0] + ") between '" + from +
-//                "' and '" + to + "'", null, null, null, null);
+        //        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
+        //                + currentTraceID + " and datetime("
+        //                + PhotoDBHelper.COLUMNS_UE[0] + ") between '" + from +
+        //                "' and '" + to + "'", null, null, null, null);
 
-        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
-                + currentTraceID, null, null, null, "datetime("
+        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[14] + "="
+                + Common.getUserId(context), null, null, null, "datetime("
                 + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
 
-        Log.i("itemsssinitItemsByTime", "cursor:" + cursor.getCount() + " " + currentTraceID);
+        Log.i("itemsssinitItemsByTime", "cursor:" + cursor.getCount() + " ");
 
         numOfUE = cursor.getCount();
         if (numOfUE > 0) {
@@ -386,10 +460,15 @@ public class MyCommentModel {
                 items.add(listAddGrid());
             }
         }
-        Log.i("mark", "cursor.getCount() : "+cursor.getCount()+",items size : "+items.size());
+        Log.i("mark", "cursor.getCount() : " + cursor.getCount() + ",items size : " + items.size());
     }
 
-    public void initItemsByTime(long traceID) {
+    /**
+     * 通过traceID获取本地兴趣点
+     *
+     * @param traceID
+     */
+    public void initItemsByTraceID(long traceID) {
         items.removeAll(items);
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
@@ -399,14 +478,14 @@ public class MyCommentModel {
                 + traceID, null, null, null, "datetime("
                 + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
 
-        Log.i("itemsssinitItemsByTime", "cursor:" + cursor.getCount() + " " + traceID);
+        Log.i("dongsiyuaninitItemBT", "cursor:" + cursor.getCount() + " traceID: " + traceID);
         numOfUE = cursor.getCount();
         if (numOfUE > 0) {
             while (!cursor.isLast()) {
                 items.add(listAddGrid());
             }
         }
-        Log.i("mark", "cursor.getCount() : " + cursor.getCount() + ",items size : " + items.size());
+        Log.i("dongsiyuaninitItemBT", "cursor.getCount() : " + cursor.getCount() + ",items size : " + items.size());
     }
 
     /**
@@ -424,7 +503,7 @@ public class MyCommentModel {
      * @return
      */
     private HashMap<String, Object> listAddGrid() {
-        if (cursor.getCount() - 1 >= 0) {
+        if (cursor.getCount() > 0) {
             cursor.moveToNext();
             InterestMarkerData event = new InterestMarkerData();
             String eventTime = cursor.getString(0);
@@ -452,6 +531,7 @@ public class MyCommentModel {
             CommentMediaFilesData files[] = new CommentMediaFilesData[fileCursor.getCount()];
             Log.i("album", "Country = " + cursor.getString(5) + ",traceNo:" + cursor.getLong(14)
                     + ",filenum:" + cursor.getInt(7) + ",filesdb :" + files.length);
+
             int index = 0;
             while (fileCursor.moveToNext()) {
                 files[index] = new CommentMediaFilesData(fileCursor.getInt(0),
@@ -460,13 +540,13 @@ public class MyCommentModel {
                 // Log.i("Eaa_fileCursor", "" + index);
                 index++;
             }
+
             HashMap<String, Object> listItem = new HashMap<String, Object>();
             ListItemData data = new ListItemData(event, files);        //兴趣点列表数据类型的数据data
             listItem.put("listItem", data);
             fileCursor.close();
             return listItem;
         }
-
         return null;
     }
 
@@ -494,13 +574,13 @@ public class MyCommentModel {
      * 关闭类中的引用
      */
     public void stopModel() {
-		/*
-		 * 如果在这里closeDB,在后台还有任务时退出activity后，任务的回调中调用dbHelper会导致调用已关闭的dbHelper，
-		 * 应用崩溃，但是因为dbHelper在很多地方使用，在这个类中找不到合适的位置关闭，为了应用不崩溃，注释掉这一行。
-		 */
-//		dbHelper.closeDB();
+        /*
+         * 如果在这里closeDB,在后台还有任务时退出activity后，任务的回调中调用dbHelper会导致调用已关闭的dbHelper，
+         * 应用崩溃，但是因为dbHelper在很多地方使用，在这个类中找不到合适的位置关闭，为了应用不崩溃，注释掉这一行。
+         */
+        //		dbHelper.closeDB();
 
-        if(cursor != null && !cursor.isClosed()){
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
         isDBReady = false;
@@ -513,8 +593,11 @@ public class MyCommentModel {
      * 添加内容到ListView的尾部
      */
     public void autoAddtoList() {
+        cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[14] + "="
+                + Common.getUserId(context), null, null, null, "datetime("
+                + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
         if (!isAddingComment) {
-            Log.i("Eaa", "addComment:"+items.size());
+            Log.i("dongsiyuan", "addComment:" + items.size() + "numOfUE : " + numOfUE);
             isAddingComment = true;
             // 记录当前滚动到的位置
             int addNum = 0;
@@ -524,17 +607,19 @@ public class MyCommentModel {
                     addNum++;
                 }
             }
+
             // 这次增加的不到listOneTime，本地没有更多数据
             if (addNum < listOneTime - 1) {
                 // cloudMore为true云端有更多数据，请求云端
+                Log.i("dongsiyuancloudMore", "autoAddtoList: cloudMore" + cloudMore);
                 if (cloudMore) {
                     String lastTime;
                     if (numOfUE > 0) {
-                        lastTime = ((ListItemData) items.get(items.size() - 2)
-                                .get("listItem")).getTime();
+                        lastTime = ((ListItemData) items.get(items.size() - 2).get("listItem")).getTime();
                     } else {
                         lastTime = Common.currentTime();
                     }
+                    Log.i("dongsiyuanlastTime", "autoAddtoList: lastTime +  " + lastTime);
 
                     DownloadPoiListRequest downloadPoiListRequest = new DownloadPoiListRequest(
                             sp.getString("token", ""), 1, 100);
@@ -545,29 +630,84 @@ public class MyCommentModel {
                                 List<InterestMarkerData> interestMarkerDataList = (ArrayList<InterestMarkerData>) responseObject;
                                 Log.i("dongsiyuan", "onResponseData: " + interestMarkerDataList.size());
                                 for (int i = 0; i < interestMarkerDataList.size(); i++) {
-                                    Log.i("dongstoString()", "onReta: " + interestMarkerDataList.get(i).toString());
+                                    Log.i("dongsiyuantoString()", "onReta: " + interestMarkerDataList.get(i).toString());
                                 }
 
+                                int eventsNum = interestMarkerDataList.size();
+                                // 同步云端和数据内容
+                                int index = 0;
+                                cursor.moveToFirst();
                                 // 获得一个可写的数据库，进行插入删除操作
                                 PhotoDBHelper writedDbHelper = new PhotoDBHelper(context,
                                         PhotoDBHelper.DBWRITE);
-                                // 同步云端和数据内容
-                                int eventsNum = interestMarkerDataList.size();
+                                String eventCTDB;
+                                String eventCTCloud;
+                                // 本地数据中有内容
+                                if (cursor.getCount() > 0) {
+                                    // 云端也有内容
+                                    if (eventsNum > 0) {
+                                        while (index < eventsNum) {
+                                            // 根据CreateTime判断服务器上的哪些兴趣点本地还没有
+                                            eventCTDB = cursor.getString(0);
+                                            eventCTCloud = interestMarkerDataList.get(index).getCreateTime();
+                                            //Log.i("album", ""+eventCTDB+","+eventCTCloud);
+                                            long leventCTDB = Common.timeStamp(eventCTDB);
+                                            long leventCTCloud = Common.timeStamp(eventCTCloud);
+                                            if (leventCTDB == leventCTCloud) {
+                                                // 数据库中的一行和云端一行相等证明这一行数据已经同步，数据库和云端数据皆前移一行
+                                                Log.i("Eaa_equal", "" + eventCTDB);
+                                                index++;
+                                                if (!cursor.moveToNext()) {
+                                                    break;
+                                                }
+                                            } else if (leventCTDB > leventCTCloud) {
+                                                // 数据库中一行大于云端的一行，该行数据已经被其它设备删除，删除数据库中这一行,云端不前移
+                                                writedDbHelper
+                                                        .deleteEvent("datetime(CreateTime) = datetime('"
+                                                                + eventCTDB + "')");
+                                                Log.i("Eaa_delete",
+                                                        "getComment delete event:"
+                                                                + eventCTDB);
+                                                if (!cursor.moveToNext()) {
+                                                    break;
+                                                }
+                                            } else {
+                                                // 数据库中的一行小于云端的一行，云端一行本地没有，插入该行,数据库cursor不前移
+                                                writedDbHelper.insertEvent(interestMarkerDataList.get(index));
+                                                Log.i("Eaa_insert",
+                                                        "getComment insert event:"
+                                                                + eventCTCloud);
+                                                // 插入文件表
+                                                //
+                                                //
+                                                index++;
+                                            }
+                                        }
+                                        if (!cursor.isAfterLast() && !cloudMore) {
+                                            // 如果本地数据多于云端，删除本地数据多出的部分
 
-                                // 将本地没有的几行插入数据库
-                                for (int i = 0; i < eventsNum; i++) {
-                                    writedDbHelper.insertEvent(interestMarkerDataList.get(i));
-                                    int fileNum = interestMarkerDataList.get(i).getImageCount();
-                                    // 插入文件表
-                                    for (int j = 0; j < fileNum; j++) {
-                                        CommentMediaFilesData ev = new CommentMediaFilesData();
-                                        ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
-                                        ev.setFileNo(j);
-                                        ev.setFileType(CommentMediaFilesData.TYPE_PIC);
-                                        writedDbHelper.inserFile(ev);
+                                            do {
+                                                eventCTDB = cursor.getString(0);
+                                                writedDbHelper
+                                                        .deleteEvent("datetime(CreateTime) = datetime('"
+                                                                + eventCTDB + "')");
+
+                                            } while (cursor.moveToNext());
+                                        }
+
+                                    } else {        // 云端没有内容
+                                        writedDbHelper.deleteEvent(null);
                                     }
                                 }
+                                // 将本地没有的几行插入数据库
+                                for (int i = index; i < eventsNum; i++) {
+                                    writedDbHelper.insertEvent(interestMarkerDataList.get(i));
 
+                                    //                            int fileNum = interestMarkerDataList.get(i).getFileNum();
+                                    // 插入文件表
+                                    //
+                                    //
+                                }
                                 // 重新查询本地数据
                                 if (cursor != null && !cursor.isClosed()) {
                                     cursor.close();
@@ -576,9 +716,6 @@ public class MyCommentModel {
                                         PhotoDBHelper.COLUMNS_UE[14] + "=" + Common.getUserId(context),
                                         null, null, null, "datetime("
                                                 + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
-
-                                Log.i("dongsiyuanautoAddtoList", "onResponseData: " + cursor.getCount());
-
                                 cursor.moveToPosition(numOfUE - 1);
                                 numOfUE = cursor.getCount();
 
@@ -594,12 +731,13 @@ public class MyCommentModel {
                                     // 删除末栏提示再添加以更改提示文本
                                     items.get(items.size() - 1).put("listItem", "nomore");
                                 }
-                                //cursor.close();
                                 writedDbHelper.closeDB();
+                                isAddingComment = false;
+                            } else {
+                                Log.i("dongsiyuanDownloadPoi", "onResponseData: Failed" + code);
                             }
                         }
                     });
-                    isAddingComment = false;
                     //                    GetAlbum gct = new GetAlbum(requestAlbum,
                     //                            Common.URL_DOWNEVENT, Common.getUserId(context),
                     //                            lastTime, Common.getDeviceId(context), "no");
@@ -613,14 +751,13 @@ public class MyCommentModel {
                     // 请求评论结束，通知UI线程更改提示文本
                     items.get(items.size() - 1).put("listItem", "nomore");
                     mDownComment.onCommentDownload(0);
-                    isAddingComment= false;
+                    isAddingComment = false;
                 }
-            }else{
+            } else {
                 mDownComment.onCommentDownload(0);
-                isAddingComment= false;
+                isAddingComment = false;
             }
         }
-
     }
 
     /**
@@ -640,18 +777,19 @@ public class MyCommentModel {
         downComment.start();
 
     }
+
     /**
      * 下载相册
      *
      * @param dateTime
      */
-    public void downloadAlbum(String dateTime){
+    public void downloadAlbum(String dateTime) {
         isAddingComment = true;
-//        GetAlbum downAlbum = new GetAlbum(refreshAlbum,
-//                Common.URL_DOWNEVENT, Common.getUserId(context),
-//                dateTime, Common.getDeviceId(context), "yes");
-//        Log.i("Eaa", "downloadaAlbum:"+dateTime);
-//        downAlbum.start();
+        //        GetAlbum downAlbum = new GetAlbum(refreshAlbum,
+        //                Common.URL_DOWNEVENT, Common.getUserId(context),
+        //                dateTime, Common.getDeviceId(context), "yes");
+        //        Log.i("Eaa", "downloadaAlbum:"+dateTime);
+        //        downAlbum.start();
 
         // 测试下载兴趣点
         DownloadPoiListRequest downloadPoiListRequest = new DownloadPoiListRequest(
@@ -666,59 +804,90 @@ public class MyCommentModel {
                         Log.i("dongstoString()", "onReta: " + interestMarkerDataList.get(i).toString());
                     }
 
+                    int eventsNum = interestMarkerDataList.size();
+                    // 同步云端和数据内容
+                    int index = 0;
+                    cursor.moveToFirst();
                     // 获得一个可写的数据库，进行插入删除操作
                     PhotoDBHelper writedDbHelper = new PhotoDBHelper(context,
                             PhotoDBHelper.DBWRITE);
-                    // 同步云端和数据内容
-                    int eventsNum = interestMarkerDataList.size();
+                    String eventCTDB;
+                    String eventCTCloud;
+                    // 本地数据中有内容
+                    if (cursor.getCount() > 0) {
+                        // 云端也有内容
+                        if (eventsNum > 0) {
+                            while (index < eventsNum) {
+                                // 根据CreateTime判断服务器上的哪些兴趣点本地还没有
+                                eventCTDB = cursor.getString(0);
+                                eventCTCloud = interestMarkerDataList.get(index).getCreateTime();
+                                //Log.i("album", ""+eventCTDB+","+eventCTCloud);
+                                long leventCTDB = Common.timeStamp(eventCTDB);
+                                long leventCTCloud = Common.timeStamp(eventCTCloud);
+                                if (leventCTDB == leventCTCloud) {
+                                    // 数据库中的一行和云端一行相等证明这一行数据已经同步，数据库和云端数据皆前移一行
+                                    Log.i("Eaa_equal", "" + eventCTDB);
+                                    index++;
+                                    if (!cursor.moveToNext()) {
+                                        break;
+                                    }
+                                } else if (leventCTDB > leventCTCloud) {
+                                    // 数据库中一行大于云端的一行，该行数据已经被其它设备删除，删除数据库中这一行,云端不前移
+                                    writedDbHelper
+                                            .deleteEvent("datetime(CreateTime) = datetime('"
+                                                    + eventCTDB + "')");
+                                    Log.i("Eaa_delete",
+                                            "getComment delete event:"
+                                                    + eventCTDB);
+                                    if (!cursor.moveToNext()) {
+                                        break;
+                                    }
+                                } else {
+                                    // 数据库中的一行小于云端的一行，云端一行本地没有，插入该行,数据库cursor不前移
+                                    writedDbHelper.insertEvent(interestMarkerDataList.get(index));
+                                    Log.i("Eaa_insert",
+                                            "getComment insert event:"
+                                                    + eventCTCloud);
+                                    // 插入文件表
+                                    //
+                                    //
+                                    index++;
+                                }
+                            }
+                            if (!cursor.isAfterLast() && !cloudMore) {
+                                // 如果本地数据多于云端，删除本地数据多出的部分
 
-                    // 将本地没有的几行插入数据库
-                    for (int i = 0; i < eventsNum; i++) {
-                        writedDbHelper.insertEvent(interestMarkerDataList.get(i));
-                        int fileNum = interestMarkerDataList.get(i).getImageCount();
-                        // 插入文件表
-                        for (int j = 0; j < fileNum; j++) {
-                            CommentMediaFilesData ev = new CommentMediaFilesData();
-                            ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
-                            ev.setFileNo(j);
-                            ev.setFileType(CommentMediaFilesData.TYPE_PIC);
-                            writedDbHelper.inserFile(ev);
+                                do {
+                                    eventCTDB = cursor.getString(0);
+                                    writedDbHelper
+                                            .deleteEvent("datetime(CreateTime) = datetime('"
+                                                    + eventCTDB + "')");
+
+                                } while (cursor.moveToNext());
+                            }
+                        } else {
+                            writedDbHelper.deleteEvent(null);
                         }
                     }
+                    // 将本地没有的几行插入数据库
+                    for (int i = index; i < eventsNum; i++) {
+                        writedDbHelper.insertEvent(interestMarkerDataList.get(i));
 
-                    // 重新查询本地数据
-                    if (cursor != null && !cursor.isClosed()) {
-                        cursor.close();
-                    }
-                    cursor = dbHelper.selectEvent(null,
-                            PhotoDBHelper.COLUMNS_UE[14] + "=" + Common.getUserId(context),
-                            null, null, null, "datetime("
-                                    + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
-
-                    Log.i("dongsiyuanautoAddtoList", "onResponseData: " + cursor.getCount());
-
-                    cursor.moveToPosition(numOfUE - 1);
-                    numOfUE = cursor.getCount();
-
-                    // 记录当前滚动到的位置
-                    // int setPosition = lView.getFirstVisiblePosition() + 1;
-                    int addNum = 0;
-                    while (!cursor.isLast() && addNum < listOneTime) {
-                        items.add(items.size() - 1, listAddGrid());
-                        addNum++;
+                        //                            int fileNum = interestMarkerDataList.get(i).getFileNum();
+                        // 插入文件表
+                        //
+                        //
                     }
 
-                    if (!cloudMore) {
-                        // 删除末栏提示再添加以更改提示文本
-                        items.get(items.size() - 1).put("listItem", "nomore");
+                    if (from.equals("album")) {
+                        initItems();
                     }
-                    //cursor.close();
                     writedDbHelper.closeDB();
+                    isAddingComment = false;
                 }
+
             }
         });
-        isAddingComment = false;
-
     }
 
     /**
@@ -747,7 +916,7 @@ public class MyCommentModel {
     public void downloadThumbFile(int position, String dateTime) {
         GetThumbPic getThumb = new GetThumbPic(new RequestThembFiles(position,
                 dateTime), Common.URL_DOWNEVENT, Common.getUserId(context),
-                dateTime,Common.getDeviceId(context));
+                dateTime, Common.getDeviceId(context));
         getThumb.start();
     }
 
@@ -760,17 +929,19 @@ public class MyCommentModel {
     public boolean deleteComment(String dateTime, int listPosition) {
         DeleteCloudComment dcc = new DeleteCloudComment(context,
                 new DeleteCloudEvent(listPosition), Common.URL_DELETEEVENT,
-                Common.getUserId(context), dateTime,Common.getDeviceId(context));
+                Common.getUserId(context), dateTime, Common.getDeviceId(context));
         dcc.start();
         return false;
     }
-    public boolean deleteComment(String startTime,String endTime) {
+
+    public boolean deleteComment(String startTime, String endTime) {
         DeleteCloudComment dcc = new DeleteCloudComment(context,
                 new DeleteCloudEvent(), Common.URL_DELETEEVENT,
-                Common.getUserId(context), startTime,endTime,Common.getDeviceId(context));
+                Common.getUserId(context), startTime, endTime, Common.getDeviceId(context));
         dcc.start();
         return false;
     }
+
     /**
      * 修改背景
      *
@@ -825,7 +996,7 @@ public class MyCommentModel {
     private Handler requestComment = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
-            if(!isDBReady){
+            if (!isDBReady) {
                 Log.i("album", "db closed return");
                 return;
             }
@@ -869,7 +1040,7 @@ public class MyCommentModel {
                     }
 
                     // 重新查询本地数据
-                    if(cursor != null && !cursor.isClosed()){
+                    if (cursor != null && !cursor.isClosed()) {
                         cursor.close();
                     }
                     cursor = dbHelper.selectEvent(null,
@@ -908,7 +1079,7 @@ public class MyCommentModel {
     private Handler requestAlbum = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
-            if(!isDBReady){
+            if (!isDBReady) {
                 Log.i("album", "db closed return");
                 return;
             }
@@ -925,7 +1096,7 @@ public class MyCommentModel {
 
                     String more = "";
                     more = cloudComment.getMore();
-                    Log.i("cloudComment", "requestAlbum:"+cloudComment.getMore());
+                    Log.i("cloudComment", "requestAlbum:" + cloudComment.getMore());
                     if (more.equals("no")) {
                         cloudMore = false;
                     } else {
@@ -953,7 +1124,7 @@ public class MyCommentModel {
                     }
 
                     // 重新查询本地数据
-                    if(cursor != null && !cursor.isClosed()){
+                    if (cursor != null && !cursor.isClosed()) {
                         cursor.close();
                     }
                     cursor = dbHelper.selectEvent(null,
@@ -997,26 +1168,28 @@ public class MyCommentModel {
         public DeleteCloudEvent(int position) {
             this.position = position;
         }
+
         public DeleteCloudEvent() {
 
         }
+
         public void handleMessage(android.os.Message msg) {
-            if(!isDBReady){
+            if (!isDBReady) {
                 Log.i("album", "db closed return");
                 return;
             }
             switch (msg.what) {
                 case 0: { // 删除成功
-                    if(position > -1){
+                    if (position > -1) {
                         TraceDBHelper traceHelper = new TraceDBHelper(context);
                         TraceData tracedata = new TraceData();
                         InterestMarkerData comment = new InterestMarkerData();
-                        comment = ((ListItemData)items.get(position).get("listItem")).getEvent();
+                        comment = ((ListItemData) items.get(position).get("listItem")).getEvent();
                         long traceNo = comment.getTraceNo();
                         String userID = comment.getUserId();
-                        tracedata = traceHelper.queryfromTrailbytraceNo(traceNo,userID);
-                        if(tracedata!=null){
-                            tracedata.setPoiCount(tracedata.getPoiCount()-1);
+                        tracedata = traceHelper.queryfromTrailbytraceNo(traceNo, userID);
+                        if (tracedata != null) {
+                            tracedata.setPoiCount(tracedata.getPoiCount() - 1);
                             traceHelper.updatetrail(tracedata, traceNo, userID);
                         }
                         items.remove(position);
@@ -1030,7 +1203,9 @@ public class MyCommentModel {
             // 通知UI线程删除结果
             mDeleteComment.onCommentDeleted(msg.what);
         }
-    };
+    }
+
+    ;
 
     /**
      * 刷新数据请求完成后的回调 如果数据请求成功，同步数据
@@ -1039,7 +1214,7 @@ public class MyCommentModel {
     private Handler refreshComment = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
-            if(!isDBReady){
+            if (!isDBReady) {
                 Log.i("album", "db closed return");
                 return;
             }
@@ -1150,11 +1325,11 @@ public class MyCommentModel {
                         }
                     }
 
-                    if(from.equals("album")){
+                    if (from.equals("album")) {
                         initItems();
-                    }else if(from.equals("mark")){
-                        initItemsByTime(startTime,endTime);
-                        Log.i("mark","更新标注handler");
+                    } else if (from.equals("mark")) {
+                        initItemsByTime(startTime, endTime);
+                        Log.i("mark", "更新标注handler");
                     }
                     writedDbHelper.closeDB();
                     break;
@@ -1172,7 +1347,7 @@ public class MyCommentModel {
     private Handler refreshAlbum = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
-            if(!isDBReady){
+            if (!isDBReady) {
                 Log.i("album", "db closed return");
                 return;
             }
@@ -1284,11 +1459,11 @@ public class MyCommentModel {
                         }
                     }
 
-                    if(from.equals("album")){
+                    if (from.equals("album")) {
                         initItems();
-                    }else if(from.equals("mark")){
-                        initItemsByTime(startTime,endTime);
-                        Log.i("mark","更新标注handler");
+                    } else if (from.equals("mark")) {
+                        initItemsByTime(startTime, endTime);
+                        Log.i("mark", "更新标注handler");
                     }
                     writedDbHelper.closeDB();
                     break;
@@ -1307,8 +1482,8 @@ public class MyCommentModel {
      */
     private class RequestThembFiles extends Handler {
         ArrayList<HashMap<String, String>> images;
-        String createTime;
-        int position;
+        String                             createTime;
+        int                                position;
 
         public RequestThembFiles(int position, String createTime) {
             this.createTime = createTime;
@@ -1318,7 +1493,7 @@ public class MyCommentModel {
 
         @Override
         public void handleMessage(android.os.Message msg) {
-            if(!isDBReady){
+            if (!isDBReady) {
                 Log.i("album", "db closed return");
                 return;
             }
@@ -1343,7 +1518,7 @@ public class MyCommentModel {
                     // 加载缩略图到gridView,同时更新EventFiles 数据库表
                     images.removeAll(images);
                     int index = 0;
-                    for (Iterator iterator = thumbs.iterator(); iterator.hasNext();) {
+                    for (Iterator iterator = thumbs.iterator(); iterator.hasNext(); ) {
                         DownThumbData thumbPic = (DownThumbData) iterator.next();
                         int fileType = 1;
                         if (thumbPic.getFileType().equals("pic")) {
@@ -1429,9 +1604,9 @@ public class MyCommentModel {
     private class RequestFile extends Handler {
         private String cloudPicture = null;
         private String createTime;
-        private int listPosition;
-        private int fileNo;
-        private int fileType;
+        private int    listPosition;
+        private int    fileNo;
+        private int    fileType;
 
         public RequestFile(int listPosition, int no, int type) {
             this.listPosition = listPosition;
@@ -1442,7 +1617,7 @@ public class MyCommentModel {
         }
 
         public void handleMessage(android.os.Message msg) {
-            if(!isDBReady){
+            if (!isDBReady) {
                 Log.i("album", "db closed return");
                 return;
             }

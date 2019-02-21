@@ -17,23 +17,23 @@ import com.trackersurvey.bean.InterestMarkerData;
  */
 
 public class PhotoDBHelper {
-    public static final int DBREAD = 1;
+    public static final int DBREAD  = 1;
     public static final int DBWRITE = 2;
 
-    private static final String DB_NAME = "happyNavi.db";
-    private static final int DB_VERSION = 4;
+    private static final String DB_NAME    = "happyNavi.db";
+    private static final int    DB_VERSION = 4;
 
-    private static final String USEREVENT_TABLE = "UserEvent";
-    public  static final String[] COLUMNS_UE = { "CreateTime", "PoiNo", "Longitude",
+    private static final String   USEREVENT_TABLE = "UserEvent";
+    public static final  String[] COLUMNS_UE      = {"CreateTime", "PoiNo", "Longitude",
             "Latitude", "Altitude", "Country", "Province", "City", "PlaceName", "Context", "TraceID",
-            "FileNum", "Video", "Audio", "UserID","Feeling","Behaviour",
-            "Duration","Companion","Relationship", "StateType", "Share"};
+            "FileNum", "Video", "Audio", "UserID", "Feeling", "Behaviour",
+            "Duration", "Companion", "Relationship", "StateType", "Share"};
 
-    private static final String FILE_TABLE = "EventFile";
-    public static final String[] COLUMNS_FILE = { "FileID", "FileName",
-            "CreateTime", "FileType", "ThumbnailName" };
+    private static final String   FILE_TABLE   = "EventFile";
+    public static final  String[] COLUMNS_FILE = {"FileID", "FileName",
+            "CreateTime", "FileType", "ThumbnailName"};
 
-    private DBOpenHelper helper;
+    private DBOpenHelper   helper;
     private SQLiteDatabase dbRead;
     private SQLiteDatabase dbWrite;
 
@@ -55,7 +55,8 @@ public class PhotoDBHelper {
                 + COLUMNS_UE[19] + " integer default 0,"
                 + COLUMNS_UE[20] + " integer default 0,"
                 + COLUMNS_UE[21] + " integer default 0,"
-                + " PRIMARY KEY(" + COLUMNS_UE[0] + "," + COLUMNS_UE[14]
+                //                + " PRIMARY KEY(" + COLUMNS_UE[0] + "," + COLUMNS_UE[14]
+                + " PRIMARY KEY(" + COLUMNS_UE[0]
                 + "));";
         private static final String CREATE_EVENTFILE = "CREATE TABLE "
                 + FILE_TABLE + "(" + COLUMNS_FILE[0] + " integer ,"
@@ -81,20 +82,20 @@ public class PhotoDBHelper {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             //db.execSQL("drop table if exists " + USEREVENT_TABLE);// 删除旧版表格
             //onCreate(db); // 创建表格
-            if(oldVersion == 1){
-                db.execSQL("ALTER TABLE "+USEREVENT_TABLE+" RENAME TO "+USEREVENT_TABLE+"_TEMP");
+            if (oldVersion == 1) {
+                db.execSQL("ALTER TABLE " + USEREVENT_TABLE + " RENAME TO " + USEREVENT_TABLE + "_TEMP");
                 db.execSQL(CREATE_USEREVENT);
-                db.execSQL("INSERT INTO "+USEREVENT_TABLE+"("+COLUMNS_UE[0]+","
-                        +COLUMNS_UE[1]+","+COLUMNS_UE[2]+","+COLUMNS_UE[3]+","
-                        +COLUMNS_UE[4]+","+COLUMNS_UE[5]+","+COLUMNS_UE[6]+","
-                        +COLUMNS_UE[7]+","+COLUMNS_UE[8]+","+COLUMNS_UE[9]+","
-                        +COLUMNS_UE[10]+")"+" SELECT "+COLUMNS_UE[0]+","
-                        +COLUMNS_UE[1]+","+COLUMNS_UE[2]+","+COLUMNS_UE[3]+","
-                        +COLUMNS_UE[4]+","+COLUMNS_UE[5]+","+COLUMNS_UE[6]+","
-                        +COLUMNS_UE[7]+","+COLUMNS_UE[8]+","+COLUMNS_UE[9]+","
-                        +COLUMNS_UE[10]+" FROM "+USEREVENT_TABLE+"_TEMP");
-                db.execSQL("DROP TABLE "+USEREVENT_TABLE+"_TEMP");
-            }else if(oldVersion == 2){
+                db.execSQL("INSERT INTO " + USEREVENT_TABLE + "(" + COLUMNS_UE[0] + ","
+                        + COLUMNS_UE[1] + "," + COLUMNS_UE[2] + "," + COLUMNS_UE[3] + ","
+                        + COLUMNS_UE[4] + "," + COLUMNS_UE[5] + "," + COLUMNS_UE[6] + ","
+                        + COLUMNS_UE[7] + "," + COLUMNS_UE[8] + "," + COLUMNS_UE[9] + ","
+                        + COLUMNS_UE[10] + ")" + " SELECT " + COLUMNS_UE[0] + ","
+                        + COLUMNS_UE[1] + "," + COLUMNS_UE[2] + "," + COLUMNS_UE[3] + ","
+                        + COLUMNS_UE[4] + "," + COLUMNS_UE[5] + "," + COLUMNS_UE[6] + ","
+                        + COLUMNS_UE[7] + "," + COLUMNS_UE[8] + "," + COLUMNS_UE[9] + ","
+                        + COLUMNS_UE[10] + " FROM " + USEREVENT_TABLE + "_TEMP");
+                db.execSQL("DROP TABLE " + USEREVENT_TABLE + "_TEMP");
+            } else if (oldVersion == 2) {
                 db.execSQL("drop table if exists " + USEREVENT_TABLE);
                 db.execSQL(CREATE_USEREVENT);
             } else if (oldVersion == 3) {
@@ -113,8 +114,7 @@ public class PhotoDBHelper {
 
     /**
      * @param context
-     * @param operation
-     *            DBREAD只读 DBWRITE读写
+     * @param operation DBREAD只读 DBWRITE读写
      */
     public PhotoDBHelper(Context context, int operation) {
         helper = new DBOpenHelper(context);
@@ -154,7 +154,7 @@ public class PhotoDBHelper {
             values.put(COLUMNS_UE[20], event.getStateType());
             values.put(COLUMNS_UE[21], event.getShare());
             long row = dbWrite.insert(USEREVENT_TABLE, null, values);
-            Log.i("PhotoDB", "PhotoDB, row: " + row);
+            Log.i("dongsiyuanPhotoDB", "PhotoDB, row: " + row);
         } catch (SQLException e) {
             return -1;
         }
@@ -163,6 +163,7 @@ public class PhotoDBHelper {
 
     /**
      * 删除事件，同时删除事件文件
+     *
      * @param where
      * @return
      */
@@ -187,6 +188,7 @@ public class PhotoDBHelper {
 
     /**
      * 插入到file表
+     *
      * @param files
      * @return
      */
@@ -227,6 +229,7 @@ public class PhotoDBHelper {
 
     /**
      * 删除对应CreateTime的所有文件
+     *
      * @param where
      * @return
      */
@@ -240,36 +243,36 @@ public class PhotoDBHelper {
 
     /**
      * 更新file表
+     *
      * @param values
      * @param where
      * @return
      */
-    public int updateFile(ContentValues values,String where){
-        try{
+    public int updateFile(ContentValues values, String where) {
+        try {
             return dbWrite.update(FILE_TABLE, values, where, null);
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return -1;
         }
     }
 
     /**
-     *
-     * @param dateTime  要删除的事件的创建时间
-     * @param userId    要删除的事件所属的用户
+     * @param dateTime 要删除的事件的创建时间
+     * @param userId   要删除的事件所属的用户
      * @return
      */
-    public int deleteEvent(String dateTime,String userId){
-        try{
-            String UEwhereClause = COLUMNS_UE[0]+"=? and "+COLUMNS_UE[10]+"=?";
-            String[] UEwhereArgs = {dateTime,userId};
-            dbWrite.delete(USEREVENT_TABLE, UEwhereClause,UEwhereArgs );
+    public int deleteEvent(String dateTime, String traceID) {
+        try {
+            String UEwhereClause = COLUMNS_UE[0] + "=? and " + COLUMNS_UE[10] + "=?";
+            String[] UEwhereArgs = {dateTime, traceID};
+            dbWrite.delete(USEREVENT_TABLE, UEwhereClause, UEwhereArgs);
 
-            String FileWhere = COLUMNS_FILE[2]+"=?";
+            String FileWhere = COLUMNS_FILE[2] + "=?";
             String[] FileArgs = {dateTime};
 
             dbWrite.delete(FILE_TABLE, FileWhere, FileArgs);
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return -1;
         }
@@ -277,17 +280,17 @@ public class PhotoDBHelper {
         return 0;
     }
 
-    public int deleteEvent(String startTime,String endTime,String userId){
-        try{
-            String UEwhereClause = COLUMNS_UE[0]+" between ? and ? and "+COLUMNS_UE[10]+"=?";
-            String[] UEwhereArgs = {startTime,endTime,userId};
-            dbWrite.delete(USEREVENT_TABLE, UEwhereClause,UEwhereArgs );
+    public int deleteEvent(String startTime, String endTime, String userId) {
+        try {
+            String UEwhereClause = COLUMNS_UE[0] + " between ? and ? and " + COLUMNS_UE[10] + "=?";
+            String[] UEwhereArgs = {startTime, endTime, userId};
+            dbWrite.delete(USEREVENT_TABLE, UEwhereClause, UEwhereArgs);
 
-            String FileWhere = COLUMNS_FILE[2]+" between ? and ? ";
-            String[] FileArgs = {startTime,endTime};
+            String FileWhere = COLUMNS_FILE[2] + " between ? and ? ";
+            String[] FileArgs = {startTime, endTime};
 
             dbWrite.delete(FILE_TABLE, FileWhere, FileArgs);
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return -1;
         }

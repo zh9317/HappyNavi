@@ -30,48 +30,49 @@ import java.util.Locale;
  */
 
 public class ShowPoiFragment extends Fragment {
-    private SlideListView lView; // 界面的评论列表
-    private PoiEventReceiver poiReceiver;
+    private        SlideListView                      lView; // 界面的评论列表
+    private        PoiEventReceiver                   poiReceiver;
     // 个人相册的数据模型
     //private MyCommentModel ShowTraceFragment.myComment;
     // listView的适配器
-    private ListBaseAdapter listAdapter;
-    private Context context;
-    private ArrayList<HashMap<String, Object>> items;
-    public final String UPDATEUI_ACTION="android.intent.action.UPDATEUI_RECEIVER";
-    public final String INITADAPTER_ACTION="android.intent.action.ADAPTER_RECEIVER";
-    private static MyCommentModel myComment;
+    private        ListBaseAdapter                    listAdapter;
+    private        Context                            context;
+    private        ArrayList<HashMap<String, Object>> items;
+    public final   String                             UPDATEUI_ACTION    = "android.intent.action.UPDATEUI_RECEIVER";
+    public final   String                             INITADAPTER_ACTION = "android.intent.action.ADAPTER_RECEIVER";
+    private static MyCommentModel                     myComment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         View view = inflater.inflate(R.layout.fragment_show_poi, container, false);
 
-//        Resources resources = getResources();
-//        Configuration configure = resources.getConfiguration();
-//        DisplayMetrics dm = resources.getDisplayMetrics();
-//        if(TabHost_Main.l==0){
-//            configure.locale = Locale.CHINESE;
-//        }
-//        if(TabHost_Main.l==1){
-//            configure.locale = Locale.ENGLISH;
-//        }
-//        resources.updateConfiguration(configure, dm);
+        //        Resources resources = getResources();
+        //        Configuration configure = resources.getConfiguration();
+        //        DisplayMetrics dm = resources.getDisplayMetrics();
+        //        if(TabHost_Main.l==0){
+        //            configure.locale = Locale.CHINESE;
+        //        }
+        //        if(TabHost_Main.l==1){
+        //            configure.locale = Locale.ENGLISH;
+        //        }
+        //        resources.updateConfiguration(configure, dm);
 
-        context=getActivity();
+        context = getActivity();
         myComment = new MyCommentModel(context, "mark");
 
         Common.createFileDir();
         //initModel();
 
-        items = new ArrayList<HashMap<String,Object>>();
+        items = new ArrayList<HashMap<String, Object>>();
         lView = (SlideListView) view.findViewById(R.id.poi_lv);
         initAdapter();
 
         poiReceiver = new PoiEventReceiver();
-        IntentFilter pullFilter=new IntentFilter();
-        pullFilter.addAction(INITADAPTER_ACTION);
+
+        IntentFilter pullFilter = new IntentFilter();
         pullFilter.addAction(UPDATEUI_ACTION);
+        pullFilter.addAction(INITADAPTER_ACTION);
         context.registerReceiver(poiReceiver, pullFilter);
         return view;
     }
@@ -80,8 +81,9 @@ public class ShowPoiFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            // TODO Auto-generated method stub
-            if(intent.getAction().equals(UPDATEUI_ACTION)){
+
+            if (intent.getAction().equals(UPDATEUI_ACTION)) {
+                Log.i("dongsiyuansendBroadcast", "onReceive: sendBroadcast");
                 updateUI();
             }
         }
@@ -89,15 +91,13 @@ public class ShowPoiFragment extends Fragment {
     }
 
 
-
-
     /**
      * 初始化适配器，设置ListView的item的子组件的监听
      */
     private void initAdapter() {
-        listAdapter = new ListBaseAdapter(context, ShowTraceFragment.myComment,items,"mark");
+        listAdapter = new ListBaseAdapter(context, ShowTraceFragment.myComment, items, "mark");
 
-//		myComment = new MyCommentModel(context, "album");
+        //		myComment = new MyCommentModel(context, "album");
 
         //监听删除按钮
         listAdapter.setDeleCommListener(new ListBaseAdapter.DeleCommListener() {
@@ -110,23 +110,24 @@ public class ShowPoiFragment extends Fragment {
         initListView();
 
     }
-    private void initListView(){
+
+    private void initListView() {
         // 我的评论 界面中的ListView
-//				lView.initSlideMode(SlideListView.MOD_RIGHT);
+        //				lView.initSlideMode(SlideListView.MOD_RIGHT);
 
         lView.setAdapter(listAdapter);
 
         lView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-//						if (scrollState == OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
-//								|| scrollState == OnScrollListener.SCROLL_STATE_FLING) {
-//							if ((view.getLastVisiblePosition() == view.getCount() - 1)
-//									&&ShowTraceFragment.myComment.cloudMore()) {
-//								Log.i("Eaa", "自动加载评论,size="+view.getCount() );
-//								ShowTraceFragment.myComment.autoAddtoList();
-//							}
-//						}
+//                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
+//                        || scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+//                    if ((view.getLastVisiblePosition() == view.getCount() - 1)
+//                            && ShowTraceFragment.myComment.cloudMore()) {
+//                        Log.i("Eaa", "自动加载评论,size=" + view.getCount());
+//                        ShowTraceFragment.myComment.autoAddtoList();
+//                    }
+//                }
             }
 
             @Override
@@ -147,6 +148,7 @@ public class ShowPoiFragment extends Fragment {
 
     /**
      * 弹出对话框让用户选择是否确认删除一条评论
+     *
      * @param dateTime
      * @param position
      */
@@ -183,11 +185,10 @@ public class ShowPoiFragment extends Fragment {
     /**
      * 刷新界面
      */
-    public void updateUI(){
-
+    public void updateUI() {
         listAdapter.setItems(ShowTraceFragment.myComment.getItems());
         listAdapter.notifyDataSetChanged();
-        Log.i("itemsss", "ShowPoiFragment:"+ShowTraceFragment.myComment.getItems().toString());
+        Log.i("dongsiyuanUpdateUI", "ShowPoiFragment:" + ShowTraceFragment.myComment.getItems().toString());
 
     }
 
@@ -205,16 +206,18 @@ public class ShowPoiFragment extends Fragment {
         //ShowTraceFragment.myComment.stopModel();
         //ShowTraceFragment.myComment = null;
         listAdapter = null;
-        if(null!=poiReceiver){
+        if (null != poiReceiver) {
             context.unregisterReceiver(poiReceiver);
         }
         super.onDestroy();
     }
-    public int getItemsNum(){
+
+    public int getItemsNum() {
         int itemsNum = items.size();
-        return itemsNum ;
+        return itemsNum;
     }
-    public ArrayList<HashMap<String, Object>> getItems(){
+
+    public ArrayList<HashMap<String, Object>> getItems() {
         return items;
     }
 }
