@@ -1,9 +1,5 @@
 package com.trackersurvey.http;
 
-import android.util.Log;
-
-import com.trackersurvey.util.Common;
-import com.trackersurvey.util.HMAC_SHA1_Util;
 import com.trackersurvey.util.UrlHeader;
 
 import okhttp3.FormBody;
@@ -29,7 +25,7 @@ public class StartTraceRequest extends HttpUtil {
 
     @Override
     public String getUrl() {
-        return UrlHeader.UPLOAD_TRACE_URL;
+        return UrlHeader.UPLOAD_START_TRACE_URL;
     }
 
     @Override

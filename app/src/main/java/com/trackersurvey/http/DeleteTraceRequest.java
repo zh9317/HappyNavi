@@ -13,16 +13,12 @@ import okhttp3.RequestBody;
 
 public class DeleteTraceRequest extends HttpUtil {
 
-    private String _timestamp;
-    private String Token;
-    private String TraceID;
-    private String IsDelPoi;
+    private String token;
+    private String traceID;
 
-    public DeleteTraceRequest(String _timestamp, String token, String traceID, String isDelPoi) {
-        this._timestamp = _timestamp;
-        Token = token;
-        TraceID = traceID;
-        IsDelPoi = isDelPoi;
+    public DeleteTraceRequest(String token, String traceID) {
+        this.token = token;
+        this.traceID = traceID;
     }
 
     @Override
@@ -32,16 +28,9 @@ public class DeleteTraceRequest extends HttpUtil {
 
     @Override
     public RequestBody parameter() {
-        String _sign = HMAC_SHA1_Util.genHMAC(Common.secretKey+"_appkey"+Common._appkey
-                +"_timestamp"+_timestamp+"Token"+Token +"TraceID"+TraceID+"IsDelPoi"+IsDelPoi
-                +Common.secretKey, Common.secretKey);
         RequestBody requestBody = new FormBody.Builder()
-                .add("_appkey", Common._appkey)
-                .add("_sign", _sign)
-                .add("_timestamp", _timestamp)
-                .add("Token", Token)
-                .add("TraceID", TraceID)
-                .add("IsDelPoi", String.valueOf(IsDelPoi))
+                .add("token", token)
+                .add("traceID", traceID)
                 .build();
         return requestBody;
     }

@@ -8,6 +8,9 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
+/**
+ * 上传文件
+ */
 public class UploadFileRequest extends HttpUtil {
 
     private String token;

@@ -39,22 +39,6 @@ public class UploadPoiRequest extends HttpUtil {
 
     @Override
     public RequestBody parameter() {
-//        MediaType MEDIA_TYPE_PNG = MediaType.parse("image/jpg");
-//        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-//        File file = new File(File);
-//        builder.addFormDataPart("token", token);
-//        builder.addFormDataPart("tracePoi", tracePoi);
-//        if (!File.equals("")) { // 有文件
-//            if (fileType == 1) {
-//                for (int i = 0; i < picList.size(); i++) {
-//                    builder.addFormDataPart("file" + i, picList.get(i), RequestBody.create(MEDIA_TYPE_PNG, file));
-//                }
-//            }
-//        }else { // 没有文件
-//            Log.i("UploadPoi", "这里执行了，没有上传文件");
-////            builder.addFormDataPart("file", File);
-//        }
-//        RequestBody requestBody = builder.build();
         RequestBody requestBody = new FormBody.Builder()
                 .add("token", token)
                 .add("tracePoi", tracePoi)

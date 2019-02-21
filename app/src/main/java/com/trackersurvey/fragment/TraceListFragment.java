@@ -38,6 +38,7 @@ import com.trackersurvey.http.UpLoadGpsRequest;
 import com.trackersurvey.model.GpsData;
 import com.trackersurvey.model.StepData;
 import com.trackersurvey.model.TraceData;
+import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.AppManager;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
@@ -400,23 +401,42 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
                                 //deletetrail.start();
                                 // 测试删除轨迹
                                 DeleteTraceRequest deleteTraceRequest = new DeleteTraceRequest(
-                                        String.valueOf(System.currentTimeMillis()),
-                                        sp.getString("Token", ""),
-                                        String.valueOf(tobedeleteNo.get(0)), "1");
+                                        sp.getString("token", ""),
+                                        String.valueOf(tobedeleteNo.get(0)));
                                 Log.i("TraceList", String.valueOf(tobedeleteNo.get(0)));
                                 deleteTraceRequest.requestHttpData(new ResponseData() {
                                     @Override
                                     public void onResponseData(boolean isSuccess, String code, Object responseObject,
                                                                String msg) throws IOException {
                                         if (isSuccess) {
-                                            getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    dismissDialog();
-                                                    init();
-                                                    ToastUtil.show(getContext(),getResources().getString(R.string.tips_deletesuccess));
-                                                }
-                                            });
+                                            if (code.equals("0")) {
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        dismissDialog();
+                                                        getActivity().runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                init();
+                                                                ToastUtil.show(getContext(),getResources().getString(R.string.tips_deletesuccess));
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                            if (code.equals("100") || code.equals("101")) {
+                                                dismissDialog();
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Toast.makeText(getContext(), "登录过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                                                        SharedPreferences.Editor editor = sp.edit();
+                                                        editor.putString("token", ""); // 清空token
+                                                        editor.apply();
+                                                        ActivityCollector.finishActivity("MainActivity");
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
                                 });

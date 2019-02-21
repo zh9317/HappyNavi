@@ -744,7 +744,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     }
                     //traceService.changeGpsTime(Common.getRecLocFrequenct(getApplicationContext()));
                     startTrail.setVisibility(View.INVISIBLE);
-//                    changeSportTypeIb.setVisibility(View.VISIBLE);
+                    changeSportTypeIb.setVisibility(View.VISIBLE);
                     // pauseTrail.setVisibility(View.VISIBLE);
                     // takephoto.setVisibility(View.VISIBLE);
                     endTrail.setVisibility(View.VISIBLE);
@@ -754,7 +754,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 }
                 break;
             case R.id.change_sport_type_ib:
-//                changeSportType();
+                changeSportType();
                 break;
             case R.id.imgbtn_endtrail:
                 //Toast.makeText(MainActivity.this, "结束记录",Toast.LENGTH_SHORT).show();
@@ -932,20 +932,20 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             }
         });
         startTrail.setVisibility(View.INVISIBLE);
-//        if (sportType == 1) {
-//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_walking);
-//        } else if (sportType == 2) {
-//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_cycling);
-//        } else if (sportType == 3) {
-//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_rollerblading);
-//        } else if (sportType == 4) {
-//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_driving);
-//        } else if (sportType == 5) {
-//            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_train);
-//        } else if (sportType == 6) {
-//            changeSportTypeIb.setBackgroundResource(R.mipmap.others);
-//        }
-//        changeSportTypeIb.setVisibility(View.VISIBLE);
+        if (sportType == 1) {
+            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_walking);
+        } else if (sportType == 2) {
+            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_cycling);
+        } else if (sportType == 3) {
+            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_rollerblading);
+        } else if (sportType == 4) {
+            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_driving);
+        } else if (sportType == 5) {
+            changeSportTypeIb.setBackgroundResource(R.mipmap.ic_train);
+        } else if (sportType == 6) {
+            changeSportTypeIb.setBackgroundResource(R.mipmap.others);
+        }
+        changeSportTypeIb.setVisibility(View.VISIBLE);
         //pauseTrail.setVisibility(View.VISIBLE);
         takePhoto.setVisibility(View.VISIBLE);
         endTrail.setVisibility(View.VISIBLE);
@@ -1094,7 +1094,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         }
         //traceService.changeGpsTime(Common.getNoRecLocFrequenct(getApplicationContext()));
         startTrail.setVisibility(View.VISIBLE);
-//        changeSportTypeIb.setVisibility(View.INVISIBLE);
+        changeSportTypeIb.setVisibility(View.INVISIBLE);
         //pauseTrail.setVisibility(View.INVISIBLE);
         endTrail.setVisibility(View.INVISIBLE);
         stepTv.setVisibility(View.INVISIBLE);
@@ -1344,58 +1344,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             }
         }
     };
-
-    //传递给PostPointOfInterestData的handler
-    /*@SuppressLint("HandlerLeak")
-    private Handler poiHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    if(msg.obj!=null){
-                        String[] poiStr = msg.obj.toString().trim().split("#");
-                        String[] behaviourStr = poiStr[1].split("[$]");
-                        String[] durationStr = poiStr[0].split("[$]");
-                        String[] partnerNumStr = poiStr[2].trim().split("[$]");
-                        String[] relationStr = poiStr[3].trim().split("[$]");
-                        behaviourData = new PointOfInterestData();
-                        durationData = new PointOfInterestData();
-                        partnerNumData = new PointOfInterestData();
-                        relationData = new PointOfInterestData();
-                        //Log.i("poiStr", poiStr[0]);
-                        poiDBHelper.delete();
-                        try {
-                            for(int i = 0;i<behaviourStr.length;i++){
-                                behaviourData.setKey(i);
-                                behaviourData.setValue(behaviourStr[i]);
-                                poiDBHelper.insertBehaviour(behaviourData);
-                            }
-                            for(int i = 0;i<durationStr.length;i++){
-                                durationData.setKey(i);
-                                durationData.setValue(durationStr[i]);
-                                //将数据插入到POI数据库中
-                                poiDBHelper.insertDuration(durationData);
-                            }
-                            for(int i = 0;i<partnerNumStr.length;i++){
-                                partnerNumData.setKey(i);
-                                partnerNumData.setValue(partnerNumStr[i]);
-                                poiDBHelper.insertPartnerNum(partnerNumData);
-                            }
-                            for(int i = 0;i<relationStr.length;i++){
-                                relationData.setKey(i);
-                                relationData.setValue(relationStr[i]);
-                                poiDBHelper.insertPartnerRelation(relationData);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-                case 1:
-                    break;
-            }
-        }
-    };*/
 
     /**
      * 获取兴趣点列表选项

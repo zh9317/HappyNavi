@@ -367,23 +367,24 @@ public class TraceListActivity extends BaseActivity implements View.OnClickListe
                                 //deletetrail.start();
                                 // 测试删除轨迹
                                 DeleteTraceRequest deleteTraceRequest = new DeleteTraceRequest(
-                                        String.valueOf(System.currentTimeMillis()),
                                         sp.getString("Token", ""),
-                                        String.valueOf(tobedeleteNo.get(0)), "1");
+                                        String.valueOf(tobedeleteNo.get(0)));
                                 Log.i("TraceList", String.valueOf(tobedeleteNo.get(0)));
                                 deleteTraceRequest.requestHttpData(new ResponseData() {
                                     @Override
                                     public void onResponseData(boolean isSuccess, String code, Object responseObject,
                                                                String msg) throws IOException {
                                         if (isSuccess) {
-                                            runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    dismissDialog();
-                                                    init();
-                                                    ToastUtil.show(TraceListActivity.this,getResources().getString(R.string.tips_deletesuccess));
-                                                }
-                                            });
+                                            if (code.equals("0")) {
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        dismissDialog();
+                                                        init();
+                                                        ToastUtil.show(TraceListActivity.this,getResources().getString(R.string.tips_deletesuccess));
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
                                 });
