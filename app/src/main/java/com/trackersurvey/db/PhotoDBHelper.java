@@ -55,8 +55,8 @@ public class PhotoDBHelper {
                 + COLUMNS_UE[19] + " integer default 0,"
                 + COLUMNS_UE[20] + " integer default 0,"
                 + COLUMNS_UE[21] + " integer default 0,"
-                //                + " PRIMARY KEY(" + COLUMNS_UE[0] + "," + COLUMNS_UE[14]
-                + " PRIMARY KEY(" + COLUMNS_UE[0]
+                + " PRIMARY KEY(" + COLUMNS_UE[0] + "," + COLUMNS_UE[14]
+                //                + " PRIMARY KEY(" + COLUMNS_UE[0]
                 + "));";
         private static final String CREATE_EVENTFILE = "CREATE TABLE "
                 + FILE_TABLE + "(" + COLUMNS_FILE[0] + " integer ,"
@@ -146,13 +146,13 @@ public class PhotoDBHelper {
             values.put(COLUMNS_UE[12], event.getVideoCount());
             values.put(COLUMNS_UE[13], event.getAudioCount());
             values.put(COLUMNS_UE[14], event.getUserId());
-//            values.put(COLUMNS_UE[15], event.getFeeling());
-//            values.put(COLUMNS_UE[16], event.getBehaviour());
-//            values.put(COLUMNS_UE[17], event.getDuration());
+            //            values.put(COLUMNS_UE[15], event.getFeeling());
+            //            values.put(COLUMNS_UE[16], event.getBehaviour());
+            //            values.put(COLUMNS_UE[17], event.getDuration());
             values.put(COLUMNS_UE[18], event.getCompanionType());
             values.put(COLUMNS_UE[19], event.getRelationType());
             values.put(COLUMNS_UE[20], event.getStateType());
-//            values.put(COLUMNS_UE[21], event.getShare());
+            //            values.put(COLUMNS_UE[21], event.getShare());
             long row = dbWrite.insert(USEREVENT_TABLE, null, values);
             Log.i("dongsiyuanPhotoDB", "PhotoDB, row: " + row);
         } catch (SQLException e) {
