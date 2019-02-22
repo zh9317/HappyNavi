@@ -245,8 +245,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                     loginEditor.putString("mobilePhone", loginModel.getUserInfo().getMobilephone());
                                     loginEditor.putString("nickname", loginModel.getUserInfo().getNickname());
                                     loginEditor.putString("realName", loginModel.getUserInfo().getRealname());
-                                    loginEditor.putString("city", loginModel.getUserInfo().getRegisteritem2());
-                                    loginEditor.putString("workPlace", loginModel.getUserInfo().getRegisteritem3());
+                                    loginEditor.putString("nativePlace", loginModel.getUserInfo().getRegisteritem2());
+                                    loginEditor.putString("address", loginModel.getUserInfo().getRegisteritem3());
                                     loginEditor.putString("education", loginModel.getUserInfo().getRegisteritem4());
                                     loginEditor.putString("income", loginModel.getUserInfo().getRegisteritem5());
                                     loginEditor.putString("occupation", loginModel.getUserInfo().getRegisteritem6());
@@ -263,7 +263,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                             + "; nickname:" + sp.getString("nickname", "")
                                             + "; realName:" + sp.getString("realName", "")
                                             + "; city:" + sp.getString("city", "")
-                                            + "; workPlace:" + sp.getString("workPlace", "")
+                                            + "; address:" + sp.getString("address", "")
                                             + "; education:" + sp.getString("education", "")
                                             + "; income:" + sp.getString("income", "")
                                             + "; occupation:" + sp.getString("occupation", "")
@@ -279,7 +279,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                             + "; nickname:" + loginModel.getUserInfo().getNickname()
                                             + "; realName:" + loginModel.getUserInfo().getRealname()
                                             + "; city:" + loginModel.getUserInfo().getRegisteritem2()
-                                            + "; workPlace:" + loginModel.getUserInfo().getRegisteritem3()
+                                            + "; address:" + loginModel.getUserInfo().getRegisteritem3()
                                             + "; education:" + loginModel.getUserInfo().getRegisteritem4()
                                             + "; income:" + loginModel.getUserInfo().getRegisteritem5()
                                             + "; occupation:" + loginModel.getUserInfo().getRegisteritem6()

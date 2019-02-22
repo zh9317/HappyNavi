@@ -26,15 +26,13 @@
         android:paddingBottom="10dp"
         android:orientation="horizontal" >
 
-        <ImageView
-
+        <com.trackersurvey.util.RoundImageView
             android:id="@+id/mine_mian_img"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="start"
             android:layout_marginStart="20dip"
-            android:layout_marginLeft="20dp"
-            android:background="#FFFFFF"/>
+            android:layout_marginLeft="20dp" />
         <TextView
             android:id="@+id/lable_nickname"
             android:layout_width="wrap_content"

@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.trackersurvey.happynavi.MyAlbumActivity;
 import com.trackersurvey.happynavi.MyGroupActivity;
 import com.trackersurvey.happynavi.MySportActivity;
@@ -23,6 +24,7 @@ import com.trackersurvey.happynavi.TraceListActivity;
 import com.trackersurvey.happynavi.UserInfoActivity;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.TestRequest;
+import com.trackersurvey.util.RoundImageView;
 
 import java.io.IOException;
 
@@ -34,15 +36,22 @@ import java.io.IOException;
 public class MineFragment extends Fragment implements View.OnClickListener{
 
     private SharedPreferences sp;
+    private RoundImageView headImg;
+    private TextView nickNameTv;
+    private TextView mobilePhoneTv;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View meLayout = inflater.inflate(R.layout.fragment_mine, container, false);
         sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
-        TextView nickNameTv = meLayout.findViewById(R.id.mine_nickname);
+        headImg = meLayout.findViewById(R.id.mine_mian_img);
+        Glide.with(this).load("http://211.87.227.204:8089"
+                + sp.getString("headurl", "") + "?token="
+                + sp.getString("token", "")).into(headImg);
+        nickNameTv = meLayout.findViewById(R.id.mine_nickname);
         nickNameTv.setText(sp.getString("nickname", ""));
-        TextView mobilePhoneTv = meLayout.findViewById(R.id.mine_mobilePhone);
+        mobilePhoneTv = meLayout.findViewById(R.id.mine_mobilePhone);
         mobilePhoneTv.setText(sp.getString("mobilePhone", ""));
         RelativeLayout userInfoLayout = meLayout.findViewById(R.id.user_info_layout);
         LinearLayout myAlbumLayout = meLayout.findViewById(R.id.my_album_layout); // 我的相册
@@ -62,7 +71,7 @@ public class MineFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()) {
             case R.id.user_info_layout:
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
-                startActivity(userInfoIntent);
+                startActivityForResult(userInfoIntent, 1);
                 break;
             case R.id.my_album_layout:
                 Intent myAlbumIntent = new Intent(getContext(), MyAlbumActivity.class);
@@ -86,5 +95,15 @@ public class MineFragment extends Fragment implements View.OnClickListener{
                 });
                 break;
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Glide.with(this).load("http://211.87.227.204:8089"
+                + sp.getString("headurl", "") + "?token="
+                + sp.getString("token", "")).into(headImg);
+        nickNameTv.setText(sp.getString("nickname", ""));
+        mobilePhoneTv.setText(sp.getString("mobilePhone", ""));
     }
 }

@@ -23,6 +23,7 @@ import com.trackersurvey.util.AppManager;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
 import com.trackersurvey.util.DESUtil;
+import com.trackersurvey.util.RoundImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +41,15 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     private String occupationStr;
     private String educationStr;
 
+    private RoundImageView userHeadIv;
+    private TextView nicknameTv;
+    private TextView realNameTv;
+    private TextView userIdTv;
+    private TextView birthDateTv;
+    private TextView sexTv;
+    private TextView occupationTv;
+    private TextView educationTv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,17 +62,20 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         }
         AppManager.getAppManager().addActivity(this);
         sp = getSharedPreferences("config", MODE_PRIVATE);
-        ImageView userHeadIv = findViewById(R.id.user_info_head_img);
-        TextView nicknameTv = findViewById(R.id.user_info_nickname);
-        TextView realNameTv = findViewById(R.id.user_info_real_name);
-        TextView userIdTv = findViewById(R.id.user_info_id);
-        TextView birthDateTv = findViewById(R.id.user_info_birth_date);
-        TextView sexTv = findViewById(R.id.user_info_sex);
-        TextView occupationTv = findViewById(R.id.user_info_occupation);
-        TextView educationTv = findViewById(R.id.user_info_education);
+        userHeadIv = findViewById(R.id.user_info_head_img);
+        nicknameTv = findViewById(R.id.user_info_nickname);
+        realNameTv = findViewById(R.id.user_info_real_name);
+        userIdTv = findViewById(R.id.user_info_id);
+        birthDateTv = findViewById(R.id.user_info_birth_date);
+        sexTv = findViewById(R.id.user_info_sex);
+        occupationTv = findViewById(R.id.user_info_occupation);
+        educationTv = findViewById(R.id.user_info_education);
         Button changeInfoBtn = findViewById(R.id.change_user_info_btn);
         Button changePwdBtn = findViewById(R.id.change_password_btn);
         Button logoutBtn = findViewById(R.id.logout_btn);
+        Log.i("UserInfo", "headUrl: " + "http://211.87.227.204:8089"
+                + sp.getString("headurl", "") + "?token="
+                + sp.getString("token", ""));
         Glide.with(this).load("http://211.87.227.204:8089"
                 + sp.getString("headurl", "") + "?token="
                 + sp.getString("token", "")).into(userHeadIv);
@@ -120,14 +133,14 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.change_user_info_btn:
                 Intent intent = new Intent(this, UserInfoChangeActivity.class);
-                intent.putExtra("nickname", nicknameStr);
-                intent.putExtra("realName", realNameStr);
-                intent.putExtra("userID", userIDStr);
-                intent.putExtra("birthDate", birthDateStr);
-                intent.putExtra("sex", sexStr);
-                intent.putExtra("occupation", occupationStr);
-                intent.putExtra("education", educationStr);
-                startActivity(intent);
+//                intent.putExtra("nickname", nicknameStr);
+//                intent.putExtra("realName", realNameStr);
+//                intent.putExtra("userID", userIDStr);
+//                intent.putExtra("birthDate", birthDateStr);
+//                intent.putExtra("sex", sexStr);
+//                intent.putExtra("occupation", occupationStr);
+//                intent.putExtra("education", educationStr);
+                startActivityForResult(intent, 1);
                 break;
             case R.id.change_password_btn:
                 break;
@@ -194,5 +207,33 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                 builder_logout.create().show();
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Glide.with(this).load("http://211.87.227.204:8089"
+                + sp.getString("headurl", "") + "?token="
+                + sp.getString("token", "")).into(userHeadIv);
+        if (sp.getInt("sex", 0) == 0) {
+            sexStr = "保密";
+        } else if (sp.getInt("sex", 0) == 1) {
+            sexStr = "男";
+        } else if (sp.getInt("sex", 0) == 2) {
+            sexStr = "女";
+        }
+        nicknameStr = sp.getString("nickname", "");
+        realNameStr = sp.getString("realName", "");
+        userIDStr = sp.getString("mobilePhone", "");
+        birthDateStr = sp.getString("birthDate", "");
+        occupationStr = sp.getString("occupation", "");
+        educationStr = sp.getString("education", "");
+        nicknameTv.setText(nicknameStr);
+        realNameTv.setText(realNameStr);
+        userIdTv.setText(userIDStr);
+        birthDateTv.setText(birthDateStr);
+        sexTv.setText(sexStr);
+        occupationTv.setText(occupationStr);
+        educationTv.setText(educationStr);
     }
 }

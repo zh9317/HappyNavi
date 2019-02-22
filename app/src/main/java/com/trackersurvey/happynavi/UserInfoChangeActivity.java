@@ -30,15 +30,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.githang.statusbar.StatusBarCompat;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.UploadUserInfoRequest;
+import com.trackersurvey.model.UserInfoData;
+import com.trackersurvey.model.UserInfoModel;
+import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.AppManager;
 import com.trackersurvey.util.BitmapToFile;
 import com.trackersurvey.util.CompressImageUtil;
+import com.trackersurvey.util.GsonHelper;
 import com.trackersurvey.util.RoundImageView;
 
 import java.io.File;
@@ -54,15 +60,22 @@ public class UserInfoChangeActivity extends AppCompatActivity implements View.On
     private EditText nicknameEt;
     private EditText realNameEt;
     private TextView birthDateTv;
+    private RelativeLayout birthDateLayout;
     private TextView sexTv;
+    private RelativeLayout sexLayout;
     // 下面是RegisterItems
     private EditText nativePlaceEt;
     private EditText addressEt;
     private TextView educationTv;
+    private RelativeLayout educationLayout;
     private TextView occupationTv;
+    private RelativeLayout occupationLayout;
     private TextView incomeTv;
+    private RelativeLayout incomeLayout;
     private TextView marriageTv;
+    private RelativeLayout marriageLayout;
     private TextView childNumTv;
+    private RelativeLayout childNumLayout;
     private Button save;
 
     private SharedPreferences sp;
@@ -114,6 +127,26 @@ public class UserInfoChangeActivity extends AppCompatActivity implements View.On
         birthDateTv = findViewById(R.id.user_info_birth_date);
         sexTv = findViewById(R.id.user_info_sex);
 
+        Glide.with(this).load("http://211.87.227.204:8089"
+                + sp.getString("headurl", "") + "?token="
+                + sp.getString("token", "")).into(headImgIv);
+
+        birthDateLayout = findViewById(R.id.birth_date_layout);
+        sexLayout = findViewById(R.id.sex_layout);
+        educationLayout = findViewById(R.id.education_layout);
+        occupationLayout = findViewById(R.id.occupation_layout);
+        incomeLayout = findViewById(R.id.income_layout);
+        marriageLayout = findViewById(R.id.marriage_layout);
+        childNumLayout = findViewById(R.id.child_num_layout);
+
+        birthDateLayout.setOnClickListener(this);
+        sexLayout.setOnClickListener(this);
+        educationLayout.setOnClickListener(this);
+        occupationLayout.setOnClickListener(this);
+        incomeLayout.setOnClickListener(this);
+        marriageLayout.setOnClickListener(this);
+        childNumLayout.setOnClickListener(this);
+
         nativePlaceEt = findViewById(R.id.native_place_et);
         addressEt = findViewById(R.id.address_et);
         occupationTv = findViewById(R.id.user_info_occupation);
@@ -133,19 +166,30 @@ public class UserInfoChangeActivity extends AppCompatActivity implements View.On
         childNumTv.setOnClickListener(this);
         save.setOnClickListener(this);
 
-        Intent intent = getIntent();
-        nicknameStr = intent.getStringExtra("nickname");
-        realNameStr = intent.getStringExtra("realName");
-        birthDateStr = intent.getStringExtra("birthDate");
-        sexStr = intent.getStringExtra("sex");
-        occupationStr = intent.getStringExtra("occupation");
-        educationStr = intent.getStringExtra("education");
-        nicknameEt.setText(nicknameStr);
-        realNameEt.setText(realNameStr);
-        birthDateTv.setText(birthDateStr);
-        sexTv.setText(sexStr);
-        occupationTv.setText(occupationStr);
-        educationTv.setText(educationStr);
+//        Intent intent = getIntent();
+//        nicknameStr = intent.getStringExtra("nickname");
+//        realNameStr = intent.getStringExtra("realName");
+//        birthDateStr = intent.getStringExtra("birthDate");
+//        sexStr = intent.getStringExtra("sex");
+//        occupationStr = intent.getStringExtra("occupation");
+//        educationStr = intent.getStringExtra("education");
+        nicknameEt.setText(sp.getString("nickname", ""));
+        realNameEt.setText(sp.getString("realName", ""));
+        birthDateTv.setText(sp.getString("birthDate", ""));
+        if (sp.getInt("sex", 0) == 0) {
+            sexTv.setText("保密");
+        } else if (sp.getInt("sex", 0) == 1) {
+            sexTv.setText("男");
+        } else if (sp.getInt("sex", 0) == 2) {
+            sexTv.setText("女");
+        }
+        nativePlaceEt.setText(sp.getString("nativePlace", ""));
+        addressEt.setText(sp.getString("address", ""));
+        occupationTv.setText(sp.getString("occupation", ""));
+        educationTv.setText(sp.getString("education", ""));
+        incomeTv.setText(sp.getString("income", ""));
+        marriageTv.setText(sp.getString("marriage", ""));
+        childNumTv.setText(sp.getString("childCount", ""));
     }
 
     @Override
@@ -154,39 +198,72 @@ public class UserInfoChangeActivity extends AppCompatActivity implements View.On
             case R.id.user_head_img:
                 selectPicDialog();
                 break;
+                // 选择出生日期
             case R.id.user_info_birth_date:
-                birthDate = birthDateStr.split("-");
-                final Calendar calendar = Calendar.getInstance();
-                calendar.set(Integer.parseInt(birthDate[0]), Integer.parseInt(birthDate[1])-1, Integer.parseInt(birthDate[2]));
-                DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        calendar.set(year, month, dayOfMonth);
-                        birthDateTv.setText(android.text.format.DateFormat.format("yyyy-MM-dd", calendar));
-                        birthDateStr = String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth);
-                    }
-                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.show();
+                selectBirthDate();
                 break;
+            case R.id.birth_date_layout:
+                selectBirthDate();
+                break;
+                // 选择性别
             case R.id.user_info_sex:
                 selectSex();
                 break;
+            case R.id.sex_layout:
+                selectSex();
+                break;
+                // 选择职业
             case R.id.user_info_occupation:
                 selectOccupation();
                 break;
+            case R.id.occupation_layout:
+                selectOccupation();
+                break;
+                // 选择教育程度
             case R.id.user_info_education:
                 selectEducation();
                 break;
+            case R.id.education_layout:
+                selectEducation();
+                break;
+                // 选择年收入
             case R.id.user_info_income:
                 selectIncome();
                 break;
+            case R.id.income_layout:
+                selectIncome();
+                break;
+                // 选择婚姻状况
             case R.id.user_info_marriage:
                 selectMarriage();
                 break;
+            case R.id.marriage_layout:
+                selectMarriage();
+                break;
+                // 选择子女数
             case R.id.user_info_child_num:
                 selectChildNum();
                 break;
+            case R.id.child_num_layout:
+                selectChildNum();
+                break;
+                // 保存
             case R.id.save_user_info_btn:
+                UserInfoData userInfoData = new UserInfoData(
+                        sp.getInt("userID", 0),
+                        nicknameEt.getText().toString(),
+                        realNameEt.getText().toString(),
+                        birthDateTv.getText().toString(),
+                        sexChoice,
+                        nativePlaceEt.getText().toString(),
+                        addressEt.getText().toString(),
+                        educationTv.getText().toString(),
+                        incomeTv.getText().toString(),
+                        occupationTv.getText().toString(),
+                        marriageTv.getText().toString(),
+                        childNumTv.getText().toString());
+                String userInfo = GsonHelper.toJson(userInfoData);
+                Log.i("UserInfoChange", "userInfo : " + userInfo);
                 Log.i("UserInfoChange", "_timestamp:"+String.valueOf(System.currentTimeMillis())
                         +"|Token:"+sp.getString("Token", "")
                         +"|nickname:"+nicknameEt.getText().toString()
@@ -202,26 +279,60 @@ public class UserInfoChangeActivity extends AppCompatActivity implements View.On
                         +"|marriage:"+marriageTv.getText().toString()
                         +"|childNum:"+childNumTv.getText().toString());
                 UploadUserInfoRequest uploadUserInfoRequest = new UploadUserInfoRequest(
-                        String.valueOf(System.currentTimeMillis()),
-                        sp.getString("Token", ""),
-                        nicknameEt.getText().toString(),
-                        realNameEt.getText().toString(),
-                        birthDateTv.getText().toString(),
-                        String.valueOf(sexChoice),
-                        "",
-                        nativePlaceEt.getText().toString(),
-                        addressEt.getText().toString(),
-                        educationTv.getText().toString(),
-                        incomeTv.getText().toString(),
-                        occupationTv.getText().toString(),
-                        marriageTv.getText().toString(),
-                        childNumTv.getText().toString(),
-                        file == null ? "" : file.getPath());
+                        sp.getString("token", ""),
+                        file == null ? "" : file.getPath(), userInfo);
                 uploadUserInfoRequest.requestHttpData(new ResponseData() {
                     @Override
                     public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                         if (isSuccess) {
-
+                            if (code.equals("0")) {
+                                UserInfoModel model = (UserInfoModel) responseObject;
+                                SharedPreferences.Editor loginEditor = sp.edit();
+                                loginEditor.putString("birthDate", model.getBirthDate());
+                                loginEditor.putString("headurl", model.getHeadurl());
+                                loginEditor.putString("nickname", model.getNickname());
+                                loginEditor.putString("realName", model.getRealName());
+                                loginEditor.putString("city", model.getRegisteritem2());
+                                loginEditor.putString("address", model.getRegisteritem3());
+                                loginEditor.putString("education", model.getRegisteritem4());
+                                loginEditor.putString("income", model.getRegisteritem5());
+                                loginEditor.putString("occupation", model.getRegisteritem6());
+                                loginEditor.putString("marriage", model.getRegisteritem7());
+                                loginEditor.putString("childCount", model.getRegisteritem8());
+                                loginEditor.putInt("sex", model.getSex());
+                                loginEditor.apply();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(UserInfoChangeActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Intent intent = new Intent();
+                                setResult(RESULT_OK, intent);
+                                finish();
+                            }
+                            if (code.equals("100") || code.equals("101")) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(UserInfoChangeActivity.this, "登录信息过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                                        SharedPreferences.Editor editor = sp.edit();
+                                        editor.putString("token", ""); // 清空token
+                                        editor.apply();
+                                        ActivityCollector.finishActivity("UserInfoChangeActivity");
+                                        ActivityCollector.finishActivity("UserInfoActivity");
+                                        ActivityCollector.finishActivity("MainActivity");
+                                    }
+                                });
+                            }
+                            if (code.equals("400") || code.equals("401")) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(UserInfoChangeActivity.this, "头像图片上传出错！请重新选择头像图片上传！", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         }
                     }
                 });
@@ -410,6 +521,21 @@ public class UserInfoChangeActivity extends AppCompatActivity implements View.On
             }
         }
         return null;
+    }
+
+    private void selectBirthDate() {
+//        birthDate = birthDateStr.split("-");
+        final Calendar calendar = Calendar.getInstance();
+//        calendar.set(Integer.parseInt(birthDate[0]), Integer.parseInt(birthDate[1])-1, Integer.parseInt(birthDate[2]));
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                calendar.set(year, month, dayOfMonth);
+                birthDateTv.setText(android.text.format.DateFormat.format("yyyy-MM-dd", calendar));
+                birthDateStr = String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
     }
 
     private void selectSex() {

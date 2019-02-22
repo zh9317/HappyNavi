@@ -3,7 +3,11 @@ package com.trackersurvey.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UserInfoModel {
+/**
+ * Created by zh931 on 2018/7/2.
+ */
+
+public class UserInfoData {
     private int userID;
     private String nickname;
     private String realName;
@@ -16,11 +20,10 @@ public class UserInfoModel {
     private String registeritem6; // 职业
     private String registeritem7; // 婚姻
     private String registeritem8; // 子女数
-    private String headurl;
 
-    public UserInfoModel(int userID, String nickname, String realName, String birthDate, int sex,
-                         String registeritem2, String registeritem3, String registeritem4, String registeritem5,
-                         String registeritem6, String registeritem7, String registeritem8, String headurl) {
+    public UserInfoData(int userID, String nickname, String realName, String birthDate, int sex,
+                        String registeritem2, String registeritem3, String registeritem4, String registeritem5,
+                        String registeritem6, String registeritem7, String registeritem8) {
         this.userID = userID;
         this.nickname = nickname;
         this.realName = realName;
@@ -33,10 +36,9 @@ public class UserInfoModel {
         this.registeritem6 = registeritem6;
         this.registeritem7 = registeritem7;
         this.registeritem8 = registeritem8;
-        this.headurl = headurl;
     }
 
-    public UserInfoModel(JSONObject object) {
+    public UserInfoData(JSONObject object) {
         try {
             nickname = object.getString("nickname");
             realName = object.getString("realname");
@@ -49,7 +51,6 @@ public class UserInfoModel {
             registeritem6 = object.getString("registeritem6");
             registeritem7 = object.getString("registeritem7");
             registeritem8 = object.getString("registeritem8");
-            headurl = object.getString("headurl");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -149,13 +150,5 @@ public class UserInfoModel {
 
     public void setRegisteritem8(String registeritem8) {
         this.registeritem8 = registeritem8;
-    }
-
-    public String getHeadurl() {
-        return headurl;
-    }
-
-    public void setHeadurl(String headurl) {
-        this.headurl = headurl;
     }
 }

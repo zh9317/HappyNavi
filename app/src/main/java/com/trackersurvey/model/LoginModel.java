@@ -59,25 +59,28 @@ public class LoginModel {
 
         public UserInfo(JSONObject object) {
             try {
+                // 注册之后就有的信息
                 userid = object.getInt("userid");
                 mobilephone = object.getString("mobilephone");
-                lastlogintime = object.getString("lastlogintime");
                 passwordmd5 = object.getString("passwordmd5");
-                birthdate = object.getString("birthdate");
                 headurl = object.getString("headurl");
                 isdelete = object.getString("isdelete");
-                mobileplatform = object.getString("mobileplatform");
+                lastlogintime = object.getString("lastlogintime");
+                // 用户修改个人信息后才有的信息
+                birthdate = object.getString("birthdate");
                 nickname = object.getString("nickname");
                 realname = object.getString("realname");
                 sex = object.getInt("sex");
-                registeritem2 = object.getString("registeritem2");
-                registeritem3 = object.getString("registeritem3");
-                registeritem4 = object.getString("registeritem4");
-                registeritem5 = object.getString("registeritem5");
-                registeritem6 = object.getString("registeritem6");
-                registeritem7 = object.getString("registeritem7");
-                registeritem8 = object.getString("registeritem8");
+                registeritem2 = object.getString("registeritem2");// 籍贯
+                registeritem3 = object.getString("registeritem3");// 住址
+                registeritem4 = object.getString("registeritem4");// 学历
+                registeritem5 = object.getString("registeritem5");// 收入
+                registeritem6 = object.getString("registeritem6");// 职业
+                registeritem7 = object.getString("registeritem7");// 婚姻
+                registeritem8 = object.getString("registeritem8");// 子女数
                 registertime = object.getString("registertime");
+
+                mobileplatform = object.getString("mobileplatform");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

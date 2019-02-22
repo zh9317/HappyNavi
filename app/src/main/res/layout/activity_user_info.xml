@@ -32,7 +32,8 @@
                     android:text="@string/user_info_head"
                     android:textColor="@color/black"
                     android:textSize="16sp"/>
-                <ImageView
+
+                <com.trackersurvey.util.RoundImageView
                     android:id="@+id/user_info_head_img"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
@@ -44,7 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0.1dp"
                     android:background="@color/black"
-                    android:layout_below="@id/user_info_head_img" />
+                    android:layout_below="@id/user_info_head_img"/>
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="wrap_content"

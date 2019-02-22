@@ -35,7 +35,7 @@ public class UrlHeader {
 
     public static final String QUESTIONARY_URL = "questionnaire/wx_getQuestionnaireList";// 调查问卷
 
-    public static final String UPLOAD_USER_INFO_URL = "updUserInfo";// 更新个人信息
+    public static final String UPLOAD_USER_INFO_URL = "user/updateUserInfo";// 更新个人信息
     public static final String DOWNLOAD_USER_INFO_URL = "getPersonalInfo";
 
     // 老版本的接口还有这些：

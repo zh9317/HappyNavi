@@ -26,8 +26,8 @@
 
                 <com.trackersurvey.util.RoundImageView
                     android:id="@+id/user_head_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_centerHorizontal="true"/>
 
             </RelativeLayout>
@@ -94,6 +94,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/birth_date_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
@@ -157,6 +158,7 @@
             </RelativeLayout>-->
 
             <RelativeLayout
+                android:id="@+id/sex_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
@@ -188,6 +190,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/native_place_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
@@ -207,7 +210,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@id/native_place_label_tv" />
+                    android:layout_toRightOf="@id/native_place_label_tv"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -248,6 +251,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/occupation_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
@@ -279,6 +283,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/education_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
@@ -310,6 +315,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/income_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
@@ -341,6 +347,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/marriage_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
@@ -372,6 +379,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/child_num_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
