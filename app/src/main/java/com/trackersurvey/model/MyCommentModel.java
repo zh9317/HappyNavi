@@ -257,7 +257,7 @@ public class MyCommentModel {
                             writedDbHelper.insertEvent(interestMarkerDataList.get(i));
                             Log.i("dongsiyuan", "onResponseData: 插入兴趣点数据" + i);
 
-                            int fileNum = interestMarkerDataList.get(i).getPicCount();
+                            int fileNum = interestMarkerDataList.get(i).getImageCount();
                             // 插入文件表
                             for (int j = 0; j < fileNum; j++) {
                                 CommentMediaFilesData ev = new CommentMediaFilesData();
@@ -510,15 +510,15 @@ public class MyCommentModel {
             event.setLatitude(cursor.getDouble(3));
             event.setAltitude(cursor.getDouble(4));
             event.setPlaceName(cursor.getString(8));
-            event.setComment(cursor.getString(9));
+            event.setCmt(cursor.getString(9));
             event.setTraceID(cursor.getLong(10));
             event.setImageCount(cursor.getInt(11));
             event.setVideoCount(cursor.getInt(12));
             event.setAudioCount(cursor.getInt(13));
             event.setUserId(cursor.getString(14));
-            event.setFeeling(cursor.getInt(15));
-            event.setBehaviour(cursor.getInt(16));
-            event.setDuration(cursor.getInt(17));
+//            event.setFeeling(cursor.getInt(15));
+//            event.setBehaviour(cursor.getInt(16));
+//            event.setDuration(cursor.getInt(17));
             event.setCompanionType(cursor.getInt(18));
             event.setRelationType(cursor.getInt(19));
 
@@ -1026,7 +1026,7 @@ public class MyCommentModel {
                     // 将本地没有的几行插入数据库
                     for (int i = 0; i < eventsNum; i++) {
                         writedDbHelper.insertEvent(events.get(i));
-                        int fileNum = events.get(i).getPicCount();
+                        int fileNum = events.get(i).getImageCount();
                         // 插入文件表
                         for (int j = 0; j < fileNum; j++) {
                             CommentMediaFilesData ev = new CommentMediaFilesData();
@@ -1110,7 +1110,7 @@ public class MyCommentModel {
                     // 将本地没有的几行插入数据库
                     for (int i = 0; i < eventsNum; i++) {
                         writedDbHelper.insertEvent(events.get(i));
-                        int fileNum = events.get(i).getPicCount();
+                        int fileNum = events.get(i).getImageCount();
                         // 插入文件表
                         for (int j = 0; j < fileNum; j++) {
                             CommentMediaFilesData ev = new CommentMediaFilesData();
@@ -1183,12 +1183,12 @@ public class MyCommentModel {
                         TraceData tracedata = new TraceData();
                         InterestMarkerData comment = new InterestMarkerData();
                         comment = ((ListItemData) items.get(position).get("listItem")).getEvent();
-                        long traceNo = comment.getTraceNo();
+                        long traceID = comment.getTraceID();
                         String userID = comment.getUserId();
-                        tracedata = traceHelper.queryfromTrailbytraceNo(traceNo, userID);
+                        tracedata = traceHelper.queryfromTrailbytraceNo(traceID, userID);
                         if (tracedata != null) {
                             tracedata.setPoiCount(tracedata.getPoiCount() - 1);
-                            traceHelper.updatetrail(tracedata, traceNo, userID);
+                            traceHelper.updatetrail(tracedata, traceID, userID);
                         }
                         items.remove(position);
                     }
@@ -1280,7 +1280,7 @@ public class MyCommentModel {
                                             "getComment insert event:"
                                                     + eventCTCloud);
                                     // 插入文件表
-                                    int fileNum = events.get(index).getPicCount();
+                                    int fileNum = events.get(index).getImageCount();
                                     for (int j = 0; j < fileNum; j++) {
                                         CommentMediaFilesData ev = new CommentMediaFilesData();
                                         ev.setDateTime(events.get(index)
@@ -1312,7 +1312,7 @@ public class MyCommentModel {
                     // 将本地没有的几行插入数据库
                     for (int i = index; i < eventsNum; i++) {
                         writedDbHelper.insertEvent(events.get(i));
-                        int fileNum = events.get(i).getPicCount();
+                        int fileNum = events.get(i).getImageCount();
                         // 插入文件表
                         for (int j = 0; j < fileNum; j++) {
                             CommentMediaFilesData ev = new CommentMediaFilesData();
@@ -1414,7 +1414,7 @@ public class MyCommentModel {
                                             "getComment insert event:"
                                                     + eventCTCloud);
                                     // 插入文件表
-                                    int fileNum = events.get(index).getPicCount();
+                                    int fileNum = events.get(index).getImageCount();
                                     for (int j = 0; j < fileNum; j++) {
                                         CommentMediaFilesData ev = new CommentMediaFilesData();
                                         ev.setDateTime(events.get(index)
@@ -1446,7 +1446,7 @@ public class MyCommentModel {
                     // 将本地没有的几行插入数据库
                     for (int i = index; i < eventsNum; i++) {
                         writedDbHelper.insertEvent(events.get(i));
-                        int fileNum = events.get(i).getPicCount();
+                        int fileNum = events.get(i).getImageCount();
                         // 插入文件表
                         for (int j = 0; j < fileNum; j++) {
                             CommentMediaFilesData ev = new CommentMediaFilesData();

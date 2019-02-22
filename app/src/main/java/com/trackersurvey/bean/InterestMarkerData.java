@@ -8,72 +8,63 @@ import org.json.JSONObject;
  */
 
 public class InterestMarkerData {
-    private String CreateTime;    //创建时间
-    private int PoiNo; // 兴趣点编号
-    private double Longitude;  //经度
-    private double Latitude;  //纬度
-    private double Altitude;  //海拔
+
+    private int    PoiID;
+    private String UserId;  //用户ID
+    private long   traceID;
+    private int    PoiNo; // 兴趣点编号
+    private String Cmt;  //评论文字
+    private String AnalyseWords;
     private String Country; // 国家
     private String Province; // 省
     private String City; // 城市
     private String PlaceName; //地点名称
-    private String Cmt;  //评论文字
-    private long TraceNo;  //轨迹编号
-    private int PicCount;  //图片数量
-    private int VideoCount;  //视频
-    private int SoundCount;  //音频
-    private int MotionType;	//心情
-    private int ActivityType;	//活动类型
-    private int RetentionTime;	//时长
-    private int CompanionCount;	//同伴人数
-    private int Relationship;//关系
-    private int StateType; // 兴趣点状态？？？
-    private int Share;
-    private String UserId;  //用户ID
-    private String CommentId;  //同步云端个人评论时用到的id
+    private double Longitude;  //经度
+    private double Latitude;  //纬度
+    private double Altitude;  //海拔
 
-    private long   traceID;
-    private int    PoiID;
-    private String AnalyseWords;
+    private int MotionType;    //心情
+    private int ActivityType;    //活动类型
+
     private int    RetentionType;
     private int    CompanionType;
     private int    RelationType;
     private int    ImageCount;
+    private int    VideoCount;
     private int    AudioCount;
+    private int    StateType; // 兴趣点状态？？？
     private int    DeviceID;
+    private String CreateTime;    //创建时间
+
 
     public InterestMarkerData() {
     }
 
-    public InterestMarkerData(String createTime, int poiNo, double longitude, double latitude,
-                              double altitude, String country, String province, String city,
-                              String placeName, String cmt, long traceNo, int picCount,
-                              int videoCount, int soundCount, int motionType, int activityType,
-                              int retentionTime, int companionCount, int relationship,
-                              int stateType, int share, String userId, String commentId) {
-        CreateTime = createTime;
+    public InterestMarkerData(int poiID, String userId, long traceID, int poiNo, String cmt, String analyseWords, String country, String province, String city, String placeName, double longitude, double latitude, double altitude, int motionType, int activityType, int retentionType, int companionType, int relationType, int imageCount, int videoCount, int audioCount, int stateType, int deviceID, String createTime) {
+        PoiID = poiID;
+        UserId = userId;
+        this.traceID = traceID;
         PoiNo = poiNo;
-        Longitude = longitude;
-        Latitude = latitude;
-        Altitude = altitude;
+        Cmt = cmt;
+        AnalyseWords = analyseWords;
         Country = country;
         Province = province;
         City = city;
         PlaceName = placeName;
-        Cmt = cmt;
-        TraceNo = traceNo;
-        PicCount = picCount;
-        VideoCount = videoCount;
-        SoundCount = soundCount;
+        Longitude = longitude;
+        Latitude = latitude;
+        Altitude = altitude;
         MotionType = motionType;
         ActivityType = activityType;
-        RetentionTime = retentionTime;
-        CompanionCount = companionCount;
-        Relationship = relationship;
+        RetentionType = retentionType;
+        CompanionType = companionType;
+        RelationType = relationType;
+        ImageCount = imageCount;
+        VideoCount = videoCount;
+        AudioCount = audioCount;
         StateType = stateType;
-        Share = share;
-        UserId = userId;
-        CommentId = commentId;
+        DeviceID = deviceID;
+        CreateTime = createTime;
     }
 
     public InterestMarkerData(JSONObject jsonObject) {
@@ -84,7 +75,7 @@ public class InterestMarkerData {
             PoiNo = jsonObject.getInt("PoiNo");
             traceID = jsonObject.getLong("TraceID");
             Cmt = jsonObject.getString("Comment");
-//            AnalyseWords = jsonObject.getString("AnalyseWords");
+            //            AnalyseWords = jsonObject.getString("AnalyseWords");
             Country = jsonObject.getString("Country");
             Province = jsonObject.getString("Province");
             City = jsonObject.getString("City");
@@ -101,7 +92,7 @@ public class InterestMarkerData {
             VideoCount = jsonObject.getInt("VideoCount");
             AudioCount = jsonObject.getInt("AudioCount");
             StateType = jsonObject.getInt("StateType");
-//            DeviceID = jsonObject.getInt("DeviceID");
+            //            DeviceID = jsonObject.getInt("DeviceID");
             CreateTime = jsonObject.getString("CreateTime");
 
         } catch (JSONException e) {
@@ -117,28 +108,20 @@ public class InterestMarkerData {
         PoiID = poiID;
     }
 
+    public String getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(String userId) {
+        UserId = userId;
+    }
+
     public long getTraceID() {
         return traceID;
     }
 
     public void setTraceID(long traceID) {
         this.traceID = traceID;
-    }
-
-    public String getAnalyseWords() {
-        return AnalyseWords;
-    }
-
-    public void setAnalyseWords(String analyseWords) {
-        AnalyseWords = analyseWords;
-    }
-
-    public String getCreateTime() {
-        return CreateTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.CreateTime = createTime;
     }
 
     public int getPoiNo() {
@@ -149,28 +132,20 @@ public class InterestMarkerData {
         PoiNo = poiNo;
     }
 
-    public double getLongitude() {
-        return Longitude;
+    public String getCmt() {
+        return Cmt;
     }
 
-    public void setLongitude(double longitude) {
-        this.Longitude = longitude;
+    public void setCmt(String cmt) {
+        Cmt = cmt;
     }
 
-    public double getLatitude() {
-        return Latitude;
+    public String getAnalyseWords() {
+        return AnalyseWords;
     }
 
-    public void setLatitude(double latitude) {
-        this.Latitude = latitude;
-    }
-
-    public double getAltitude() {
-        return Altitude;
-    }
-
-    public void setAltitude(double altitude) {
-        this.Altitude = altitude;
+    public void setAnalyseWords(String analyseWords) {
+        AnalyseWords = analyseWords;
     }
 
     public String getCountry() {
@@ -202,135 +177,31 @@ public class InterestMarkerData {
     }
 
     public void setPlaceName(String placeName) {
-        this.PlaceName = placeName;
+        PlaceName = placeName;
     }
 
-    public String getComment() {
-        return Cmt;
+    public double getLongitude() {
+        return Longitude;
     }
 
-    public void setComment(String comment) {
-        this.Cmt = comment;
+    public void setLongitude(double longitude) {
+        Longitude = longitude;
     }
 
-    public long getTraceNo() {
-        return TraceNo;
+    public double getLatitude() {
+        return Latitude;
     }
 
-    public void setTraceNo(long traceNo) {
-        this.TraceNo = traceNo;
+    public void setLatitude(double latitude) {
+        Latitude = latitude;
     }
 
-    public int getPicCount() {
-        return PicCount;
+    public double getAltitude() {
+        return Altitude;
     }
 
-    public void setPicCount(int picCount) {
-        this.PicCount = picCount;
-    }
-
-    public int getVideoCount() {
-        return VideoCount;
-    }
-
-    public void setVideoCount(int videoCount) {
-        this.VideoCount = videoCount;
-    }
-
-    public int getAudioCount() {
-        return SoundCount;
-    }
-
-    public void setAudioCount(int audioCount) {
-        this.SoundCount = audioCount;
-    }
-
-    public int getFeeling() {
-        return MotionType;
-    }
-
-    public void setFeeling(int feeling) {
-        this.MotionType = feeling;
-    }
-
-    public int getBehaviour() {
-        return ActivityType;
-    }
-
-    public void setBehaviour(int behaviour) {
-        this.ActivityType = behaviour;
-    }
-
-    public int getDuration() {
-        return RetentionTime;
-    }
-
-    public void setDuration(int duration) {
-        this.RetentionTime = duration;
-    }
-
-    public int getCompanionCount() {
-        return CompanionCount;
-    }
-
-    public void setCompanionCount(int companionCount) {
-        this.CompanionCount = companionCount;
-    }
-
-    public int getRelationship() {
-        return Relationship;
-    }
-
-    public void setRelationship(int relationship) {
-        this.Relationship = relationship;
-    }
-
-    public String getUserId() {
-        return UserId;
-    }
-
-    public void setUserId(String userId) {
-        this.UserId = userId;
-    }
-
-    public String getCommentId() {
-        return CommentId;
-    }
-
-    public void setCommentId(String commentId) {
-        this.CommentId = commentId;
-    }
-
-    public int getStateType() {
-        return StateType;
-    }
-
-    public void setStateType(int stateType) {
-        StateType = stateType;
-    }
-
-    public int getShare() {
-        return Share;
-    }
-
-    public void setShare(int share) {
-        Share = share;
-    }
-
-    public String getCmt() {
-        return Cmt;
-    }
-
-    public void setCmt(String cmt) {
-        Cmt = cmt;
-    }
-
-    public int getSoundCount() {
-        return SoundCount;
-    }
-
-    public void setSoundCount(int soundCount) {
-        SoundCount = soundCount;
+    public void setAltitude(double altitude) {
+        Altitude = altitude;
     }
 
     public int getMotionType() {
@@ -347,14 +218,6 @@ public class InterestMarkerData {
 
     public void setActivityType(int activityType) {
         ActivityType = activityType;
-    }
-
-    public int getRetentionTime() {
-        return RetentionTime;
-    }
-
-    public void setRetentionTime(int retentionTime) {
-        RetentionTime = retentionTime;
     }
 
     public int getRetentionType() {
@@ -389,6 +252,30 @@ public class InterestMarkerData {
         ImageCount = imageCount;
     }
 
+    public int getVideoCount() {
+        return VideoCount;
+    }
+
+    public void setVideoCount(int videoCount) {
+        VideoCount = videoCount;
+    }
+
+    public int getAudioCount() {
+        return AudioCount;
+    }
+
+    public void setAudioCount(int audioCount) {
+        AudioCount = audioCount;
+    }
+
+    public int getStateType() {
+        return StateType;
+    }
+
+    public void setStateType(int stateType) {
+        StateType = stateType;
+    }
+
     public int getDeviceID() {
         return DeviceID;
     }
@@ -397,41 +284,41 @@ public class InterestMarkerData {
         DeviceID = deviceID;
     }
 
+    public String getCreateTime() {
+        return CreateTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        CreateTime = createTime;
+    }
+
     @Override
     public String toString() {
         return "InterestMarkerData{" +
-                "CreateTime='" + CreateTime + '\'' +
+                "PoiID=" + PoiID +
+                ", UserId='" + UserId + '\'' +
+                ", traceID=" + traceID +
                 ", PoiNo=" + PoiNo +
-                ", Longitude=" + Longitude +
-                ", Latitude=" + Latitude +
-                ", Altitude=" + Altitude +
+                ", Cmt='" + Cmt + '\'' +
+                ", AnalyseWords='" + AnalyseWords + '\'' +
                 ", Country='" + Country + '\'' +
                 ", Province='" + Province + '\'' +
                 ", City='" + City + '\'' +
                 ", PlaceName='" + PlaceName + '\'' +
-                ", Cmt='" + Cmt + '\'' +
-                ", TraceNo=" + TraceNo +
-                ", PicCount=" + PicCount +
-                ", VideoCount=" + VideoCount +
-                ", SoundCount=" + SoundCount +
+                ", Longitude=" + Longitude +
+                ", Latitude=" + Latitude +
+                ", Altitude=" + Altitude +
                 ", MotionType=" + MotionType +
                 ", ActivityType=" + ActivityType +
-                ", RetentionTime=" + RetentionTime +
-                ", CompanionCount=" + CompanionCount +
-                ", Relationship=" + Relationship +
-                ", StateType=" + StateType +
-                ", Share=" + Share +
-                ", UserId='" + UserId + '\'' +
-                ", CommentId='" + CommentId + '\'' +
-                ", traceID=" + traceID +
-                ", PoiID=" + PoiID +
-                ", AnalyseWords='" + AnalyseWords + '\'' +
                 ", RetentionType=" + RetentionType +
                 ", CompanionType=" + CompanionType +
                 ", RelationType=" + RelationType +
                 ", ImageCount=" + ImageCount +
+                ", VideoCount=" + VideoCount +
                 ", AudioCount=" + AudioCount +
+                ", StateType=" + StateType +
                 ", DeviceID=" + DeviceID +
+                ", CreateTime='" + CreateTime + '\'' +
                 '}';
     }
 }

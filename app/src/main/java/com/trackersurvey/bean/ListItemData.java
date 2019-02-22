@@ -20,12 +20,12 @@ public class ListItemData {
         this.files = files;
         this.time = event.getCreateTime();
         this.place = event.getPlaceName();
-        this.comment = event.getComment();
-        this.feeling = event.getFeeling();
-        this.behaviour = event.getBehaviour();
-        this.duration = event.getDuration();
-        this.companion = event.getCompanionCount();
-        this.relation = event.getRelationship();
+        this.comment = event.getCmt();
+//        this.feeling = event.getFeeling();
+//        this.behaviour = event.getBehaviour();
+//        this.duration = event.getDuration();
+        this.companion = event.getCompanionType();
+        this.relation = event.getRelationType();
     }
 
     public String getTime() {
