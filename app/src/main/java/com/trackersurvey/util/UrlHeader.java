@@ -31,7 +31,7 @@ public class UrlHeader {
 
     public static final String DOWNLOAD_ALL_POI_URL = "poi/getPoiList";// 下载所有兴趣点
     public static final String DOWNLOAD_POI_URL = "poi/getPoiByTraceID"; // 下载轨迹上的兴趣点
-    public static final String DELETE_POI_URL = ""; // 删除兴趣点
+    public static final String DELETE_POI_URL = "/poi/deletePoi"; // 删除一条兴趣点
 
     public static final String QUESTIONARY_URL = "questionnaire/wx_getQuestionnaireList";// 调查问卷
 
