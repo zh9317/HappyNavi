@@ -111,7 +111,7 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
 //        if(l==1){
 //            initPOIEN();
 //        }
-        initPOI();
+//        initPOI();
         Common.createFileDir();
         initModel();
 //		initAlbum();

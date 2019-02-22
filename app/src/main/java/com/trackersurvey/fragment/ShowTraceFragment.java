@@ -313,7 +313,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 //        if(l==1){
 //            initPOIEN();//英文版
 //        }
-        initPOI();
+//        initPOI();
         return view;
     }
     /**

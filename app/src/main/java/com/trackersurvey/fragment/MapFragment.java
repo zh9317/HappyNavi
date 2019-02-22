@@ -897,6 +897,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                         try {
                             JSONObject object = new JSONObject((String) responseObject);
                             traceID = Long.parseLong(object.getString("traceID"));
+                            Log.i("MapFragment", "开始记录轨迹了，获取了traceID:" + traceID);
                             // 一旦获取到traceID，发送给LocationService
                             tracedata.setTraceID(traceID);
                             stepdata.setTraceID(traceID);

@@ -100,7 +100,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private int hasVideo = -1;
     private int clickPosition;
 
-    private InterestMarkerData comment; // 用户事件
+    private InterestMarkerData comment; // 用户事件F
     private String createTime = null;
     private double longitude = 117.1466090000; // 需要地图功能获得的4个数据
     private double latitude = 36.6731060000;
@@ -180,7 +180,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         country = mainIntent.getStringExtra("country");
         province = mainIntent.getStringExtra("province");
         city = mainIntent.getStringExtra("city");
-        traceID = mainIntent.getLongExtra("traceID", traceID);
+        traceID = mainIntent.getLongExtra("traceID", 0);
+        Log.i("CommentActivity", "MapFragment传过来的traceID:" + traceID);
         placeName = mainIntent.getStringExtra("placeName");
         stateType = mainIntent.getIntExtra("stateType", 0);
 
@@ -952,7 +953,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         comment.setPlaceName(placeName);
         comment.setComment(commentText);
         comment.setPicCount(fileNum);
-        comment.setTraceNo(traceID);
+        comment.setTraceID(traceID);
         comment.setVideoCount(0);
         comment.setAudioCount(0);
         comment.setUserId(Common.getUserID(getApplicationContext()));
