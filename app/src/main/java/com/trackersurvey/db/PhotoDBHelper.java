@@ -140,19 +140,19 @@ public class PhotoDBHelper {
             values.put(COLUMNS_UE[6], event.getProvince());
             values.put(COLUMNS_UE[7], event.getCity());
             values.put(COLUMNS_UE[8], event.getPlaceName());
-            values.put(COLUMNS_UE[9], event.getComment());
+            values.put(COLUMNS_UE[9], event.getCmt());
             values.put(COLUMNS_UE[10], event.getTraceID());
             values.put(COLUMNS_UE[11], event.getImageCount());
             values.put(COLUMNS_UE[12], event.getVideoCount());
             values.put(COLUMNS_UE[13], event.getAudioCount());
             values.put(COLUMNS_UE[14], event.getUserId());
-            values.put(COLUMNS_UE[15], event.getFeeling());
-            values.put(COLUMNS_UE[16], event.getBehaviour());
-            values.put(COLUMNS_UE[17], event.getDuration());
+//            values.put(COLUMNS_UE[15], event.getFeeling());
+//            values.put(COLUMNS_UE[16], event.getBehaviour());
+//            values.put(COLUMNS_UE[17], event.getDuration());
             values.put(COLUMNS_UE[18], event.getCompanionType());
             values.put(COLUMNS_UE[19], event.getRelationType());
             values.put(COLUMNS_UE[20], event.getStateType());
-            values.put(COLUMNS_UE[21], event.getShare());
+//            values.put(COLUMNS_UE[21], event.getShare());
             long row = dbWrite.insert(USEREVENT_TABLE, null, values);
             Log.i("dongsiyuanPhotoDB", "PhotoDB, row: " + row);
         } catch (SQLException e) {

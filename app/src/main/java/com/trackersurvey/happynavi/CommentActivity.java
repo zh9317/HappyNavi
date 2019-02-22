@@ -72,57 +72,57 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class CommentActivity extends BaseActivity implements View.OnClickListener, GeocodeSearch.OnGeocodeSearchListener{
+public class CommentActivity extends BaseActivity implements View.OnClickListener, GeocodeSearch.OnGeocodeSearchListener {
 
     // 用于onActivityResult()方法判断由哪个页面返回当前页面
-    public final int REQUEST_PICTURE = 1; //从相册中选照片
-    public final int REQUEST_TAKEPIC = 2; //调用相机拍照
-    public final int REQUEST_PLACE = 3;   //选择或编辑地名
-    public final int REQUEST_VIDEO = 4;   //在相册中选择录像
-    public final int REQUEST_CAMERA = 5;  //调用相机录像
-    public final String SHAREDFILES = "uploadFiles";
+    public final  int    REQUEST_PICTURE = 1; //从相册中选照片
+    public final  int    REQUEST_TAKEPIC = 2; //调用相机拍照
+    public final  int    REQUEST_PLACE   = 3;   //选择或编辑地名
+    public final  int    REQUEST_VIDEO   = 4;   //在相册中选择录像
+    public final  int    REQUEST_CAMERA  = 5;  //调用相机录像
+    public final  String SHAREDFILES     = "uploadFiles";
     // gridView使用的多个HashMap的一个常用key
-    private final String keyOfBitmap = "itemImage";
-    private final int gviewCol = 3; // gridView列数
+    private final String keyOfBitmap     = "itemImage";
+    private final int    gviewCol        = 3; // gridView列数
 
-    private GridView gview; // 网格显示缩略图
+    private GridView                           gview; // 网格显示缩略图
     private ArrayList<HashMap<String, Object>> imageItem; // gridView 组件集
-    private int itemNo; // gridView中组件个数
-    private SimpleAdapter simpleAdapter;
+    private int                                itemNo; // gridView中组件个数
+    private SimpleAdapter                      simpleAdapter;
 
     // 选择的多张照片的id和Uri
-    private SelectedTreeMap selectPictures;
+    private SelectedTreeMap   selectPictures;
     private ArrayList<String> imagePathList; // 选择的所有图片路径
     private ArrayList<String> thumbnailPathList; // 所有缩略图的路径
     private ArrayList<String> durationData, behaviourData, partnerNumData, relationData;
-    private String cacheVideo;
+    private String            cacheVideo;
     private ArrayList<String> selectImages; // 选择的图片的绝对路径
-    private int hasVideo = -1;
-    private int clickPosition;
+    private int               hasVideo = -1;
+    private int               clickPosition;
 
     private InterestMarkerData comment; // 用户事件F
-    private String createTime = null;
-    private double longitude = 117.1466090000; // 需要地图功能获得的4个数据
-    private double latitude = 36.6731060000;
-    private double altitude = 114;
-    private LatLng markLatLng;
-    private LatLonPoint markLatLonPoint;
-    private GeocodeSearch geocodeSearch;
-    private String country;
-    private String province;
-    private String city;
-    private String placeName = "实验室";
-    private String commentText;
-    private int feeling = 1; //心情
-    private int behaviour; //行为类型
-    private int stay;	//停留时长
-    private int companion;//同伴人数
-    private int relation; //关系
-    private int share = 1;
-    private long traceID = 0;
-    private int stateType;
-    private int fileNum;
-    private String videoPath = null; // 选择的视频的绝对路径
+    private String             createTime = null;
+    private double             longitude  = 117.1466090000; // 需要地图功能获得的4个数据
+    private double             latitude   = 36.6731060000;
+    private double             altitude   = 114;
+    private LatLng             markLatLng;
+    private LatLonPoint        markLatLonPoint;
+    private GeocodeSearch      geocodeSearch;
+    private String             country;
+    private String             province;
+    private String             city;
+    private String             placeName  = "实验室";
+    private String             commentText;
+    private int                feeling    = 1; //心情
+    private int                behaviour; //行为类型
+    private int                stay;    //停留时长
+    private int                companion;//同伴人数
+    private int                relation; //关系
+    private int                share      = 1;
+    private long               traceID    = 0;
+    private int                stateType;
+    private int                fileNum;
+    private String             videoPath  = null; // 选择的视频的绝对路径
 
     // 用户评论媒体文件
     private CommentMediaFilesData files[];
@@ -130,27 +130,27 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private int colWidth; // GridVied 列宽
 
     // 界面上下各个按钮
-    private TextView titleTv; // 标题
-    private TextView confirm; // 确认
+    private TextView  titleTv; // 标题
+    private TextView  confirm; // 确认
     private ImageView photo; // 调用相机拍照
     private ImageView smallVideo; // 拍摄小视频
     private ImageView imagePlace; // 位置图标
-    private TextView textOfPlace; // 选择位置
-    private EditText editComment; // 输入评论
+    private TextView  textOfPlace; // 选择位置
+    private EditText  editComment; // 输入评论
 
     private String recentPhoto;
     private String cacheFileName;
 
-    private PhotoDBHelper dbHelper;
+    private PhotoDBHelper   dbHelper;
     private MyTraceDBHelper traceHelper;
 
-    private DropDownListView behaviourList;
+    private DropDownListView      behaviourList;
     private DropDownListViewShort durationList, partnerNumberList, relationList;//短下拉框
-    private RadioGroup mood;
+    private RadioGroup  mood;
     private RadioButton rb_happy, rb_general, rb_unhappy;
     private CheckBox isShareCb;
     private TextView isShareTv;
-    private boolean isShare = true;
+    private boolean  isShare = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +159,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         StatusBarCompat.setStatusBarColor(this, Color.BLACK); // 修改状态栏颜色
         // 隐藏原始标题栏
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
+        if (actionBar != null) {
             actionBar.hide();
         }
         titleTv = findViewById(R.id.title_text);
@@ -198,10 +198,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         relationData = mainIntent.getStringArrayListExtra("relation");
         //Log.i("behaviourData", behaviourData.toString());
 
-        if(mainIntent.hasExtra("createTime")){
+        if (mainIntent.hasExtra("createTime")) {
             createTime = mainIntent.getStringExtra("createTime");
-            Log.i("mark", "createTime from marking :"+createTime);
-        }else{
+            Log.i("mark", "createTime from marking :" + createTime);
+        } else {
             createTime = null;
             Log.i("comment", "createTime from main ");
         }
@@ -217,16 +217,16 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
         // 用adapter控制gridView
         simpleAdapter = new SimpleAdapter(getApplicationContext(), imageItem,
-                R.layout.griditem_addpic, new String[] { "itemImage" },
-                new int[] { R.id.imageViewItem });
-/**解释来自：http://blog.csdn.net/gongzhuo1987/article/details/47868355
- * SimpleAdapter里面的数据绑定，功能太过于简单，对于ImageView控件，
- * 默认只能调用setViewImage((ImageView)v,(Integer)data);
- * 以及setViewImage(((ImageView)v,text);，如果想设置一张图片的话，默认的处理是不支持的，
- * 默认的处理只能设置数字或者字符串(数字就是本地的资源id，R.drawable.pic这样的资源文件id，或者String字符串)，
- * 如果是网络图片，也即非本地图片，此时默认的处理就无法满足要求了。
- * 如果需要有高级的设置，那么就必须在ViewBinder里面去设置了。ViewBinder其实就是有用户来接管v的处理。
- * */
+                R.layout.griditem_addpic, new String[]{"itemImage"},
+                new int[]{R.id.imageViewItem});
+        /**解释来自：http://blog.csdn.net/gongzhuo1987/article/details/47868355
+         * SimpleAdapter里面的数据绑定，功能太过于简单，对于ImageView控件，
+         * 默认只能调用setViewImage((ImageView)v,(Integer)data);
+         * 以及setViewImage(((ImageView)v,text);，如果想设置一张图片的话，默认的处理是不支持的，
+         * 默认的处理只能设置数字或者字符串(数字就是本地的资源id，R.drawable.pic这样的资源文件id，或者String字符串)，
+         * 如果是网络图片，也即非本地图片，此时默认的处理就无法满足要求了。
+         * 如果需要有高级的设置，那么就必须在ViewBinder里面去设置了。ViewBinder其实就是有用户来接管v的处理。
+         * */
         simpleAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Object data,
@@ -311,7 +311,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 if (isShareCb.isChecked()) {
                     isShareCb.setChecked(false);
                     isShare = false;
-                }else {
+                } else {
                     isShareCb.setChecked(true);
                     isShare = true;
                 }
@@ -339,33 +339,33 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 }
             }
         });
-/*--------------------------------------------------------------------------------------*/
+        /*--------------------------------------------------------------------------------------*/
         behaviourList = (DropDownListView) findViewById(R.id.drop_down_list_view_behaviour);
         durationList = (DropDownListViewShort) findViewById(R.id.drop_down_list_view_duration);
         partnerNumberList = (DropDownListViewShort) findViewById(R.id.drop_down_list_view_partner_number);
         relationList = (DropDownListViewShort) findViewById(R.id.drop_down_list_view_relationship);
 
-//		ArrayList<String> list_duration = new ArrayList<String>();
-//		ArrayList<String> list_behaviour = new ArrayList<String>();
-//		ArrayList<String> list_partnerNumber = new ArrayList<String>();
-//		ArrayList<String> list_relationship = new ArrayList<String>();
-//		String[] durationArray = getResources().getStringArray(R.array.durationarray);
-//		String[] behaviourArray = getResources().getStringArray(R.array.behaviourarray);
-//		String[] partnerArray = getResources().getStringArray(R.array.partnernumarray);
-//		String[] relationArray = getResources().getStringArray(R.array.relationarray);
-//		for(int i = 0;i<durationArray.length;i++){
-//			list_duration.add(durationArray[i]);
-//		}
-//		for(int i = 0;i<behaviourArray.length;i++){
-//			list_behaviour.add(behaviourArray[i]);
-//		}
-//		for(int i = 0;i<partnerArray.length;i++){
-//			list_partnerNumber.add(partnerArray[i]);
-//		}
-//		for(int i = 0;i<relationArray.length;i++){
-//			list_relationship.add(relationArray[i]);
-//		}
-//上面的数据原本放在strings.xml文件中，现在通过请求服务器下载，插入数据库，再从数据库中查询，传递到这里
+        //		ArrayList<String> list_duration = new ArrayList<String>();
+        //		ArrayList<String> list_behaviour = new ArrayList<String>();
+        //		ArrayList<String> list_partnerNumber = new ArrayList<String>();
+        //		ArrayList<String> list_relationship = new ArrayList<String>();
+        //		String[] durationArray = getResources().getStringArray(R.array.durationarray);
+        //		String[] behaviourArray = getResources().getStringArray(R.array.behaviourarray);
+        //		String[] partnerArray = getResources().getStringArray(R.array.partnernumarray);
+        //		String[] relationArray = getResources().getStringArray(R.array.relationarray);
+        //		for(int i = 0;i<durationArray.length;i++){
+        //			list_duration.add(durationArray[i]);
+        //		}
+        //		for(int i = 0;i<behaviourArray.length;i++){
+        //			list_behaviour.add(behaviourArray[i]);
+        //		}
+        //		for(int i = 0;i<partnerArray.length;i++){
+        //			list_partnerNumber.add(partnerArray[i]);
+        //		}
+        //		for(int i = 0;i<relationArray.length;i++){
+        //			list_relationship.add(relationArray[i]);
+        //		}
+        //上面的数据原本放在strings.xml文件中，现在通过请求服务器下载，插入数据库，再从数据库中查询，传递到这里
 
         try {
             behaviourList.setItemsData(behaviourData);
@@ -376,10 +376,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             e.printStackTrace();
         }
 
-/*--------------------------------------------------------------------------------------*/
+        /*--------------------------------------------------------------------------------------*/
     }
 
-    private void visitPictureBrowserActivity(){
+    private void visitPictureBrowserActivity() {
         if (clickPosition == itemNo) {//点击的是+号 选择照片
             Toast.makeText(CommentActivity.this, R.string.addpicture,
                     Toast.LENGTH_SHORT).show();
@@ -404,8 +404,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     SelectedPictureActivity.class);
             intent.putStringArrayListExtra(
                     SelectedPictureActivity.PIC_PATH, imagePathList);
-            int imgPos =  clickPosition ;
-            if(hasVideo != -1 && imgPos >hasVideo){
+            int imgPos = clickPosition;
+            if (hasVideo != -1 && imgPos > hasVideo) {
                 imgPos--;
             }
             intent.putExtra(SelectedPictureActivity.PIC_POSITION, imgPos);
@@ -416,10 +416,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     /**
      * 进入拍照页面
      */
-    private void takePic(){
+    private void takePic() {
         if (itemNo < 9) {
             String status = Environment.getExternalStorageState();
-            Log.i("Eaa", "status:"+status);
+            Log.i("Eaa", "status:" + status);
             if (status.equals(Environment.MEDIA_MOUNTED)) {
                 try {
                     File imgDirs = new File(Common.PHOTO_PATH);
@@ -441,7 +441,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     recentPhoto = imageName.getAbsolutePath();
                     Uri uri = Uri.fromFile(imageName);
 
-                    Log.i("Eaa", "_photoPath_"+recentPhoto);
+                    Log.i("Eaa", "_photoPath_" + recentPhoto);
                     Intent intent = new Intent(
                             MediaStore.ACTION_IMAGE_CAPTURE);
                     intent.putExtra(MediaStore.Images.Media.ORIENTATION, 1);
@@ -450,15 +450,15 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                     startActivityForResult(intent, REQUEST_TAKEPIC);
                 } catch (ActivityNotFoundException e) {
-                    Toast.makeText(CommentActivity.this,getResources().getString(R.string.tips_findsdfail),
+                    Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_findsdfail),
                             Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     //e.printStackTrace();
-                    Toast.makeText(CommentActivity.this,R.string.tips_createfilefail,
+                    Toast.makeText(CommentActivity.this, R.string.tips_createfilefail,
                             Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(CommentActivity.this,getResources().getString(R.string.tips_nosd),
+                Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_nosd),
                         Toast.LENGTH_SHORT).show();
             }
         } else {
@@ -474,13 +474,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         int videoNum = 0;
         if (hasVideo >= 0) {
             videoNum = 1;
-            Toast.makeText(CommentActivity.this,getResources().getString(R.string.tips_selectvideoagain),
+            Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_selectvideoagain),
                     Toast.LENGTH_SHORT).show();
         }
 
-        if (itemNo -videoNum < 9) {
-//				Toast.makeText(CommentActivity.this, "选择视频", Toast.LENGTH_SHORT)
-//						.show();
+        if (itemNo - videoNum < 9) {
+            //				Toast.makeText(CommentActivity.this, "选择视频", Toast.LENGTH_SHORT)
+            //						.show();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -542,7 +542,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     visitPictureBrowserActivity();
-                }else {
+                } else {
                     Toast.makeText(CommentActivity.this, "您禁止了权限，无法查看图片", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -591,7 +591,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     selectImages.clear();
 
                     Cursor cursor = null;
-                    String[] projection = { MediaStore.Images.Media.DATA };
+                    String[] projection = {MediaStore.Images.Media.DATA};
                     for (Long key : keys) {
                         Uri uri = selectPics.get(key);
                         cursor = getContentResolver().query(uri, projection, null,
@@ -609,22 +609,22 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 case REQUEST_TAKEPIC: {
                     String sdStatus = Environment.getExternalStorageState();
                     if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
-                        Log.i("TestFile","SD card is not avaiable/writeable right now.");
+                        Log.i("TestFile", "SD card is not avaiable/writeable right now.");
                         Toast.makeText(CommentActivity.this,
                                 R.string.cantusingsdcard, Toast.LENGTH_SHORT)
                                 .show();
                         return;
                     }
-                    if (recentPhoto!=null && new File(recentPhoto).exists()) {
+                    if (recentPhoto != null && new File(recentPhoto).exists()) {
                         String path = recentPhoto;
 
                         InsertPicToMediaStore insertImg = new InsertPicToMediaStore();
-                        insertImg.execute(new Object[] { getApplicationContext(),
-                                path, Common.currentTime() });
+                        insertImg.execute(new Object[]{getApplicationContext(),
+                                path, Common.currentTime()});
 
                         selectImages.add(recentPhoto);
                     } else {
-                        Toast.makeText(CommentActivity.this,R.string.tips_takepicfail,
+                        Toast.makeText(CommentActivity.this, R.string.tips_takepicfail,
                                 Toast.LENGTH_SHORT).show();
                     }
 
@@ -638,7 +638,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 }
                 case REQUEST_VIDEO: {
                     if (null == data) {
-                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.tips_choosevideofail),
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.tips_choosevideofail),
                                 Toast.LENGTH_SHORT).show();
                         videoPath = null;
                         return;
@@ -652,7 +652,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 || !TextUtils.isEmpty(uri.getScheme())) {
                             // 查询选择视频
                             Cursor cursor = getContentResolver().query(uri,
-                                    new String[] { MediaStore.Video.Media.DATA },
+                                    new String[]{MediaStore.Video.Media.DATA},
                                     null, null, null);
                             if (null != cursor) {
 
@@ -696,7 +696,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 || !TextUtils.isEmpty(uri.getScheme())) {
                             // 查询选择视频
                             Cursor cursor = getContentResolver().query(uri,
-                                    new String[] { MediaStore.Video.Media.DATA },
+                                    new String[]{MediaStore.Video.Media.DATA},
                                     null, null, null);
                             if (null != cursor) {
                                 // 光标移动至开头 获取图片路径
@@ -735,7 +735,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     Toast.LENGTH_LONG).show();
         }
         Log.i("comment", "onActivityResult hasViewo=" + hasVideo + ",itemNo=" + itemNo
-                +",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",imagePathList size "+ imagePathList.size());
+                + ",selectImages size " + selectImages.size() + ",imageItem size" + imageItem.size() + ",imagePathList size " + imagePathList.size());
 
     }
 
@@ -751,14 +751,14 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             }
             for (int i = 0; i < selectImages.size(); i++) {
                 Bitmap addbmp = null;
-                try{
+                try {
                     addbmp = Common.scaleBitmap(selectImages.get(i),
                             Common.winWidth, Common.winHeight);
-                }catch(OutOfMemoryError e){
+                } catch (OutOfMemoryError e) {
 
                 }
                 // 生成缩略图
-                if(null == addbmp){
+                if (null == addbmp) {
                     continue;
                 }
                 addbmp = ThumbnailUtils.extractThumbnail(addbmp, colWidth,
@@ -800,12 +800,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             // 刷新后释放防止手机休眠后自动添加
             selectImages.clear();
         }
-//		if(selectImages != null && imageItem!=null){
-//			Log.i("comment", "after resume hasViewo=" + hasVideo + ",itemNo=" + itemNo
-//				+",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",imagePathList size "+imagePathList.size());
-//		}
+        //		if(selectImages != null && imageItem!=null){
+        //			Log.i("comment", "after resume hasViewo=" + hasVideo + ",itemNo=" + itemNo
+        //				+",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",imagePathList size "+imagePathList.size());
+        //		}
         super.onResume();
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString("recentPhoto", recentPhoto);
@@ -834,13 +835,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        for(int i = 0;i<imageItem.size();i++){
-            if(i == hasVideo){
+        for (int i = 0; i < imageItem.size(); i++) {
+            if (i == hasVideo) {
                 continue;
 
             }
             Bitmap bitmap = (Bitmap) imageItem.get(i).get(keyOfBitmap);
-            if(bitmap != null){
+            if (bitmap != null) {
                 bitmap.recycle();
             }
         }
@@ -872,14 +873,14 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             simpleAdapter.notifyDataSetChanged();
                         } else {
                             int pos = position;
-                            if(hasVideo != -1 && pos >hasVideo){
+                            if (hasVideo != -1 && pos > hasVideo) {
                                 pos--;
                             }
-                            if(pos >= imageItem.size() || pos >= imagePathList.size()){
-                                Log.i("comment","delete error :"+pos+"/"+ imagePathList.size());
+                            if (pos >= imageItem.size() || pos >= imagePathList.size()) {
+                                Log.i("comment", "delete error :" + pos + "/" + imagePathList.size());
                                 return;
                             }
-                            Log.i("comment","delete  :"+pos+"/"+ imagePathList.size());
+                            Log.i("comment", "delete  :" + pos + "/" + imagePathList.size());
 
                             imageItem.remove(position);
                             // 成对删除
@@ -890,7 +891,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                     .append(")");
                             Cursor cursor = getContentResolver().query(
                                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                    new String[] { MediaStore.Images.ImageColumns._ID },
+                                    new String[]{MediaStore.Images.ImageColumns._ID},
                                     buff.toString(), null, null);
                             if (cursor.moveToNext()) {
                                 long id = cursor.getLong(0);
@@ -911,11 +912,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             }
 
                         }
-                        if(itemNo == 8){
+                        if (itemNo == 8) {
                             addSymbol();
                         }
                         Log.i("comment", "delete hasViewo=" + hasVideo + ",itemNo=" + itemNo
-                                +",selectImages size "+selectImages.size()+",imageItem size"+imageItem.size()+",imagePathList size "+ imagePathList.size());
+                                + ",selectImages size " + selectImages.size() + ",imageItem size" + imageItem.size() + ",imagePathList size " + imagePathList.size());
 
 
                     }
@@ -951,35 +952,35 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         comment.setProvince(province);
         comment.setCity(city);
         comment.setPlaceName(placeName);
-        comment.setComment(commentText);
-        comment.setPicCount(fileNum);
+        comment.setCmt(commentText);
+        comment.setImageCount(fileNum);
         comment.setTraceID(traceID);
         comment.setVideoCount(0);
         comment.setAudioCount(0);
         comment.setUserId(Common.getUserID(getApplicationContext()));
-        comment.setFeeling(feeling);
-        comment.setBehaviour(behaviour);
-        comment.setDuration(stay);
-        comment.setCompanionCount(companion);
-        comment.setRelationship(relation);
+        //        comment.setFeeling(feeling);
+        //        comment.setBehaviour(behaviour);
+        //        comment.setDuration(stay);
+        comment.setCompanionType(companion);
+        comment.setRelationType(relation);
         comment.setStateType(stateType);
-        if (isShare) {
-            comment.setShare(1);
-        }else {
-            comment.setShare(0);
-        }
+        //        if (isShare) {
+        //            comment.setShare(1);
+        //        }else {
+        //            comment.setShare(0);
+        //        }
         // 将要上传的文件添加到sharedPreferences
         SharedPreferences uploadFiles = getSharedPreferences(SHAREDFILES,
                 Activity.MODE_PRIVATE);
         SharedPreferences.Editor edit = uploadFiles.edit();
 
-        Log.i("comment", "createTime="+createTime+"|longitude="+longitude+"|latitude="+latitude
-                +"|altitude="+altitude+"|country="+country+"|province="+province+"|city="+city
-                +"|placeName=" + placeName + "|comment=" + commentText + "|fileNum=" + fileNum
-                +"|traceID="+traceID+"|videoCount="+0+"|audioCount="+0
-                +"|userID="+Common.getUserID(getApplicationContext())+"|feeling=" + feeling
-                + "|behaviour="+behaviour+"|stay="+stay +"|companion="+companion+"|relation="+relation
-                +"|stateType="+stateType+"|share"+share);
+        Log.i("comment", "createTime=" + createTime + "|longitude=" + longitude + "|latitude=" + latitude
+                + "|altitude=" + altitude + "|country=" + country + "|province=" + province + "|city=" + city
+                + "|placeName=" + placeName + "|comment=" + commentText + "|fileNum=" + fileNum
+                + "|traceID=" + traceID + "|videoCount=" + 0 + "|audioCount=" + 0
+                + "|userID=" + Common.getUserID(getApplicationContext()) + "|feeling=" + feeling
+                + "|behaviour=" + behaviour + "|stay=" + stay + "|companion=" + companion + "|relation=" + relation
+                + "|stateType=" + stateType + "|share" + share);
 
         // 设置文件属性
         for (int i = 0; i < fileNum; i++) { // 图片
@@ -1005,7 +1006,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             files[fileNum].setFileName(videoPath);
             files[fileNum].setThumbnailName(cacheVideo);
             files[fileNum].setFileType(2);
-            comment.setPicCount(fileNum + 1);
+            comment.setImageCount(fileNum + 1);
             edit.putString(
                     createTime + File.separator + fileNum + File.separator + 2
                             + File.separator
@@ -1019,15 +1020,15 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         dbHelper = new PhotoDBHelper(this, PhotoDBHelper.DBWRITE);//打开兴趣点数据库
         traceHelper = new MyTraceDBHelper(this);//轨迹信息数据库
         TraceData tracedata = new TraceData();
-        tracedata = traceHelper.queryfromTrailbytraceID(comment.getTraceNo(), comment.getUserId());
-        Log.i("traceee", "comment.traceID:"+comment.getTraceNo() + ", comment.userID:" + comment.getUserId());
-        if(tracedata!=null){
-            tracedata.setPoiCount(tracedata.getPoiCount()+1);
-            Log.i("traceee", "tracedata = "+tracedata.getPoiCount()+tracedata.getCalorie()
-                    +tracedata.getDistance()+tracedata.getDuration()+tracedata.getEndTime()
-                    +tracedata.getShareType()+tracedata.getSportTypes()+tracedata.getStartTime()
-                    +tracedata.getTraceName()+tracedata.getTraceID()+tracedata.getUserID());
-            traceHelper.updatetrail(tracedata, comment.getTraceNo(), comment.getUserId());
+        tracedata = traceHelper.queryfromTrailbytraceID(comment.getTraceID(), comment.getUserId());
+        Log.i("traceee", "comment.traceID:" + comment.getTraceID() + ", comment.userID:" + comment.getUserId());
+        if (tracedata != null) {
+            tracedata.setPoiCount(tracedata.getPoiCount() + 1);
+            Log.i("traceee", "tracedata = " + tracedata.getPoiCount() + tracedata.getCalorie()
+                    + tracedata.getDistance() + tracedata.getDuration() + tracedata.getEndTime()
+                    + tracedata.getShareType() + tracedata.getSportTypes() + tracedata.getStartTime()
+                    + tracedata.getTraceName() + tracedata.getTraceID() + tracedata.getUserID());
+            traceHelper.updatetrail(tracedata, comment.getTraceID(), comment.getUserId());
         }
         int result = dbHelper.insertEvent(comment);
         Log.i("Eaa", "comment result=" + result);
@@ -1125,31 +1126,31 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 // 以提交时间为创建时间
                 commentText = editComment.getText().toString().trim();
                 if ("".equals(commentText) || commentText == null) {
-                    Toast.makeText(CommentActivity.this,getResources().getString(R.string.tips_commentsubmit),
+                    Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_commentsubmit),
                             Toast.LENGTH_SHORT).show();
                     break;
                 }
-                if(behaviourList.getSelectedPosition() == -1){
+                if (behaviourList.getSelectedPosition() == -1) {
                     Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_selectbehaviour),
                             Toast.LENGTH_SHORT).show();
                     break;
                 }
-                if(durationList.getSelectedPosition() == -1){
+                if (durationList.getSelectedPosition() == -1) {
                     Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_selectduration),
                             Toast.LENGTH_SHORT).show();
                     break;
                 }
-                if(partnerNumberList.getSelectedPosition() == -1){
+                if (partnerNumberList.getSelectedPosition() == -1) {
                     Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_selectpartnernum),
                             Toast.LENGTH_SHORT).show();
                     break;
                 }
-                if(relationList.getSelectedPosition() == -1){
+                if (relationList.getSelectedPosition() == -1) {
                     Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_selectrelationship),
                             Toast.LENGTH_SHORT).show();
                     break;
                 }
-                if(createTime == null){
+                if (createTime == null) {
                     createTime = Common.currentTime();
 
                 }
@@ -1174,7 +1175,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                         Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(CommentActivity.this,
                             new String[]{Manifest.permission.CAMERA}, 3);
-                }else {
+                } else {
                     takeVideo();
                 }
                 break;
@@ -1193,6 +1194,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     /**
      * 逆地理编码，通过经纬度获取所在的国家、省、城市
+     *
      * @param regeocodeResult
      * @param i
      */
@@ -1216,7 +1218,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
      * 将图片添加到系统媒体库中
      *
      * @author Eaa
-     *
      */
     public class InsertPicToMediaStore extends AsyncTask<Object, Object, Object> {
 
@@ -1253,7 +1254,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         protected void onPostExecute(Object result) {
             Uri insertUri = (Uri) result;
             Cursor cursor = getContentResolver().query(insertUri,
-                    new String[] { MediaStore.Images.ImageColumns._ID }, null, null, null);
+                    new String[]{MediaStore.Images.ImageColumns._ID}, null, null, null);
             if (cursor.moveToNext()) {
                 long id = cursor.getLong(0);
                 if (selectPictures != null) {
