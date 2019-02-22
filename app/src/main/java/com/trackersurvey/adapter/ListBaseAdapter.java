@@ -151,7 +151,7 @@ public class ListBaseAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final int listPosition = position;
         ListViewHolder holder = new ListViewHolder();
-        ListItemData itemEntity;//
+        final ListItemData itemEntity;//
         boolean allThumb = true;
 
 
@@ -295,7 +295,8 @@ public class ListBaseAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                deleCommentListener.clickDelete(dateTime, listPosition);
+//                deleCommentListener.clickDelete(dateTime, listPosition);
+                deleCommentListener.clickDelete(dateTime, itemEntity.getPoiID(), itemEntity.getTraceID());
             }
         });
 
@@ -660,7 +661,7 @@ public class ListBaseAdapter extends BaseAdapter {
      * 设置删除按钮的监听器
      */
     public interface DeleCommListener {
-        void clickDelete(String dateTime, int position);
+        void clickDelete(String dateTime, int position, long traceID);
     }
 
     public void setDeleCommListener(DeleCommListener mListener) {

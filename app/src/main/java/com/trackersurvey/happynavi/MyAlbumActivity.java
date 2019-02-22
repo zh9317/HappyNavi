@@ -130,7 +130,9 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
                     if ((view.getLastVisiblePosition() == view.getCount() - 1)
                             &&myComment.cloudMore()) {
                         Log.i("Eaa", "自动加载评论,size="+view.getCount() );
-                        myComment.autoAddtoList();
+//                        myComment.autoAddtoList();
+                        String dateTime = Common.currentTime();
+                        myComment.downloadAlbum(dateTime);
                     }
                 }
             }
@@ -225,7 +227,7 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
      * 初始化适配器，设置ListView的item的子组件的监听
      */
     private void initAdapter() {
-        listAdapter = new MyAlbumListBaseAdapter(this, myComment,myComment.getItems(),"album");
+        listAdapter = new MyAlbumListBaseAdapter(this, myComment, myComment.getItems(),"album");
 
         // 监听背景图片点击，点击更换图片
         listAdapter.setOnBackImageChange(new MyAlbumListBaseAdapter.BackImageListener() {
@@ -240,9 +242,9 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
         listAdapter.setDeleCommListener(new MyAlbumListBaseAdapter.DeleCommListener() {
 
             @Override
-            public void clickDelete(String dateTime, int position) {
-                // TODO Auto-generated method stub
-                deleteEvent(dateTime, position);
+            public void clickDelete(String dateTime, int position, long traceID) {
+                // dateTime, itemEntity.getPoiID(), itemEntity.getTraceID()
+                deleteEvent(dateTime, position, traceID);
             }
         });
 
@@ -363,8 +365,9 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
      * 弹出对话框让用户选择是否确认删除一条评论
      * @param dateTime
      * @param position
+     * @param traceID
      */
-    private void deleteEvent(final String dateTime, final int position) {
+    private void deleteEvent(final String dateTime, final int position, final long traceID) {
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         builder.setTitle(getResources().getString(R.string.tip));
         builder.setMessage(
@@ -375,9 +378,9 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
                     @Override
                     public void onClick(DialogInterface dialog,
                                         int which) {
-                        // TODO Auto-generated method stub
+                        // dateTime, itemEntity.getPoiID(), itemEntity.getTraceID()
                         dialog.dismiss();
-                        deleteComment(dateTime, position);
+                        deleteComment(dateTime, position, traceID);
                     }
                 });
         builder.setNegativeButton(getResources().getString(R.string.cancl),
@@ -399,8 +402,14 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
      */
     private void updateUI(){
 
-        listAdapter.setItems(myComment.getItems());
-        listAdapter.notifyDataSetChanged();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("dongisyuanupdateUI", "run: " + myComment.getItems());
+                listAdapter.setItems(myComment.getItems());
+                listAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
 
@@ -436,10 +445,13 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-     * 通知模型删除一条评论
+     * dateTime, itemEntity.getPoiID(), itemEntity.getTraceID()
+     * @param dateTime
+     * @param poiID
+     * @param traceID
      */
-    private void deleteComment(String dateTime, int listPosition) {
-        myComment.deleteComment(dateTime, listPosition);
+    private void deleteComment(String dateTime, int poiID, long traceID) {
+        myComment.deleteComment(dateTime, poiID, traceID);
     }
     //传递给PostPointOfInterestData的handler1
     @SuppressLint("HandlerLeak")

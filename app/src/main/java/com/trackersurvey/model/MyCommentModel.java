@@ -3,11 +3,13 @@ package com.trackersurvey.model;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -24,6 +26,8 @@ import com.trackersurvey.db.PhotoDBHelper;
 import com.trackersurvey.db.PointOfInterestDBHelper;
 import com.trackersurvey.db.TraceDBHelper;
 import com.trackersurvey.fragment.ShowTraceFragment;
+import com.trackersurvey.happynavi.R;
+import com.trackersurvey.http.DeletePOIRequest;
 import com.trackersurvey.http.DownloadPoiListRequest;
 import com.trackersurvey.http.DownloadPoiRequest;
 import com.trackersurvey.http.ResponseData;
@@ -32,6 +36,7 @@ import com.trackersurvey.httpconnection.GetCloudPicture;
 import com.trackersurvey.httpconnection.GetThumbPic;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.GsonHelper;
+import com.trackersurvey.util.ToastUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -76,6 +81,8 @@ public class MyCommentModel {
     private String  from            = null;//判断是谁调用了此类
     private String  startTime;
     private String  endTime;
+
+    public final String UPDATEUI_ACTION = "android.intent.action.UPDATEUI_RECEIVER";// 给ShowPoiFragment发的广播
 
     public ArrayList<HashMap<String, Object>> getItems() {
         return items;
@@ -484,6 +491,10 @@ public class MyCommentModel {
             }
         }
         Log.i("dongsiyuaninitItemBT", "cursor.getCount() : " + cursor.getCount() + ",items size : " + items.size());
+        // 通知ShowPoiFragment刷新
+        Intent intent = new Intent();
+        intent.setAction(UPDATEUI_ACTION);
+        context.sendBroadcast(intent);
     }
 
     /**
@@ -521,6 +532,7 @@ public class MyCommentModel {
             event.setRetentionType(cursor.getInt(17));
             event.setCompanionType(cursor.getInt(18));
             event.setRelationType(cursor.getInt(19));
+            event.setPoiID(cursor.getInt(21));
 
             Cursor fileCursor = dbHelper.selectFiles(null, "datetime("
                     + PhotoDBHelper.COLUMNS_FILE[2] + ")=datetime('" + eventTime
@@ -592,8 +604,9 @@ public class MyCommentModel {
      */
     public void autoAddtoList() {
         cursor = dbHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[14] + "="
-                + Common.getUserId(context), null, null, null, "datetime("
+                + Common.getUserID(context), null, null, null, "datetime("
                 + PhotoDBHelper.COLUMNS_UE[0] + ") desc");
+        Log.i("dongsiyuanindexCount", "onResponseData: " + cursor.getCount() + " userID : " + Common.getUserId(context));
         if (!isAddingComment) {
             Log.i("dongsiyuan", "addComment:" + items.size() + "numOfUE : " + numOfUE);
             isAddingComment = true;
@@ -641,9 +654,12 @@ public class MyCommentModel {
                                 String eventCTDB;
                                 String eventCTCloud;
                                 // 本地数据中有内容
+                                Log.i("dongsiyuanindexCount", "onResponseData: " + cursor.getCount());
                                 if (cursor.getCount() > 0) {
+                                    Log.i("dongsiyuanindexCount()", "onResponseData: " + index);
                                     // 云端也有内容
                                     if (eventsNum > 0) {
+                                        Log.i("dongsiyuanindexNum", "onResponseData: " + index);
                                         while (index < eventsNum) {
                                             // 根据CreateTime判断服务器上的哪些兴趣点本地还没有
                                             eventCTDB = cursor.getString(0);
@@ -680,7 +696,9 @@ public class MyCommentModel {
                                                 //
                                                 index++;
                                             }
+                                            Log.i("dongsiyuanindex", "onResponseData: " + index);
                                         }
+
                                         if (!cursor.isAfterLast() && !cloudMore) {
                                             // 如果本地数据多于云端，删除本地数据多出的部分
 
@@ -697,10 +715,11 @@ public class MyCommentModel {
                                         writedDbHelper.deleteEvent(null);
                                     }
                                 }
+                                Log.i("dongsiyuanindex", "onResponseData: " + index);
                                 // 将本地没有的几行插入数据库
                                 for (int i = index; i < eventsNum; i++) {
                                     writedDbHelper.insertEvent(interestMarkerDataList.get(i));
-
+                                    Log.i("dongsiyuanindex", "onResponseData: " + index);
                                     //                            int fileNum = interestMarkerDataList.get(i).getFileNum();
                                     // 插入文件表
                                     //
@@ -731,6 +750,7 @@ public class MyCommentModel {
                                 }
                                 writedDbHelper.closeDB();
                                 isAddingComment = false;
+                                mDownComment.onCommentDownload(0);
                             } else {
                                 Log.i("dongsiyuanDownloadPoi", "onResponseData: Failed" + code);
                             }
@@ -765,14 +785,14 @@ public class MyCommentModel {
      */
     public void downloadComment(String dateTime) {
         isAddingComment = true;
-//        GetComment downComment = new GetComment(refreshComment,
-//                Common.URL_DOWNEVENT, Common.getUserId(context),
-//                startTime, endTime, Common.getDeviceId(context));
+        //        GetComment downComment = new GetComment(refreshComment,
+        //                Common.URL_DOWNEVENT, Common.getUserId(context),
+        //                startTime, endTime, Common.getDeviceId(context));
 		/*GetComment downComment = new GetComment(refreshComment,
 				Common.URL_DOWNEVENT, Common.getUserId(context),
 				dateTime,Common.getDeviceId(context));*/
         Log.i("Eaa", "downloadComment:" + dateTime);
-//        downComment.start();
+        //        downComment.start();
 
     }
 
@@ -882,6 +902,7 @@ public class MyCommentModel {
                     }
                     writedDbHelper.closeDB();
                     isAddingComment = false;
+                    mDownComment.onCommentDownload(0);
                 }
 
             }
@@ -919,10 +940,25 @@ public class MyCommentModel {
     }
 
     /**
+     * 删除相册里的兴趣点
+     *
+     * @param dateTime
+     * @param poiID
+     * @param traceID
+     */
+    public void deleteComment(String dateTime, final int poiID, long traceID) {
+        deletePOI(sp.getString("token", ""), poiID, dateTime, traceID);
+
+        if (from.equals("album")) {
+            initItems();
+        }
+    }
+
+    /**
      * 删除评论
      *
-     * @param listPosition
      * @param dateTime
+     * @param listPosition
      */
     public boolean deleteComment(String dateTime, int listPosition) {
         DeleteCloudComment dcc = new DeleteCloudComment(context,
@@ -938,6 +974,67 @@ public class MyCommentModel {
                 Common.getUserId(context), startTime, endTime, Common.getDeviceId(context));
         dcc.start();
         return false;
+    }
+
+    /**
+     * 删除ShowPoiFragment里的兴趣点
+     *
+     * @param token
+     * @param poiID
+     */
+    public boolean deletePOI(String token, final int poiID, final String dateTime, final long traceID) {
+        DeletePOIRequest deletePOIRequest = new DeletePOIRequest(token, poiID);
+        deletePOIRequest.requestHttpData(new ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                if (isSuccess) {
+                    if (code.equals("0")) {
+
+                        Log.i("dongisyuanDelete", "onResponseData: dateTime: " + dateTime + "traceID: " + traceID + "poiID: " + poiID);
+
+                        dbHelper = new PhotoDBHelper(context, PhotoDBHelper.DBWRITE);
+                        //删除兴趣点成功
+                        if (deleteFromDB(traceID, dateTime) == 0) {
+                            Log.i("dongisyuanDelete", "删除兴趣点成功");
+                        } else {
+
+                        }
+
+                        dbHelper = new PhotoDBHelper(context, PhotoDBHelper.DBREAD);
+                        if (from.equals("album")) {
+                            initItems();
+                        } else if (from.equals("mark")) {
+                            initItemsByTraceID(traceID);
+                            Log.i("mark", "更新标注handler");
+                        }
+                        // 通知ShowPoiFragment刷新
+                        Intent intent = new Intent();
+                        intent.setAction(UPDATEUI_ACTION);
+                        context.sendBroadcast(intent);
+
+                        // 通知MyAlbumActivity刷新
+                        mDownComment.onCommentDownload(0);
+
+                    }
+                }
+            }
+        });
+        return false;
+    }
+
+    /**
+     * 从数据库中删除该兴趣点
+     *
+     * @return
+     */
+    private int deleteFromDB(long traceID, String dateTime) {
+        int result = -1;
+        result = dbHelper.deleteEvent(dateTime, String.valueOf(traceID));
+        dbHelper.closeDB();
+        if (result != 0) {
+            return -1;
+        }
+        return 0;
     }
 
     /**

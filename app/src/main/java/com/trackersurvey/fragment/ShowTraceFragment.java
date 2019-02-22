@@ -213,6 +213,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     private Bundle params;
     //private MyIUilistener mIUilistener;//用于qq空间分享
 
+    private long currentTraceID;
 
     @Nullable
     @Override
@@ -345,7 +346,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         // Log.i("trailadapter", "initPathData,"+trail);
         // Gson gson=new Gson();
         trailobj = GsonHelper.parseJson(trail, TraceData.class);
-
+        currentTraceID = trailobj.getTraceID();
         Log.i("trailobj", "startTime:" + trailobj.getStartTime() + "endTime" + trailobj.getEndTime());
         if (!"--".equals(stepstr)) {
             stepdata = GsonHelper.parseJson(stepstr, StepData.class);
@@ -822,9 +823,9 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         if (Common.isNetConnected) {
             // 网络连接，更新本地标注信息
             Log.i("mark", "更新标注");
-            Log.i("trailobj", "trailobj:"+trailobj);
+            Log.i("trailobj", "trailobj:"+trailobj + "currentTraceID: " + currentTraceID);
 
-            myComment.refreshMarkerItemsOnline(trailobj.getTraceID());
+            myComment.refreshMarkerItemsOnline(currentTraceID);
 
             Intent intent = new Intent();
             intent.setAction(UPDATEUI_ACTION);

@@ -17,6 +17,8 @@ public class ListItemData {
     private int duration;    //停留时长
     private int companion;   //同伴人数
     private int relation;    //同伴关系
+    private int poiID;
+    private long traceID;
     public ListItemData(InterestMarkerData event,CommentMediaFilesData files[]){
         this.event = event;
         this.files = files;
@@ -28,6 +30,16 @@ public class ListItemData {
         this.duration = event.getRetentionType();
         this.companion = event.getCompanionType();
         this.relation = event.getRelationType();
+        this.poiID = event.getPoiID();
+        this.traceID = event.getTraceID();
+    }
+
+    public long getTraceID() {
+        return traceID;
+    }
+
+    public void setTraceID(long traceID) {
+        this.traceID = traceID;
     }
 
     public String getTime() {
@@ -113,6 +125,14 @@ public class ListItemData {
         files[i] = file;
     }
 
+    public int getPoiID() {
+        return poiID;
+    }
+
+    public void setPoiID(int poiID) {
+        this.poiID = poiID;
+    }
+
     @Override
     public String toString() {
         return "ListItemData{" +
@@ -126,6 +146,7 @@ public class ListItemData {
                 ", duration=" + duration +
                 ", companion=" + companion +
                 ", relation=" + relation +
+                ", poiID=" + poiID +
                 '}';
     }
 }
