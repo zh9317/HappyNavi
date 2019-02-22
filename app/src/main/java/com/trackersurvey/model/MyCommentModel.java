@@ -516,9 +516,9 @@ public class MyCommentModel {
             event.setVideoCount(cursor.getInt(12));
             event.setAudioCount(cursor.getInt(13));
             event.setUserId(cursor.getString(14));
-//            event.setFeeling(cursor.getInt(15));
-//            event.setBehaviour(cursor.getInt(16));
-//            event.setDuration(cursor.getInt(17));
+            event.setMotionType(cursor.getInt(15));
+            event.setActivityType(cursor.getInt(16));
+            event.setRetentionType(cursor.getInt(17));
             event.setCompanionType(cursor.getInt(18));
             event.setRelationType(cursor.getInt(19));
 

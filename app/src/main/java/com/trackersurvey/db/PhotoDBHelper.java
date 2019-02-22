@@ -146,9 +146,9 @@ public class PhotoDBHelper {
             values.put(COLUMNS_UE[12], event.getVideoCount());
             values.put(COLUMNS_UE[13], event.getAudioCount());
             values.put(COLUMNS_UE[14], event.getUserId());
-            //            values.put(COLUMNS_UE[15], event.getFeeling());
-            //            values.put(COLUMNS_UE[16], event.getBehaviour());
-            //            values.put(COLUMNS_UE[17], event.getDuration());
+            values.put(COLUMNS_UE[15], event.getMotionType());
+            values.put(COLUMNS_UE[16], event.getActivityType());
+            values.put(COLUMNS_UE[17], event.getRetentionType());
             values.put(COLUMNS_UE[18], event.getCompanionType());
             values.put(COLUMNS_UE[19], event.getRelationType());
             values.put(COLUMNS_UE[20], event.getStateType());
