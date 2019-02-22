@@ -329,13 +329,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == rb_happy.getId()) {
-                    feeling = 1;
+                    feeling = 0;
                 }
                 if (checkedId == rb_general.getId()) {
-                    feeling = 2;
+                    feeling = 1;
                 }
                 if (checkedId == rb_unhappy.getId()) {
-                    feeling = 3;
+                    feeling = 2;
                 }
             }
         });
@@ -933,10 +933,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     // 初始化评论事件
     private void initEvent() {
-        behaviour = behaviourList.getSelectedPosition() + 1;
-        stay = durationList.getSelectedPosition() + 1;
-        companion = partnerNumberList.getSelectedPosition() + 1;
-        relation = relationList.getSelectedPosition() + 1;
+        behaviour = behaviourList.getSelectedPosition();
+        stay = durationList.getSelectedPosition();
+        companion = partnerNumberList.getSelectedPosition();
+        relation = relationList.getSelectedPosition();
         comment = new InterestMarkerData();
         // 设置事件属性
         /*if (createTime == null) {
@@ -961,6 +961,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         //        comment.setFeeling(feeling);
         //        comment.setBehaviour(behaviour);
         //        comment.setDuration(stay);
+        comment.setMotionType(feeling);
+        comment.setRetentionType(stay);
+        comment.setActivityType(behaviour);
         comment.setCompanionType(companion);
         comment.setRelationType(relation);
         comment.setStateType(stateType);
@@ -1031,7 +1034,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             traceHelper.updatetrail(tracedata, comment.getTraceID(), comment.getUserId());
         }
         int result = dbHelper.insertEvent(comment);
-        Log.i("Eaa", "comment result=" + result);
+        Log.i("Eaa", "comment result= " + result);
         for (int i = 0; i < itemNo; i++) {
             dbHelper.inserFile(files[i]);
         }

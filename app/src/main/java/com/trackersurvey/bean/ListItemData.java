@@ -23,9 +23,9 @@ public class ListItemData {
         this.time = event.getCreateTime();
         this.place = event.getPlaceName();
         this.comment = event.getCmt();
-//        this.feeling = event.getFeeling();
-//        this.behaviour = event.getBehaviour();
-//        this.duration = event.getDuration();
+        this.feeling = event.getMotionType();
+        this.behaviour = event.getActivityType();
+        this.duration = event.getRetentionType();
         this.companion = event.getCompanionType();
         this.relation = event.getRelationType();
     }

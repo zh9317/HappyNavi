@@ -788,6 +788,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 ArrayList<String> duration = poiDBHelper.getDuration();
                 ArrayList<String> partnerNum = poiDBHelper.getPartnerNum();
                 ArrayList<String> relation = poiDBHelper.getRelation();
+
+                Log.i("dongisyuan兴趣点", "behaviour: " + behaviour.get(1) + "+duration" + duration.get(1)
+                 + "partnerNum" + partnerNum.get(1) + "relation" + relation.get(1));
                 Intent intent = new Intent();
                 intent.setClass(getContext(), CommentActivity.class);
                 /**
