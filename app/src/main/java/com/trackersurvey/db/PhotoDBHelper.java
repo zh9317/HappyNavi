@@ -27,7 +27,7 @@ public class PhotoDBHelper {
     public static final  String[] COLUMNS_UE      = {"CreateTime", "PoiNo", "Longitude",
             "Latitude", "Altitude", "Country", "Province", "City", "PlaceName", "Context", "TraceID",
             "FileNum", "Video", "Audio", "UserID", "Feeling", "Behaviour",
-            "Duration", "Companion", "Relationship", "StateType", "Share"};
+            "Duration", "Companion", "Relationship", "StateType", "PoiID", "Share"};
 
     private static final String   FILE_TABLE   = "EventFile";
     public static final  String[] COLUMNS_FILE = {"FileID", "FileName",
@@ -152,6 +152,7 @@ public class PhotoDBHelper {
             values.put(COLUMNS_UE[18], event.getCompanionType());
             values.put(COLUMNS_UE[19], event.getRelationType());
             values.put(COLUMNS_UE[20], event.getStateType());
+            values.put(COLUMNS_UE[21], event.getPoiID());
             //            values.put(COLUMNS_UE[21], event.getShare());
             long row = dbWrite.insert(USEREVENT_TABLE, null, values);
             Log.i("dongsiyuanPhotoDB", "PhotoDB, row: " + row);
@@ -259,7 +260,7 @@ public class PhotoDBHelper {
 
     /**
      * @param dateTime 要删除的事件的创建时间
-     * @param userId   要删除的事件所属的用户
+     * @param traceID   要删除的兴趣点所属的轨迹
      * @return
      */
     public int deleteEvent(String dateTime, String traceID) {

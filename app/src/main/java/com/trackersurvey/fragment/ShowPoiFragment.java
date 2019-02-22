@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,7 +23,6 @@ import com.trackersurvey.util.CustomDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * Created by zh931 on 2018/5/20.
@@ -41,6 +41,7 @@ public class ShowPoiFragment extends Fragment {
     public final   String                             UPDATEUI_ACTION    = "android.intent.action.UPDATEUI_RECEIVER";
     public final   String                             INITADAPTER_ACTION = "android.intent.action.ADAPTER_RECEIVER";
     private static MyCommentModel                     myComment;
+    private        SharedPreferences                  sp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,13 +64,12 @@ public class ShowPoiFragment extends Fragment {
 
         Common.createFileDir();
         //initModel();
-
+        sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
         items = new ArrayList<HashMap<String, Object>>();
         lView = (SlideListView) view.findViewById(R.id.poi_lv);
         initAdapter();
 
         poiReceiver = new PoiEventReceiver();
-
         IntentFilter pullFilter = new IntentFilter();
         pullFilter.addAction(UPDATEUI_ACTION);
         pullFilter.addAction(INITADAPTER_ACTION);
@@ -102,9 +102,9 @@ public class ShowPoiFragment extends Fragment {
         //监听删除按钮
         listAdapter.setDeleCommListener(new ListBaseAdapter.DeleCommListener() {
             @Override
-            public void clickDelete(String dateTime, int position) {
+            public void clickDelete(String dateTime, int position, long traceID) {
                 // TODO Auto-generated method stub
-                deleteEvent(dateTime, position);
+                deleteEvent(dateTime, position, traceID);
             }
         });
         initListView();
@@ -152,7 +152,7 @@ public class ShowPoiFragment extends Fragment {
      * @param dateTime
      * @param position
      */
-    private void deleteEvent(final String dateTime, final int position) {
+    private void deleteEvent(final String dateTime, final int position, final long traceID) {
         CustomDialog.Builder builder = new CustomDialog.Builder(context);
         builder.setTitle(getResources().getString(R.string.tip));
         builder.setMessage(
@@ -165,7 +165,7 @@ public class ShowPoiFragment extends Fragment {
                                         int which) {
                         // TODO Auto-generated method stub
                         dialog.dismiss();
-                        deleteComment(dateTime, position);
+                        deleteComment(dateTime, position, traceID);
                     }
                 });
         builder.setNegativeButton(getResources().getString(R.string.cancl),
@@ -195,8 +195,13 @@ public class ShowPoiFragment extends Fragment {
     /**
      * 通知模型删除一条评论
      */
-    private void deleteComment(String dateTime, int listPosition) {
-        ShowTraceFragment.myComment.deleteComment(dateTime, listPosition);
+    private void deleteComment(String dateTime, int listPosition, long traceID) {
+//        ShowTraceFragment.myComment.deleteComment(dateTime, listPosition);
+
+        Log.i("dongisyuanDelete", "deleteComment: dateTime: " + dateTime + "traceID: " + traceID + "poiID: " + listPosition);
+        //token poiID
+        ShowTraceFragment.myComment.deletePOI(sp.getString("token", ""), listPosition, dateTime, traceID);
+
     }
 
     @Override

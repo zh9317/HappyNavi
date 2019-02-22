@@ -100,8 +100,12 @@ public class MyAlbumListBaseAdapter extends BaseAdapter {
         if (position == 0) {
             return ItemType_image;
         }
-        if (items.get(position).get("listItem") instanceof String) {
-            return ItemType_text;
+        if (items != null) {
+            if (items.get(position) != null) {
+                if (items.get(position).get("listItem") instanceof String) {
+                    return ItemType_text;
+                }
+            }
         }
 
         return ItemType_grid;
@@ -126,7 +130,7 @@ public class MyAlbumListBaseAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final int listPosition = position;
         ListViewHolder holder = new ListViewHolder();
-        ListItemData itemEntity;//
+        final ListItemData itemEntity;//
         boolean allThumb = true;
 
         int type = getItemViewType(listPosition);
@@ -263,7 +267,7 @@ public class MyAlbumListBaseAdapter extends BaseAdapter {
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleCommentListener.clickDelete(dateTime, listPosition);
+                deleCommentListener.clickDelete(dateTime, itemEntity.getPoiID(), itemEntity.getTraceID());
             }
         });
 
@@ -631,7 +635,7 @@ public class MyAlbumListBaseAdapter extends BaseAdapter {
      * 设置删除按钮的监听器
      */
     public interface DeleCommListener {
-        void clickDelete(String dateTime, int position);
+        void clickDelete(String dateTime, int position, long traceID);
     }
 
     public void setDeleCommListener(DeleCommListener mListener) {
