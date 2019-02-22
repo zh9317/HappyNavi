@@ -1,5 +1,7 @@
 package com.trackersurvey.bean;
 
+import java.util.Arrays;
+
 /**
  * Created by zh931 on 2018/5/12.
  */
@@ -109,5 +111,21 @@ public class ListItemData {
     }
     public void setOneFile(int i,CommentMediaFilesData file){
         files[i] = file;
+    }
+
+    @Override
+    public String toString() {
+        return "ListItemData{" +
+                "time='" + time + '\'' +
+                ", place='" + place + '\'' +
+                ", event=" + event +
+                ", files=" + Arrays.toString(files) +
+                ", comment='" + comment + '\'' +
+                ", feeling=" + feeling +
+                ", behaviour=" + behaviour +
+                ", duration=" + duration +
+                ", companion=" + companion +
+                ", relation=" + relation +
+                '}';
     }
 }
