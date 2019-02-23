@@ -47,43 +47,44 @@ import java.util.Date;
 
 public class Common {
 
-    public static final String version = "1.8.6";
-    public static boolean isUpdationg=false;
-    public static boolean isNetConnected=true;
-    public static boolean isWiFiConnected=false;
-    public static boolean isRecording=false;
-    public static boolean isHighAccuracy=true;
-    public static int layerid_main=0;
-    public static int layerid_path=0;
-    public static String url = "http://219.218.118.176:8090/Communication/"; // 旧地址
-    public static String url_heart = "http://219.218.118.176:8090/Communication/heartbeat.aspx";
-    public static String url_crash = url+"upExceptionInfo.aspx";
-    public static String url_file = "http://219.218.118.176:8089/Mobile/";
+    public static final String  version         = "1.8.6";
+    public static       boolean isUpdationg     = false;
+    public static       boolean isNetConnected  = true;
+    public static       boolean isWiFiConnected = false;
+    public static       boolean isRecording     = false;
+    public static       boolean isHighAccuracy  = true;
+    public static       int     layerid_main    = 0;
+    public static       int     layerid_path    = 0;
+    public static       String  url             = "http://219.218.118.176:8090/Communication/"; // 旧地址
+    public static       String  url_heart       = "http://219.218.118.176:8090/Communication/heartbeat.aspx";
+    public static       String  url_crash       = url + "upExceptionInfo.aspx";
+    public static       String  url_file        = "http://219.218.118.176:8089/Mobile/";
 
-    public static  String URL_UPEVENT = url + "upComment.aspx";
-    public static  String URL_UPFILE = url_file + "upFile.aspx";
-    public static  String URL_DOWNEVENT = url_file + "downComment.aspx";
-    public static  String URL_DOWNFILE = url_file + "downFile.aspx";
-    public static  String URL_DELETEEVENT = url_file+"userChgCmt.aspx";
-    public static String url_wx = "http://www.lisoft.com.cn/Share/PoMobile.ashx?";
-    public static  String WX_APP_ID = "wx79c37ea773c35a23";//"wxbe3210c55c8d7e64";
-    public static String NickName = "";
-    public static AMapLocation aLocation=null;
-    public static FileInfoData fileInfo = null;//新版apk文件
-    public static int winWidth = 720;
-    public static int winHeight = 1080;
-    public static int decodeImgWidth = 720;
-    public static int decodeImgHeight = 1280;
-    public static double ppiScale = 1.5;
-    public static final String APPLICATION_DIR = Environment.getExternalStorageDirectory().getAbsolutePath()+"/HappyNavi/";
-    public static final String LOG_PATH = APPLICATION_DIR+"log/";
-    public static final String PHOTO_PATH = APPLICATION_DIR+"file/";
-    public static final String GROUPHEAD_PATH = APPLICATION_DIR+"grouphead/";
-    public static final String CACHEPHOTO_PATH = APPLICATION_DIR+"fileCache/";
-    public static final String DOWNLOAD_APP_PATH = APPLICATION_DIR+"downloads/";
+    public static       String       URL_UPEVENT       = url + "upComment.aspx";
+    public static       String       URL_UPFILE        = url_file + "upFile.aspx";
+    public static       String       URL_DOWNEVENT     = url_file + "downComment.aspx";
+    public static       String       URL_DOWNFILE      = url_file + "downFile.aspx";
+    public static       String       URL_DELETEEVENT   = url_file + "userChgCmt.aspx";
+    public static       String       url_wx            = "http://www.lisoft.com.cn/Share/PoMobile.ashx?";
+    public static       String       WX_APP_ID         = "wx79c37ea773c35a23";//"wxbe3210c55c8d7e64";
+    public static       String       NickName          = "";
+    public static       AMapLocation aLocation         = null;
+    public static       FileInfoData fileInfo          = null;//新版apk文件
+    public static       int          winWidth          = 720;
+    public static       int          winHeight         = 1080;
+    public static       int          decodeImgWidth    = 720;
+    public static       int          decodeImgHeight   = 1280;
+    public static       double       ppiScale          = 1.5;
+    public static final String       APPLICATION_DIR   = Environment.getExternalStorageDirectory().getAbsolutePath() + "/HappyNavi/";
+    public static final String       LOG_PATH          = APPLICATION_DIR + "log/";
+    public static final String       PHOTO_PATH        = APPLICATION_DIR + "file/";
+    public static final String       GROUPHEAD_PATH    = APPLICATION_DIR + "grouphead/";
+    public static final String       CACHEPHOTO_PATH   = APPLICATION_DIR + "fileCache/";
+    public static final String       DOWNLOAD_APP_PATH = APPLICATION_DIR + "downloads/";
 
-    public static final String _appkey = "app";
+    public static final String _appkey   = "app";
     public static final String secretKey = "footprint2018";
+
     /**
      * 返回当前程序版本名
      */
@@ -103,23 +104,24 @@ public class Common {
         }
         return versionName;
     }
+
     //	/**
-//	 * 判断是否为更新用户
-//	 */
-//	public static boolean getAppVersionTime(Context context){
-//		PackageInfo pi = null;
-//		try {
-//			PackageManager pm = context.getPackageManager();
-//			pi = pm.getPackageInfo(context.getPackageName(), 0);
-//		} catch (NameNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//        return pi.firstInstallTime == pi.lastUpdateTime;//返回true，则代表不是更新用户
-//	}
-	/*
-	* 毫秒转化
-	*/
+    //	 * 判断是否为更新用户
+    //	 */
+    //	public static boolean getAppVersionTime(Context context){
+    //		PackageInfo pi = null;
+    //		try {
+    //			PackageManager pm = context.getPackageManager();
+    //			pi = pm.getPackageInfo(context.getPackageName(), 0);
+    //		} catch (NameNotFoundException e) {
+    //			// TODO Auto-generated catch block
+    //			e.printStackTrace();
+    //		}
+    //        return pi.firstInstallTime == pi.lastUpdateTime;//返回true，则代表不是更新用户
+    //	}
+    /*
+     * 毫秒转化
+     */
     public static String transformTime2(long ms) {
 
         int ss = 1000;
@@ -131,22 +133,23 @@ public class Common {
         long hours = (ms - days * dd) / hh;
         long mins = (ms - days * dd - hours * hh) / mi;
         long seconds = (ms - days * dd - hours * hh - mins * mi) / ss;
-        String duration_text="";
-        if(days!=0){
-            duration_text+=days+"天";
+        String duration_text = "";
+        if (days != 0) {
+            duration_text += days + "天";
         }
-        if(hours!=0){
-            duration_text+=hours+"小时";
+        if (hours != 0) {
+            duration_text += hours + "小时";
         }
-        if(mins!=0){
-            duration_text+=mins+"分";
+        if (mins != 0) {
+            duration_text += mins + "分";
         }
         //if(seconds!=0){
-        duration_text+=seconds+"秒";
+        duration_text += seconds + "秒";
         //}
 
         return duration_text;
     }
+
     public static Bitmap scaleBitmap(String imageFile, int winWidth,
                                      int winHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -180,11 +183,11 @@ public class Common {
         }
         return inSampleSize;
     }
+
     /**
      * 得到一个格式化的时间
      *
-     * @param ms
-     *            时间 秒
+     * @param ms 时间 秒
      * @return 时：分：秒
      */
     public static String transformTime(long ms) {
@@ -212,16 +215,19 @@ public class Common {
         return strHour + ":" + strMinute + ":" + strSecond;
         // + strMillisecond;
     }
-    public static String transformDistance(double m){
-        String distance_txt="";
-        distance_txt+=Double.parseDouble(new DecimalFormat("######0.00").format(m/1000));
+
+    public static String transformDistance(double m) {
+        String distance_txt = "";
+        distance_txt += Double.parseDouble(new DecimalFormat("######0.00").format(m / 1000));
         return distance_txt;
     }
-    public static String transformSpeed(double s){
-        String speed_txt="";
-        speed_txt+=Double.parseDouble(new DecimalFormat("######0.00").format(s*3600));
+
+    public static String transformSpeed(double s) {
+        String speed_txt = "";
+        speed_txt += Double.parseDouble(new DecimalFormat("######0.00").format(s * 3600));
         return speed_txt;
     }
+
     /**
      * 获得("yyyy-MM-dd HH:mm:ss.SSS")格式的当前时间
      *
@@ -247,6 +253,7 @@ public class Common {
         return sdf.format(curDate);
 
     }
+
     /**
      * 获得("yyyy-MM-dd")格式的当前时间
      *
@@ -259,6 +266,7 @@ public class Common {
         return sdf.format(curDate);
 
     }
+
     /**
      * 获得整型年份
      *
@@ -268,9 +276,10 @@ public class Common {
 
         Date curDate = new Date(System.currentTimeMillis());
 
-        return curDate.getYear()+1900;
+        return curDate.getYear() + 1900;
 
     }
+
     /**
      * 获得整型月份
      *
@@ -280,9 +289,10 @@ public class Common {
 
         Date curDate = new Date(System.currentTimeMillis());
 
-        return curDate.getMonth()+1;
+        return curDate.getMonth() + 1;
 
     }
+
     /**
      * 获得今天是几号
      *
@@ -295,6 +305,7 @@ public class Common {
         return curDate.getDate();
 
     }
+
     /**
      * 获得给定("yyyyMM")格式的时间的年
      *
@@ -305,7 +316,7 @@ public class Common {
         Date curDate = null;
         try {
             curDate = new SimpleDateFormat("yyyyMM").parse(dateTime);
-            return curDate.getYear()+1900;
+            return curDate.getYear() + 1900;
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -313,6 +324,7 @@ public class Common {
 
         return 0;
     }
+
     /**
      * 获得给定("yyyyMM")格式的时间的月
      *
@@ -323,7 +335,7 @@ public class Common {
         Date curDate = null;
         try {
             curDate = new SimpleDateFormat("yyyyMM").parse(dateTime);
-            return curDate.getMonth()+1;
+            return curDate.getMonth() + 1;
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -344,7 +356,6 @@ public class Common {
         return sdf.format(curDate);
 
     }
-
 
 
     /**
@@ -386,7 +397,7 @@ public class Common {
      * @param doubles
      * @return 返回当前路程
      */
-    public static String formatDouble(Context context,Double doubles) {
+    public static String formatDouble(Context context, Double doubles) {
         DecimalFormat format = new DecimalFormat("####.##");
         String distanceStr = format.format(doubles);
         return distanceStr.equals(context.getString(R.string.zero)) ? context.getString(R.string.double_zero)
@@ -395,31 +406,33 @@ public class Common {
 
     /**
      * 判断网络状态
+     *
      * @param context
      * @return 如果没有网络连接返回-1，否则返回网络类型
      */
-    public static int checkNetworkState(Context context){
+    public static int checkNetworkState(Context context) {
         if (context != null) {
             ConnectivityManager mConnectivityManager = (ConnectivityManager) context
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
-            if(networkInfo == null){
+            if (networkInfo == null) {
                 return -1;
             }
             //1.判断是否有网络连接
-            if(networkInfo.isAvailable()){
+            if (networkInfo.isAvailable()) {
                 //2.获取当前网络连接的类型信息
                 int networkType = networkInfo.getType();
-                if(ConnectivityManager.TYPE_WIFI == networkType){
+                if (ConnectivityManager.TYPE_WIFI == networkType) {
                     return ConnectivityManager.TYPE_WIFI;
-                }else if(ConnectivityManager.TYPE_MOBILE == networkType){
+                } else if (ConnectivityManager.TYPE_MOBILE == networkType) {
                     return ConnectivityManager.TYPE_MOBILE;
                 }
             }
         }
         return -1;
     }
-    public static void createFileDir(){
+
+    public static void createFileDir() {
         // 应用空间文件夹
         File destDir = new File(Common.APPLICATION_DIR);
         //Log.i("Eaa_mkdirs",Common.APPLICATION_DIR);
@@ -442,6 +455,7 @@ public class Common {
             dir.mkdirs();
         }
     }
+
     /**
      * 判断GPS是否开启
      */
@@ -452,17 +466,17 @@ public class Common {
         if (!locationManager
                 .isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
             return false;
-        }
-        else{
+        } else {
             return true;
         }
     }
-    public static void DialogForVisiter(Context context){
-        final Context fianlContext=context;
-        AlertDialog alert=new AlertDialog.Builder(context).create();
+
+    public static void DialogForVisiter(Context context) {
+        final Context fianlContext = context;
+        AlertDialog alert = new AlertDialog.Builder(context).create();
         alert.setTitle(context.getResources().getString(R.string.tip));
         alert.setMessage(context.getResources().getString(R.string.tips_register));
-        alert.setButton(DialogInterface.BUTTON_NEGATIVE,context.getResources().getString(R.string.cancl),new DialogInterface.OnClickListener() {
+        alert.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancl), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -470,7 +484,7 @@ public class Common {
 
             }
         });
-        alert.setButton(DialogInterface.BUTTON_POSITIVE,context.getResources().getString(R.string.confirm),new DialogInterface.OnClickListener() {
+        alert.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -483,11 +497,12 @@ public class Common {
         });
         alert.show();
     }
+
     /**
      * 显示进度条对话框
      */
     public static void showDialog(ProgressDialog proDialog, String title, String message) {
-        if(proDialog==null){
+        if (proDialog == null) {
             return;
         }
         proDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -507,36 +522,49 @@ public class Common {
         }
     }
 
+    /**
+     * 获取userPhone
+     *
+     * @param context
+     * @return
+     */
+    public static String getUserId(Context context) {
 
-    public static  String  getUserId(Context context){
-
-        SharedPreferences sp=context.getSharedPreferences("config",Context.MODE_PRIVATE);//私有参数
+        SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);//私有参数
         String lastId = sp.getString("userPhone", "0");
 
         return lastId;
     }
 
-    public static  String  getUserID(Context context){
-        SharedPreferences sp=context.getSharedPreferences("config",Context.MODE_PRIVATE);//私有参数
+    /**
+     * 获取userID
+     *
+     * @param context
+     * @return
+     */
+    public static String getUserID(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);//私有参数
         String lastId = String.valueOf(sp.getInt("userID", 0));
         return lastId;
     }
 
-    public static String getHeadPhoto(Context context){
+    public static String getHeadPhoto(Context context) {
 
-        SharedPreferences sp = context.getSharedPreferences("config",Context.MODE_PRIVATE);//私有参数
+        SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);//私有参数
         String headphoto = sp.getString("headphoto", "");
 
         return headphoto;
     }
-    public static void writeHeadphoto(Context context,String headphoto){
-        SharedPreferences sp=context.getSharedPreferences("config",Context.MODE_PRIVATE);//私有参数
+
+    public static void writeHeadphoto(Context context, String headphoto) {
+        SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);//私有参数
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("headphoto", headphoto);
         editor.commit();
     }
+
     //判断游客身份
-    public static  boolean isVisiter() {
+    public static boolean isVisiter() {
         return "???".equals(Common.NickName);
     }
     //判断生日合法
@@ -550,7 +578,7 @@ public class Common {
         // 获得日期
         int date = c1.get(Calendar.DATE);
 
-        String now=year+"-"+month+"-"+date;
+        String now = year + "-" + month + "-" + date;
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -569,13 +597,13 @@ public class Common {
         return false;
 
     }
+
     /**
      * 识别符来源标志：
      * 1，IMEI（imei） ；
      * 2，wifi mac地址（wifi） ；
      * 3， 序列号（sn）；
-     *
-     * */
+     */
     public static String setDeviceId(Context context, Activity activity) {
         StringBuilder deviceId = new StringBuilder();
 
@@ -587,88 +615,96 @@ public class Common {
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
             }
             String imei = tm.getDeviceId();
-            if(!imei.equals("")&&imei!=null){
+            if (!imei.equals("") && imei != null) {
 
                 deviceId.append(imei);
-                Log.i("phonelog","getDeviceId by imei: "+deviceId.toString());
+                Log.i("phonelog", "getDeviceId by imei: " + deviceId.toString());
                 return deviceId.toString();
             }
             //wifi mac地址
             WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             WifiInfo info = wifi.getConnectionInfo();
             String wifiMac = info.getMacAddress();
-            if(!wifiMac.equals("")&&wifiMac!=null){
+            if (!wifiMac.equals("") && wifiMac != null) {
 
                 deviceId.append(wifiMac);
-                Log.i("phonelog","getDeviceId by mac: "+deviceId.toString());
+                Log.i("phonelog", "getDeviceId by mac: " + deviceId.toString());
                 return deviceId.toString();
             }
 
             //序列号（sn）
             String sn = tm.getSimSerialNumber();
-            if(!sn.equals("")&&sn!=null){
+            if (!sn.equals("") && sn != null) {
 
                 deviceId.append(sn);
-                Log.i("phonelog","getDeviceId by sim: "+deviceId.toString());
+                Log.i("phonelog", "getDeviceId by sim: " + deviceId.toString());
                 return deviceId.toString();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i("phonelog","getDeviceId error ");
+            Log.i("phonelog", "getDeviceId error ");
         }
         deviceId.append("unknown");
-        Log.i("phonelog","getDeviceId by default: "+deviceId.toString());
+        Log.i("phonelog", "getDeviceId by default: " + deviceId.toString());
         return deviceId.toString();
     }
+
     public static String getDeviceId(Context context) {
-        SharedPreferences sp = context.getSharedPreferences("config",Context.MODE_PRIVATE);//私有参数
+        SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);//私有参数
         String deviceId = sp.getString("deviceid", "null");
 
         return deviceId;
     }
+
     /**
      * 获取设备厂商+型号
-     * */
+     */
     public static String getDeviceName() {
-        if(Build.BRAND==null||Build.BRAND.equals("")||
-                Build.MODEL==null||Build.MODEL.equals("")){
+        if (Build.BRAND == null || Build.BRAND.equals("") ||
+                Build.MODEL == null || Build.MODEL.equals("")) {
             return "unknown";
         }
-        return Build.BRAND+"-"+Build.MODEL;
+        return Build.BRAND + "-" + Build.MODEL;
     }
+
     /**
      * 获取设备厂商
-     * */
+     */
     public static String getDeviceBrand() {
-        if(Build.BRAND==null||Build.BRAND.equals("")){
+        if (Build.BRAND == null || Build.BRAND.equals("")) {
             return "unknown";
         }
         return Build.BRAND;
     }
-    public static boolean isAutoUpdate(Context context){
+
+    public static boolean isAutoUpdate(Context context) {
         String updateSwitchKey = context.getResources().getString(R.string.auto_update_switch_key);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(updateSwitchKey,true);
+        return settings.getBoolean(updateSwitchKey, true);
     }
-    public static boolean isOnlyWifiUploadLoc(Context context){
+
+    public static boolean isOnlyWifiUploadLoc(Context context) {
         String uploadSwitchKey = context.getResources().getString(R.string.auto_upload_switch_key);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(uploadSwitchKey,false);
+        return settings.getBoolean(uploadSwitchKey, false);
     }
-    public static boolean isOnlyWifiUploadPic(Context context){
+
+    public static boolean isOnlyWifiUploadPic(Context context) {
         String uploadSwitchKey = context.getResources().getString(R.string.auto_uploadpic_switch_key);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(uploadSwitchKey,true);
+        return settings.getBoolean(uploadSwitchKey, true);
     }
-    public static int getTimeUpdateFrequency(Context context){//返回时间参数更新频率 单位 s
+
+    public static int getTimeUpdateFrequency(Context context) {//返回时间参数更新频率 单位 s
         String updateFrequencyKey = context.getResources().getString(R.string.auto_update_frequency_key);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        int frequency= Integer.parseInt(settings.getString(updateFrequencyKey, "60"));//单位 分钟
-        return frequency*60;// s
+        int frequency = Integer.parseInt(settings.getString(updateFrequencyKey, "60"));//单位 分钟
+        return frequency * 60;// s
     }
-    public static void setFourTime(Context context, TimeValueData timevalue){
-        if(timevalue==null){
+
+    public static void setFourTime(Context context, TimeValueData timevalue) {
+        if (timevalue == null) {
             return;
         }
         String uploadFrequencyKey = context.getResources().getString(R.string.auto_upload_frequency_key);
@@ -682,51 +718,56 @@ public class Common {
         editor.putString("LastPostTime", timevalue.getLastTime());
         editor.commit();
     }
-    public static void setPostTime(Context context,String lastPostTime){
+
+    public static void setPostTime(Context context, String lastPostTime) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("LastPostTime", lastPostTime);
         editor.commit();
     }
-    public static int getUploadFrequenct(Context context){//返回上传时间间隔 s
+
+    public static int getUploadFrequenct(Context context) {//返回上传时间间隔 s
         String uploadFrequencyKey = context.getResources().getString(R.string.auto_upload_frequency_key);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getInt(uploadFrequencyKey, 30);
     }
-    public static int getRecLocFrequenct(Context context){//返回记录定位时间间隔 s
+
+    public static int getRecLocFrequenct(Context context) {//返回记录定位时间间隔 s
         String rec_loc_FrequencyKey = context.getResources().getString(R.string.auto_record_loc_frequency_key);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getInt(rec_loc_FrequencyKey, 5);
     }
-    public static int getNoRecLocFrequenct(Context context){//返回非记录定位时间间隔 s
+
+    public static int getNoRecLocFrequenct(Context context) {//返回非记录定位时间间隔 s
         String norec_loc_FrequencyKey = context.getResources().getString(R.string.auto_norecord_loc_frequency_key);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getInt(norec_loc_FrequencyKey, 10);
     }
-    public static ArrayList<String> getAddressList(){
-        if(aLocation!=null){
-            ArrayList<String> addressList=new ArrayList<String>();
-            addressList.add(aLocation.getPoiName());
-            addressList.add(aLocation.getProvince()+aLocation.getCity());
-            addressList.add(aLocation.getCity()+aLocation.getDistrict());
 
-            addressList.add(aLocation.getCity()+aLocation.getDistrict()+aLocation.getRoad());
+    public static ArrayList<String> getAddressList() {
+        if (aLocation != null) {
+            ArrayList<String> addressList = new ArrayList<String>();
+            addressList.add(aLocation.getPoiName());
+            addressList.add(aLocation.getProvince() + aLocation.getCity());
+            addressList.add(aLocation.getCity() + aLocation.getDistrict());
+
+            addressList.add(aLocation.getCity() + aLocation.getDistrict() + aLocation.getRoad());
             addressList.add(aLocation.getAddress());
 
             return addressList;
-        }
-        else{
+        } else {
             return null;
         }
     }
-    public static void sendOffline(String deviceId, Context ct){
+
+    public static void sendOffline(String deviceId, Context ct) {
         String location = "";
-        if(aLocation!=null){
-            location = aLocation.getLongitude()+";"+aLocation.getLatitude();
+        if (aLocation != null) {
+            location = aLocation.getLongitude() + ";" + aLocation.getLatitude();
         }
-        Log.i("LogDemo","下线，"+Common.getUserId(ct)+",位置信息"+location);
-        PostOnOffline offline = new PostOnOffline(url+"request.aspx",
-                Common.getUserId(ct),location,"Offline",deviceId);
+        Log.i("LogDemo", "下线，" + Common.getUserId(ct) + ",位置信息" + location);
+        PostOnOffline offline = new PostOnOffline(url + "request.aspx",
+                Common.getUserId(ct), location, "Offline", deviceId);
         offline.start();
 
     }
