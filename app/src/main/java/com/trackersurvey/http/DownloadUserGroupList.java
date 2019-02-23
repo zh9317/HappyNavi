@@ -1,6 +1,14 @@
 package com.trackersurvey.http;
 
+import com.trackersurvey.bean.GroupInfoData;
 import com.trackersurvey.util.UrlHeader;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
@@ -35,6 +43,19 @@ public class DownloadUserGroupList extends HttpUtil {
     @Override
     public HttpUtil handleData(String obj) {
         HttpUtil response = new HttpUtil();
+        JSONArray jsonArray = null;
+        try {
+            jsonArray = new JSONArray(obj);
+            List<GroupInfoData> groupInfoDataList = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                GroupInfoData groupInfoData = new GroupInfoData(jsonObject);
+                groupInfoDataList.add(groupInfoData);
+            }
+            response.responseObject = groupInfoDataList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 }

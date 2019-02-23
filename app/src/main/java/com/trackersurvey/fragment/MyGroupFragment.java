@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 import com.trackersurvey.adapter.GroupAdapter;
 import com.trackersurvey.bean.GroupInfoData;
 import com.trackersurvey.happynavi.R;
+import com.trackersurvey.http.DownloadUserGroupList;
+import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.PostGroupInfo;
 import com.trackersurvey.httpconnection.PostJoinOrExitGroup;
 import com.trackersurvey.util.Common;
@@ -34,6 +37,7 @@ import com.trackersurvey.util.GsonHelper;
 import com.trackersurvey.util.PullToRefreshView;
 import com.trackersurvey.util.ToastUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,6 +65,8 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
     private       RefreshBroadcastReciver  refreshReciver;
     private final String                   MYGROUPREFRESH_ACTION  = "android.intent.action.MYGROUPREFRESH_RECEIVER";
     private final String                   ALLGROUPREFRESH_ACTION = "android.intent.action.ALLGROUPREFRESH_RECEIVER";
+
+    private SharedPreferences sp;
 
     @Nullable
     @Override
@@ -107,16 +113,35 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
         }
         url_GetMyGroup = Common.url + "group.aspx";
         url_ExitGroup = Common.url + "group.aspx";
+
+        sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
+
         init();
         return view;
     }
 
     private void init() {
-        PostGroupInfo groupThread = new PostGroupInfo(handler, url_GetMyGroup, Common.getUserID(context), Common.getDeviceId(context), "MyGroups");
-        groupThread.start();
+        //        PostGroupInfo groupThread = new PostGroupInfo(handler, url_GetMyGroup, Common.getUserID(context), Common.getDeviceId(context), "MyGroups");
+        //        groupThread.start();
 
-
-        
+        DownloadUserGroupList downloadUserGroupList = new DownloadUserGroupList(sp.getString("token", ""), "1", "100");
+        downloadUserGroupList.requestHttpData(new ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                if (isSuccess) {
+                    if (code.equals("0")) {
+                        groups = (ArrayList<GroupInfoData>) responseObject;
+                        for (int i = 0; i < groups.size(); i++) {
+                            Log.i("dongsiyuanGroupInfoData", "onResponseData: " + groups.get(i).toString());
+                        }
+                        // 通知adapter更新
+                        Message message = new Message();
+                        message.what = 0;
+                        handler.sendMessage(message);
+                    }
+                }
+            }
+        });
     }
 
     private class RefreshBroadcastReciver extends BroadcastReceiver {
@@ -140,31 +165,50 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
             switch (msg.what) {
                 case 0://获取轨迹列表成功
                     dismissDialog();
-                    if (msg.obj != null) {
-                        String groupStr = msg.obj.toString().trim();
-                        int lastsize = groups.size();
-                        groups = (ArrayList<GroupInfoData>) GsonHelper.parseJsonToList(groupStr, GroupInfoData.class);
-                        if (isFirstCreated) {
-                            Log.i("trailadapter", "groupsize:" + groups.size());
-                            mAdapter = new GroupAdapter(context, selectedcount, groups, "quit", groupList);
-                            groupList.setAdapter(mAdapter);
-                            isFirstCreated = false;
 
-                        } else {
+                    int lastsize = groups.size();
 
-
-                            showMenu(false, true);
-
-                        }
-                        if (groups.size() == 0) {
-                            tiptxt.setVisibility(View.VISIBLE);
-                            tiptxt.setText(R.string.nojoinedgroup);
-                        } else {
-                            tiptxt.setVisibility(View.INVISIBLE);
-                        }
-                        //refreshtip.setVisibility(View.GONE);
-                        mPullToRefreshView.onHeaderRefreshComplete("更新于:" + new Date().toLocaleString());
+                    if (isFirstCreated) {
+                        Log.i("trailadapter", "groupsize:" + groups.size());
+                        mAdapter = new GroupAdapter(context, selectedcount, groups, "quit", groupList);
+                        groupList.setAdapter(mAdapter);
+                        isFirstCreated = false;
+                    } else {
+                        showMenu(false, true);
                     }
+                    if (groups.size() == 0) {
+                        tiptxt.setVisibility(View.VISIBLE);
+                        tiptxt.setText(R.string.nojoinedgroup);
+                    } else {
+                        tiptxt.setVisibility(View.INVISIBLE);
+                    }
+                    //refreshtip.setVisibility(View.GONE);
+                    mPullToRefreshView.onHeaderRefreshComplete("更新于:" + new Date().toLocaleString());
+                    //                    if (msg.obj != null) {
+                    //                        String groupStr = msg.obj.toString().trim();
+                    //                        int lastsize = groups.size();
+                    //                        groups = (ArrayList<GroupInfoData>) GsonHelper.parseJsonToList(groupStr, GroupInfoData.class);
+                    //                        if (isFirstCreated) {
+                    //                            Log.i("trailadapter", "groupsize:" + groups.size());
+                    //                            mAdapter = new GroupAdapter(context, selectedcount, groups, "quit", groupList);
+                    //                            groupList.setAdapter(mAdapter);
+                    //                            isFirstCreated = false;
+                    //
+                    //                        } else {
+                    //
+                    //
+                    //                            showMenu(false, true);
+                    //
+                    //                        }
+                    //                        if (groups.size() == 0) {
+                    //                            tiptxt.setVisibility(View.VISIBLE);
+                    //                            tiptxt.setText(R.string.nojoinedgroup);
+                    //                        } else {
+                    //                            tiptxt.setVisibility(View.INVISIBLE);
+                    //                        }
+                    //                        //refreshtip.setVisibility(View.GONE);
+                    //                        mPullToRefreshView.onHeaderRefreshComplete("更新于:" + new Date().toLocaleString());
+                    //                    }
                     break;
                 case 1://获取列表失败
                     dismissDialog();
@@ -249,7 +293,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
                             ArrayList<String> tobeExitID = new ArrayList<String>();
 
                             for (int i = 0; i < size; i++) {
-                                tobeExitID.add(groups.get(selectid.get(i)).getGroupID());
+                                //                                tobeExitID.add(groups.get(selectid.get(i)).getGroupID());
                             }
                             String tobeExit = GsonHelper.toJson(tobeExitID);
                             Log.i("trailadapter", "tobeexit:" + tobeExit);
