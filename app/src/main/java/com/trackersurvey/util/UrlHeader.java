@@ -39,6 +39,7 @@ public class UrlHeader {
 
     public static final String DOWNLOAD_GROUP_LIST = "group/getGroupList"; // 获取群组列表
     public static final String DOWNLOAD_USER_GROUP_LIST = "group/getUserGroupList"; // 获取用户已加入的群组列表
+    public static final String JOIN_GROUP = "/group/joinGroup";    // 用户申请加群
 
     // 老版本的接口还有这些：
     // 删除兴趣点
