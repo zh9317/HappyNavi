@@ -5,28 +5,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.githang.statusbar.StatusBarCompat;
-import com.trackersurvey.http.DownloadUserInfo;
 import com.trackersurvey.http.LogoutRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.AppManager;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
-import com.trackersurvey.util.DESUtil;
 import com.trackersurvey.util.RoundImageView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -102,30 +95,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         changeInfoBtn.setOnClickListener(this);
         changePwdBtn.setOnClickListener(this);
         logoutBtn.setOnClickListener(this);
-        // 测试获取个人信息
-        DownloadUserInfo downloadUserInfo = new DownloadUserInfo(String.valueOf(System.currentTimeMillis()),
-                sp.getString("Token", ""), "ZH_CN");
-        downloadUserInfo.requestHttpData(new ResponseData() {
-            @Override
-            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
-                if (isSuccess) {
-//                    String userInfo = (String) responseObject;
-//                    Log.i("getUserInfo", "getUserInfo:"+userInfo);
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(userInfo);
-//                        String myUserInfo = jsonObject.getString("userInfo");
-//                        try {
-//                            myUserInfo = DESUtil.decrypt(myUserInfo);
-//                            Log.i("getUserInfo", "myUserInfo:"+myUserInfo);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-                }
-            }
-        });
     }
 
     @Override
@@ -133,13 +102,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.change_user_info_btn:
                 Intent intent = new Intent(this, UserInfoChangeActivity.class);
-//                intent.putExtra("nickname", nicknameStr);
-//                intent.putExtra("realName", realNameStr);
-//                intent.putExtra("userID", userIDStr);
-//                intent.putExtra("birthDate", birthDateStr);
-//                intent.putExtra("sex", sexStr);
-//                intent.putExtra("occupation", occupationStr);
-//                intent.putExtra("education", educationStr);
                 startActivityForResult(intent, 1);
                 break;
             case R.id.change_password_btn:

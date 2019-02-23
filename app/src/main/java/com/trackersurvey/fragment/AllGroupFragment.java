@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,6 +28,8 @@ import android.widget.Toast;
 import com.trackersurvey.adapter.GroupAdapter;
 import com.trackersurvey.bean.GroupInfoData;
 import com.trackersurvey.happynavi.R;
+import com.trackersurvey.http.DownloadGroupList;
+import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.PostGroupInfo;
 import com.trackersurvey.httpconnection.PostJoinOrExitGroup;
 import com.trackersurvey.util.Common;
@@ -34,6 +37,7 @@ import com.trackersurvey.util.GsonHelper;
 import com.trackersurvey.util.PullToRefreshView;
 import com.trackersurvey.util.ToastUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,11 +71,15 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
     private  final String ALLGROUPREFRESH_ACTION="android.intent.action.ALLGROUPREFRESH_RECEIVER";
     private final String MYGROUPREFRESH_ACTION="android.intent.action.MYGROUPREFRESH_RECEIVER";
 
+    private SharedPreferences sp;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = null;
         view = inflater.inflate(R.layout.fragment_all_group, null);
+
+        sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
 
         context=getActivity();
         layout=(RelativeLayout)view.findViewById(R.id.allgroup_relative);
@@ -123,8 +131,19 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
         if(key == null || key.equals("")){
             return;
         }
-        PostGroupInfo groupThread=new PostGroupInfo(handler,url_GetAllGroup,Common.getUserId(context),Common.getDeviceId(context),"Search",key);
-        groupThread.start();
+        DownloadGroupList downloadGroupList = new DownloadGroupList(sp.getString("token", ""), "1", "100", key);
+        downloadGroupList.requestHttpData(new ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                if (isSuccess) {
+                    if (code.equals("0")) {
+
+                    }
+                }
+            }
+        });
+//        PostGroupInfo groupThread=new PostGroupInfo(handler,url_GetAllGroup,Common.getUserId(context),Common.getDeviceId(context),"Search",key);
+//        groupThread.start();
     }
     private class RefreshBroadcastReciver extends BroadcastReceiver {
 
@@ -155,7 +174,7 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
                             groupList.setAdapter(mAdapter);
                             isFirstCreated=false;
 
-                        }else{
+                        } else {
 
                             showMenu(false, true);
 

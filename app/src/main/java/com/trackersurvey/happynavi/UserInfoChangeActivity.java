@@ -166,13 +166,6 @@ public class UserInfoChangeActivity extends AppCompatActivity implements View.On
         childNumTv.setOnClickListener(this);
         save.setOnClickListener(this);
 
-//        Intent intent = getIntent();
-//        nicknameStr = intent.getStringExtra("nickname");
-//        realNameStr = intent.getStringExtra("realName");
-//        birthDateStr = intent.getStringExtra("birthDate");
-//        sexStr = intent.getStringExtra("sex");
-//        occupationStr = intent.getStringExtra("occupation");
-//        educationStr = intent.getStringExtra("education");
         nicknameEt.setText(sp.getString("nickname", ""));
         realNameEt.setText(sp.getString("realName", ""));
         birthDateTv.setText(sp.getString("birthDate", ""));

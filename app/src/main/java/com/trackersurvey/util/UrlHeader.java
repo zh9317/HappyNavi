@@ -36,7 +36,9 @@ public class UrlHeader {
     public static final String QUESTIONARY_URL = "questionnaire/wx_getQuestionnaireList";// 调查问卷
 
     public static final String UPLOAD_USER_INFO_URL = "user/updateUserInfo";// 更新个人信息
-    public static final String DOWNLOAD_USER_INFO_URL = "getPersonalInfo";
+
+    public static final String DOWNLOAD_GROUP_LIST = "group/getGroupList"; // 获取群组列表
+    public static final String DOWNLOAD_USER_GROUP_LIST = "group/getUserGroupList"; // 获取用户已加入的群组列表
 
     // 老版本的接口还有这些：
     // 删除兴趣点
