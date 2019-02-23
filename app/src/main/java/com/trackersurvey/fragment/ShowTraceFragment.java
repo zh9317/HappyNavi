@@ -489,7 +489,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                 intent.putExtra("altitude", traces.get(praseProgressToPosition(currentProgress)).getAltitude());
                 intent.putExtra("placeName", "");
                 intent.putExtra("createTime", traces.get(praseProgressToPosition(currentProgress)).getCreateTime());
-                intent.putExtra("traceNo", traces.get(praseProgressToPosition(currentProgress)).getTraceID());
+                intent.putExtra("traceID", traces.get(praseProgressToPosition(currentProgress)).getTraceID());
 
 			/*Resources r = context.getApplicationContext().getResources();
 			Uri uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE+"://"
