@@ -2,6 +2,7 @@ package com.trackersurvey.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.sip.SipSession;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,8 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
     public static String[] IconName;//保存所有图片的名字
 
     private boolean isFirstShow;//是否是第一次启动
+
+    private RefreshListener refreshListener;
 
     public GroupAdapter(Context context, TextView txtcount,
                         ArrayList<GroupInfoData> groups, String handleType, ListView listView) {
@@ -189,13 +192,15 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
                     }
                     String groupinfo = GsonHelper.toJson(groups.get(pos));
                     Log.i("dongsiyuanGroupinfo", "onClick: " + groups.get(pos));
+
+                    refreshListener.clickRefresh();
+
                     Intent intent = new Intent();
                     intent.putExtra("handletype", handleType);
                     intent.putExtra("groupinfo", groupinfo);
 
                     intent.setClass(context, GroupInfoActivity.class);
                     context.startActivity(intent);
-
                 }
             }
 
@@ -245,7 +250,9 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
         // TODO Auto-generated method stub
         if (scrollState == SCROLL_STATE_IDLE) {//滑动结束
             //加载图片
-            mLoader.loadImagesNonScroll(mStart, mEnd);
+            if (URLArray.length > 0 && IconName.length > 0) {
+                mLoader.loadImagesNonScroll(mStart, mEnd);
+            }
         } else {//滑动时停止加载，防止滑动时由于异步任务重绘UI导致的卡顿
             mLoader.cancelAllTasks();
         }
@@ -257,8 +264,18 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
         mStart = firstVisibleItem;
         mEnd = firstVisibleItem + visibleItemCount;
         if (isFirstShow && visibleItemCount > 0) {
-            mLoader.loadImagesNonScroll(mStart, mEnd);
+            if (URLArray.length > 0 && IconName.length > 0) {
+                mLoader.loadImagesNonScroll(mStart, mEnd);
+            }
             isFirstShow = false;
         }
+    }
+
+    public interface RefreshListener {
+        void clickRefresh();
+    }
+
+    public void setRefreshListener(RefreshListener listener) {
+        refreshListener = listener;
     }
 }

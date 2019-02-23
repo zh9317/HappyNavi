@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.githang.statusbar.StatusBarCompat;
 import com.trackersurvey.bean.GroupInfoData;
@@ -29,6 +31,7 @@ import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
 import com.trackersurvey.util.GsonHelper;
 import com.trackersurvey.util.MyImageLoader;
+import com.trackersurvey.util.TitleLayout;
 import com.trackersurvey.util.ToastUtil;
 
 import java.io.IOException;
@@ -86,6 +89,8 @@ public class GroupInfoActivity extends BaseActivity {
         tv_groupdetail = (TextView) findViewById(R.id.tv_groupdetail);
         tv_membernums = (TextView) findViewById(R.id.tv_membernums);
         tv_createtime = (TextView) findViewById(R.id.tv_createtime);
+
+
         //GroupButton = (Button) findViewById(R.id.handlegroup);
         if (Common.url != null && !Common.url.equals("")) {
 

@@ -98,6 +98,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
         tiptxt = (TextView) view.findViewById(R.id.tip);
         tiptxt.setOnClickListener(this);
         //refreshtip=(TextView)view.findViewById(R.id.refreshtip);
+
         refreshReciver = new RefreshBroadcastReciver();
         IntentFilter pullFilter = new IntentFilter();
         pullFilter.addAction(MYGROUPREFRESH_ACTION);
@@ -130,6 +131,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
                     if (code.equals("0")) {
+                        Log.i("dongsiyuanMyGroupIna", "onResponseData: code :" + code);
                         groups = (ArrayList<GroupInfoData>) responseObject;
                         for (int i = 0; i < groups.size(); i++) {
                             Log.i("dongsiyuanGroupInfoData", "onResponseData: " + groups.get(i).toString());
@@ -358,5 +360,16 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
         if (null != refreshReciver) {
             context.unregisterReceiver(refreshReciver);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (resultCode) {
+            case 1:
+                init();
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
