@@ -42,131 +42,133 @@ import java.util.List;
  * Created by zh931 on 2018/5/21.
  */
 
-public class MyGroupFragment extends Fragment implements View.OnClickListener,PullToRefreshView.OnHeaderRefreshListener {
-    private RelativeLayout layout;//长按弹出的底部菜单
-    private Button cancel;
-    private Button exit;
-    private PullToRefreshView mPullToRefreshView;
-    private ListView groupList;
-    private TextView selectedcount;
-    private TextView tiptxt;
+public class MyGroupFragment extends Fragment implements View.OnClickListener, PullToRefreshView.OnHeaderRefreshListener {
+    private       RelativeLayout           layout;//长按弹出的底部菜单
+    private       Button                   cancel;
+    private       Button                   exit;
+    private       PullToRefreshView        mPullToRefreshView;
+    private       ListView                 groupList;
+    private       TextView                 selectedcount;
+    private       TextView                 tiptxt;
     //private TextView refreshtip;
-    private Context context;
-    private GroupAdapter mAdapter;
-    private ArrayList<GroupInfoData> groups=new ArrayList<GroupInfoData>();
-    private ProgressDialog proDialog = null;
-    private String url_GetMyGroup = null;
-    private String url_ExitGroup = null;
-    private boolean isFirstCreated=true;
-    private RefreshBroadcastReciver refreshReciver;
-    private final String MYGROUPREFRESH_ACTION="android.intent.action.MYGROUPREFRESH_RECEIVER";
-    private  final String ALLGROUPREFRESH_ACTION="android.intent.action.ALLGROUPREFRESH_RECEIVER";
+    private       Context                  context;
+    private       GroupAdapter             mAdapter;
+    private       ArrayList<GroupInfoData> groups                 = new ArrayList<GroupInfoData>();
+    private       ProgressDialog           proDialog              = null;
+    private       String                   url_GetMyGroup         = null;
+    private       String                   url_ExitGroup          = null;
+    private       boolean                  isFirstCreated         = true;
+    private       RefreshBroadcastReciver  refreshReciver;
+    private final String                   MYGROUPREFRESH_ACTION  = "android.intent.action.MYGROUPREFRESH_RECEIVER";
+    private final String                   ALLGROUPREFRESH_ACTION = "android.intent.action.ALLGROUPREFRESH_RECEIVER";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_group, null);
-        context=getActivity();
-        layout=(RelativeLayout)view.findViewById(R.id.mygroup_relative);
-        cancel=(Button)view.findViewById(R.id.cancel);
+        context = getActivity();
+        layout = (RelativeLayout) view.findViewById(R.id.mygroup_relative);
+        cancel = (Button) view.findViewById(R.id.cancel);
 
-        exit=(Button)view.findViewById(R.id.exitgroup);
+        exit = (Button) view.findViewById(R.id.exitgroup);
         cancel.setOnClickListener(this);
         exit.setOnClickListener(this);
 
-        mPullToRefreshView = (PullToRefreshView)view.findViewById(R.id.main_pull_refresh_view);
+        mPullToRefreshView = (PullToRefreshView) view.findViewById(R.id.main_pull_refresh_view);
         mPullToRefreshView.setOnHeaderRefreshListener(this);
-        groupList=(ListView)view.findViewById(R.id.listview_mygroup);
-        groupList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+        groupList = (ListView) view.findViewById(R.id.listview_mygroup);
+        groupList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO Auto-generated method stub
-                showMenu(true,false);
+                showMenu(true, false);
 
                 return true;
             }
 
         });
-        selectedcount=(TextView)view.findViewById(R.id.txtcount);
-        tiptxt=(TextView)view.findViewById(R.id.tip);
+        selectedcount = (TextView) view.findViewById(R.id.txtcount);
+        tiptxt = (TextView) view.findViewById(R.id.tip);
         tiptxt.setOnClickListener(this);
         //refreshtip=(TextView)view.findViewById(R.id.refreshtip);
-        refreshReciver=new RefreshBroadcastReciver();
-        IntentFilter pullFilter=new IntentFilter();
+        refreshReciver = new RefreshBroadcastReciver();
+        IntentFilter pullFilter = new IntentFilter();
         pullFilter.addAction(MYGROUPREFRESH_ACTION);
         context.registerReceiver(refreshReciver, pullFilter);
 
 
         showDialog(getResources().getString(R.string.tip), getResources().getString(R.string.tips_initgroup));
 
-        if(Common.url != null && !Common.url.equals("")){
+        if (Common.url != null && !Common.url.equals("")) {
 
-        }else{
+        } else {
             Common.url = getResources().getString(R.string.url);
         }
-        url_GetMyGroup=Common.url+"group.aspx";
-        url_ExitGroup=Common.url+"group.aspx";
+        url_GetMyGroup = Common.url + "group.aspx";
+        url_ExitGroup = Common.url + "group.aspx";
         init();
         return view;
     }
 
     private void init() {
-        PostGroupInfo groupThread=new PostGroupInfo(handler,url_GetMyGroup,Common.getUserId(context),Common.getDeviceId(context),"MyGroups");
+        PostGroupInfo groupThread = new PostGroupInfo(handler, url_GetMyGroup, Common.getUserId(context), Common.getDeviceId(context), "MyGroups");
         groupThread.start();
     }
+
     private class RefreshBroadcastReciver extends BroadcastReceiver {
-        private RefreshBroadcastReciver(){
+        private RefreshBroadcastReciver() {
 
         }
+
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
             init();
         }
     }
+
     @SuppressLint("HandlerLeak")
-    private Handler handler=new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
 
-            switch(msg.what){
+            switch (msg.what) {
                 case 0://获取轨迹列表成功
                     dismissDialog();
-                    if(msg.obj!=null){
+                    if (msg.obj != null) {
                         String groupStr = msg.obj.toString().trim();
-                        int lastsize=groups.size();
-                        groups=(ArrayList<GroupInfoData>) GsonHelper.parseJsonToList(groupStr, GroupInfoData.class);
-                        if(isFirstCreated){
-                            Log.i("trailadapter","groupsize:"+groups.size());
-                            mAdapter=new GroupAdapter(context,selectedcount,groups,"quit",groupList);
+                        int lastsize = groups.size();
+                        groups = (ArrayList<GroupInfoData>) GsonHelper.parseJsonToList(groupStr, GroupInfoData.class);
+                        if (isFirstCreated) {
+                            Log.i("trailadapter", "groupsize:" + groups.size());
+                            mAdapter = new GroupAdapter(context, selectedcount, groups, "quit", groupList);
                             groupList.setAdapter(mAdapter);
-                            isFirstCreated=false;
+                            isFirstCreated = false;
 
-                        }else{
+                        } else {
 
 
                             showMenu(false, true);
 
                         }
-                        if(groups.size()==0){
+                        if (groups.size() == 0) {
                             tiptxt.setVisibility(View.VISIBLE);
                             tiptxt.setText(R.string.nojoinedgroup);
-                        }
-                        else{
+                        } else {
                             tiptxt.setVisibility(View.INVISIBLE);
                         }
                         //refreshtip.setVisibility(View.GONE);
-                        mPullToRefreshView.onHeaderRefreshComplete("更新于:"+new Date().toLocaleString());
+                        mPullToRefreshView.onHeaderRefreshComplete("更新于:" + new Date().toLocaleString());
                     }
                     break;
                 case 1://获取列表失败
                     dismissDialog();
-                    if(groups.size()==0){
+                    if (groups.size() == 0) {
                         tiptxt.setVisibility(View.VISIBLE);
                         tiptxt.setText(R.string.trytorefresh);
-                    }else{
+                    } else {
                         tiptxt.setVisibility(View.INVISIBLE);
                     }
                     Toast.makeText(context, getResources().getString(R.string.tips_postfail), Toast.LENGTH_SHORT).show();
@@ -175,10 +177,10 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener,Pu
                 case 4://退群成功
                     dismissDialog();
                     init();
-//				Intent intent = new Intent();
-//		        intent.setAction(ALLGROUPREFRESH_ACTION);
-//		        context.sendBroadcast(intent);
-                    ToastUtil.show(context,getResources().getString(R.string.tips_quitgroupsuccess));
+                    //				Intent intent = new Intent();
+                    //		        intent.setAction(ALLGROUPREFRESH_ACTION);
+                    //		        context.sendBroadcast(intent);
+                    ToastUtil.show(context, getResources().getString(R.string.tips_quitgroupsuccess));
                     break;
                 case 5://退群失败
                     dismissDialog();
@@ -188,20 +190,21 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener,Pu
                     dismissDialog();
                     mPullToRefreshView.onHeaderRefreshComplete("更新失败，请检查网络");
                     ToastUtil.show(context, getResources().getString(R.string.tips_netdisconnect));
-                    if(groups.size()==0){
+                    if (groups.size() == 0) {
                         tiptxt.setVisibility(View.VISIBLE);
                         tiptxt.setText(R.string.trytorefresh);
-                    }else{
+                    } else {
                         tiptxt.setVisibility(View.INVISIBLE);
                     }
                     break;
                 case 11://网络错误
                     dismissDialog();
-                    ToastUtil.show(context,getResources().getString(R.string.tips_netdisconnect));
+                    ToastUtil.show(context, getResources().getString(R.string.tips_netdisconnect));
                     break;
             }
         }
     };
+
     @Override
     public void onHeaderRefresh(PullToRefreshView view) {
         // TODO Auto-generated method stub
@@ -211,22 +214,22 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener,Pu
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.tip://点此刷新
                 showDialog(getResources().getString(R.string.tip), getResources().getString(R.string.tips_initgroup));
                 init();
                 break;
             case R.id.cancel:
-                showMenu(false,false);
+                showMenu(false, false);
                 break;
             case R.id.exitgroup:
                 final List<Integer> selectid = mAdapter.getSelected();
                 final int size = selectid.size();
-                if(size > 0){
+                if (size > 0) {
                     CustomDialog.Builder builder = new CustomDialog.Builder(context);
                     builder.setTitle(getResources().getString(R.string.tip));
                     builder.setMessage(getResources().getString(R.string.tips_quitgroupdlg_msg));
-                    builder.setNegativeButton(getResources().getString(R.string.cancl),new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton(getResources().getString(R.string.cancl), new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -234,42 +237,42 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener,Pu
                             dialog.dismiss();
                         }
                     });
-                    builder.setPositiveButton(getResources().getString(R.string.confirm),new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO Auto-generated method stub
-                            showDialog(getResources().getString(R.string.tip),getResources().getString(R.string.tips_handling));
-                            ArrayList<String> tobeExitID=new ArrayList<String>();
+                            showDialog(getResources().getString(R.string.tip), getResources().getString(R.string.tips_handling));
+                            ArrayList<String> tobeExitID = new ArrayList<String>();
 
-                            for(int i = 0;i < size; i++){
+                            for (int i = 0; i < size; i++) {
                                 tobeExitID.add(groups.get(selectid.get(i)).getGroupID());
                             }
-                            String tobeExit=GsonHelper.toJson(tobeExitID);
-                            Log.i("trailadapter", "tobeexit:"+tobeExit);
-                            PostJoinOrExitGroup exitThread=new PostJoinOrExitGroup(handler,url_ExitGroup,
-                                    Common.getUserId(context),tobeExit,
-                                    Common.getDeviceId(context),"QuitGroups");
+                            String tobeExit = GsonHelper.toJson(tobeExitID);
+                            Log.i("trailadapter", "tobeexit:" + tobeExit);
+                            PostJoinOrExitGroup exitThread = new PostJoinOrExitGroup(handler, url_ExitGroup,
+                                    Common.getUserId(context), tobeExit,
+                                    Common.getDeviceId(context), "QuitGroups");
                             exitThread.start();
                             dialog.dismiss();
                         }
                     });
                     builder.create().show();
 
-                }else{
+                } else {
                     ToastUtil.show(context, getResources().getString(R.string.tips_pleasechoosegroup));
                 }
                 break;
         }
 
     }
-    public void showMenu(boolean isMulChoice,boolean isNew){
+
+    public void showMenu(boolean isMulChoice, boolean isNew) {
         mAdapter.refresh(isMulChoice, isNew, groups);
 
-        if(isMulChoice){
+        if (isMulChoice) {
             layout.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             layout.setVisibility(View.GONE);
         }
         selectedcount.setText("");
@@ -277,10 +280,11 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener,Pu
         mAdapter.notifyDataSetChanged();
 
     }
+
     /**
      * 显示进度条对话框
      */
-    public void showDialog(String title,String message) {
+    public void showDialog(String title, String message) {
         if (proDialog == null)
             proDialog = new ProgressDialog(context);
         proDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -304,7 +308,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener,Pu
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        if(null!=refreshReciver){
+        if (null != refreshReciver) {
             context.unregisterReceiver(refreshReciver);
         }
     }
