@@ -392,6 +392,7 @@
     <string name="tips_quitgroupsuccess">退群成功</string>
     <string name="tips_quitgroupfail">退群失败，请重试</string>
     <string name="tips_applygroupsuccess">已发送申请，等待管理员确认</string>
+    <string name="tips_joinedgroup">该用户已经加入了该群组，无需重复加入!</string>
     <string name="tips_applygroupfail">申请发送失败，请稍后再试</string>
     <string name="tips_joingroupsuccess">加群成功</string>
     <string name="tips_joingroupfail">加群失败，请重试</string>
