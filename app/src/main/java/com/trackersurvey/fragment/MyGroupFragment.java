@@ -112,8 +112,11 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
     }
 
     private void init() {
-        PostGroupInfo groupThread = new PostGroupInfo(handler, url_GetMyGroup, Common.getUserId(context), Common.getDeviceId(context), "MyGroups");
+        PostGroupInfo groupThread = new PostGroupInfo(handler, url_GetMyGroup, Common.getUserID(context), Common.getDeviceId(context), "MyGroups");
         groupThread.start();
+
+
+        
     }
 
     private class RefreshBroadcastReciver extends BroadcastReceiver {
