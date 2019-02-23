@@ -143,14 +143,31 @@ public class GroupInfoActivity extends BaseActivity {
                             @Override
                             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                                 if (isSuccess) {
+                                    Log.i("trailadapterCode", "onResponseData: " + code);
                                     if (code.equals("0")) {
-                                        ToastUtil.show(GroupInfoActivity.this, getResources().getString(R.string.tips_applygroupsuccess));
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ToastUtil.show(GroupInfoActivity.this, getResources().getString(R.string.tips_applygroupsuccess));
+                                            }
+                                        });
                                     }
                                     if (code.equals("100") || code.equals("101")) {
-                                        Toast.makeText(GroupInfoActivity.this, "登录信息过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(GroupInfoActivity.this, "登录信息过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
                                     if (code.equals("310")) {
-                                        ToastUtil.show(GroupInfoActivity.this, getResources().getString(R.string.tips_joinedgroup));
+//                                        ToastUtil.show(GroupInfoActivity.this, getResources().getString(R.string.tips_joinedgroup));
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(GroupInfoActivity.this, getResources().getString(R.string.tips_joinedgroup), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
                                 }
                             }
