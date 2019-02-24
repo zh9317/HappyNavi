@@ -28,6 +28,7 @@ import com.trackersurvey.adapter.GroupAdapter;
 import com.trackersurvey.bean.GroupInfoData;
 import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.DownloadUserGroupList;
+import com.trackersurvey.http.ExitGroupRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.PostGroupInfo;
 import com.trackersurvey.httpconnection.PostJoinOrExitGroup;
@@ -122,9 +123,6 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
     }
 
     public void init() {
-        //        PostGroupInfo groupThread = new PostGroupInfo(handler, url_GetMyGroup, Common.getUserID(context), Common.getDeviceId(context), "MyGroups");
-        //        groupThread.start();
-
         DownloadUserGroupList downloadUserGroupList = new DownloadUserGroupList(sp.getString("token", ""), "1", "100");
         downloadUserGroupList.requestHttpData(new ResponseData() {
             @Override
@@ -190,31 +188,6 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
                     }
                     //refreshtip.setVisibility(View.GONE);
                     mPullToRefreshView.onHeaderRefreshComplete("更新于:" + new Date().toLocaleString());
-                    //                    if (msg.obj != null) {
-                    //                        String groupStr = msg.obj.toString().trim();
-                    //                        int lastsize = groups.size();
-                    //                        groups = (ArrayList<GroupInfoData>) GsonHelper.parseJsonToList(groupStr, GroupInfoData.class);
-                    //                        if (isFirstCreated) {
-                    //                            Log.i("trailadapter", "groupsize:" + groups.size());
-                    //                            mAdapter = new GroupAdapter(context, selectedcount, groups, "quit", groupList);
-                    //                            groupList.setAdapter(mAdapter);
-                    //                            isFirstCreated = false;
-                    //
-                    //                        } else {
-                    //
-                    //
-                    //                            showMenu(false, true);
-                    //
-                    //                        }
-                    //                        if (groups.size() == 0) {
-                    //                            tiptxt.setVisibility(View.VISIBLE);
-                    //                            tiptxt.setText(R.string.nojoinedgroup);
-                    //                        } else {
-                    //                            tiptxt.setVisibility(View.INVISIBLE);
-                    //                        }
-                    //                        //refreshtip.setVisibility(View.GONE);
-                    //                        mPullToRefreshView.onHeaderRefreshComplete("更新于:" + new Date().toLocaleString());
-                    //                    }
                     break;
                 case 1://获取列表失败
                     dismissDialog();
@@ -300,9 +273,27 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
 
                             for (int i = 0; i < size; i++) {
                                 tobeExitID.add(groups.get(selectid.get(i)).getGroupID());
+                                Log.i("trailadapter", "tobeexit:" + tobeExitID.get(i));
                             }
                             String tobeExit = GsonHelper.toJson(tobeExitID);
                             Log.i("trailadapter", "tobeexit:" + tobeExit);
+
+                            for (int i = 0; i < size; i++) {
+                                ExitGroupRequest exitGroupRequest = new ExitGroupRequest(sp.getString("token", ""), groups.get(selectid.get(i)).getGroupID());
+                                exitGroupRequest.requestHttpData(new ResponseData() {
+                                    @Override
+                                    public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                                        if (isSuccess) {
+                                            if (code.equals("0")) {
+                                                Message message = new Message();
+                                                message.what = 4;
+                                                handler.sendMessage(message);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+
                             PostJoinOrExitGroup exitThread = new PostJoinOrExitGroup(handler, url_ExitGroup,
                                     Common.getUserId(context), tobeExit,
                                     Common.getDeviceId(context), "QuitGroups");

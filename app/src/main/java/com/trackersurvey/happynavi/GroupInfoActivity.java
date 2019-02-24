@@ -22,6 +22,7 @@ import android.widget.Toolbar;
 
 import com.githang.statusbar.StatusBarCompat;
 import com.trackersurvey.bean.GroupInfoData;
+import com.trackersurvey.http.ExitGroupRequest;
 import com.trackersurvey.http.JoinGroupRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.PostJoinOrExitGroup;
@@ -204,10 +205,25 @@ public class GroupInfoActivity extends BaseActivity {
                                 // TODO Auto-generated method stub
 
                                 ArrayList<String> tobeExitID = new ArrayList<String>();
-                                //                                tobeExitID.add(groupInfo.getGroupID());
+//                                                                tobeExitID.add(groupInfo.getGroupID());
 
                                 String tobeExit = GsonHelper.toJson(tobeExitID);
                                 Log.i("trailadapter", "tobeexit:" + tobeExit);
+
+                                ExitGroupRequest exitGroupRequest = new ExitGroupRequest(sp.getString("token", ""), groupInfo.getGroupID());
+                                exitGroupRequest.requestHttpData(new ResponseData() {
+                                    @Override
+                                    public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                                        if (isSuccess) {
+                                            if (code.equals("0")) {
+                                                Message message = new Message();
+                                                message.what = 4;
+                                                handler.sendMessage(message);
+                                            }
+                                        }
+                                    }
+                                });
+
                                 PostJoinOrExitGroup exitThread = new PostJoinOrExitGroup(handler, url_ExitGroup,
                                         Common.getUserId(GroupInfoActivity.this), tobeExit,
                                         Common.getDeviceId(GroupInfoActivity.this), "QuitGroups");
