@@ -23,7 +23,7 @@ public class UrlHeader {
     public static final String DOWNLOAD_TRACE_LIST = "trace/getTraceList";// 下载轨迹列表（分页获取）（已调试）
     public static final String DELETE_TRACE = "trace/deleteTrace";// 删除轨迹（已调试）
     public static final String DOWNLOAD_TRACE_DETAIL = "location/getTraceLocation";// 下载轨迹详情（已调试）
-    public static final String UPLOAD_TRACE = ""; // 上传本地轨迹
+    public static final String UPLOAD_TRACE = "trace/uploadTrace"; // 上传本地轨迹
     // 兴趣点
     public static final String DOWNLOAD_POI_CHOICES = "poi/getPoiChoices"; // 下载兴趣点选项列表（已调试）
     public static final String UPLOAD_POI_URL = "poi/uploadPoi"; // 上传兴趣点（已调试）

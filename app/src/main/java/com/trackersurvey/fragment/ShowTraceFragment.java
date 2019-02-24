@@ -59,6 +59,12 @@ import com.amap.api.services.route.RideRouteResult;
 import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkRouteResult;
 import com.amap.api.services.route.WalkStep;
+import com.tencent.connect.share.QQShare;
+import com.tencent.connect.share.QzoneShare;
+import com.tencent.open.utils.ThreadManager;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 import com.trackersurvey.adapter.ListBaseAdapter3;
 import com.trackersurvey.bean.TraceLatLng;
 import com.trackersurvey.http.DeleteTraceRequest;
@@ -209,9 +215,9 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     // private boolean bound_upload=false;
     private SharedPreferences uploadCache;// 存储待上传的评论信息
 
-    //private Tencent mTencent;//用于qq空间分享
+    private Tencent mTencent;//用于qq空间分享
     private Bundle params;
-    //private MyIUilistener mIUilistener;//用于qq空间分享
+    private MyIUilistener mIUilistener;//用于qq空间分享
 
     private long currentTraceID;
 
@@ -260,7 +266,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         checkTrace = (ImageView) view.findViewById(R.id.checktraceinfo);
         shareTrace = (ImageView) view.findViewById(R.id.sharetrace);
         sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
-        //mTencent = Tencent.createInstance("1105447917", getContext());//用于qq空间分享
+        mTencent = Tencent.createInstance("1105447917", getContext());//用于qq空间分享
 
         // distance = (TextView) view.findViewById(R.id.distance_info);
         // duration = (TextView) view.findViewById(R.id.during_info);
@@ -561,7 +567,8 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
                     @Override
                     public void onClick(View v) {
-                        //ShareToQZone();
+                        Toast.makeText(getContext(), "分享到QQ空间的功能待开发", Toast.LENGTH_SHORT).show();
+//                        ShareToQZone();
                     }
                 });
                 ImageButton shareQQ = (ImageButton) contentView.findViewById(R.id.share_qq);
@@ -569,7 +576,8 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
                     @Override
                     public void onClick(View v) {
-                        //ShareToQQ();
+                        Toast.makeText(getContext(), "分享到QQ好友的功能待开发", Toast.LENGTH_SHORT).show();
+//                        ShareToQQ();
                     }
                 });
                 break;
@@ -2117,35 +2125,34 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             }
         });
     }
-    /*private class MyIUilistener implements IUiListener{
+    private class MyIUilistener implements IUiListener {
+
+        @Override
+        public void onComplete(Object o) {
+
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+
+        }
 
         @Override
         public void onCancel() {
 
         }
-
-        @Override
-        public void onComplete(Object arg0) {
-
-        }
-
-        @Override
-        public void onError(UiError arg0) {
-
-        }
-
-    }*/
-    /*public void ShareToQQ(){
+    }
+    public void ShareToQQ(){
         String title = getResources().getString(R.string.share_title);
-        String detail = getResources().getString(R.string.distancelable) + ":"
-                + Common.transformDistance(trailobj.getDistance()) + getResources().getString(R.string.disunit) + "\n"
-                + getResources().getString(R.string.durationlable) + ":" + Common.transformTime(trailobj.getDuration());
+        String detail = getResources().getString(R.string.distance_label) + ":"
+                + Common.transformDistance(trailobj.getDistance()) + getResources().getString(R.string.dis_unit) + "\n"
+                + getResources().getString(R.string.duration_label) + ":" + Common.transformTime(trailobj.getDuration());
         params = new Bundle();
         params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
         params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
         params.putString(QQShare.SHARE_TO_QQ_SUMMARY, detail);
         params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://219.218.118.176:8089/Share/PoMobile.ashx?" +
-                "uid=" + Common.getUserId(context) + "&tid=" + trailobj.getTraceNo());
+                "uid=" + Common.getUserId(context) + "&tid=" + trailobj.getTraceID());
         ArrayList<String> imgUrlList = new ArrayList<String>();
         imgUrlList.add("http://footprint.lisoft.com.cn/images/logo.png");
         params.putStringArrayList(QQShare.SHARE_TO_QQ_IMAGE_URL, imgUrlList);//图片地址
@@ -2156,20 +2163,20 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                 mTencent.shareToQQ(getActivity(), params, mIUilistener);
             }
         });
-    }*/
+    }
     //用于qq空间分享
     //此功能有缺陷，不知道怎么将工程中的res/drawable下的图片添加到分享中，待改进
-    /*public void ShareToQZone(){
+    public void ShareToQZone(){
         String title = getResources().getString(R.string.share_title);
-        String detail = getResources().getString(R.string.distancelable) + ":"
-                + Common.transformDistance(trailobj.getDistance()) + getResources().getString(R.string.disunit) + "\n"
-                + getResources().getString(R.string.durationlable) + ":" + Common.transformTime(trailobj.getDuration());
+        String detail = getResources().getString(R.string.distance_label) + ":"
+                + Common.transformDistance(trailobj.getDistance()) + getResources().getString(R.string.dis_unit) + "\n"
+                + getResources().getString(R.string.duration_label) + ":" + Common.transformTime(trailobj.getDuration());
         params = new Bundle();
         params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
         params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);
         params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, detail);
         params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, "http://219.218.118.176:8089/Share/PoMobile.ashx?" +
-                "uid=" + Common.getUserId(context) + "&tid=" + trailobj.getTraceNo());
+                "uid=" + Common.getUserId(context) + "&tid=" + trailobj.getTraceID());
         ArrayList<String> imgUrlList = new ArrayList<String>();
 //		Resources r = context.getApplicationContext().getResources();
 //		Uri uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE+"://"
@@ -2186,7 +2193,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                 mTencent.shareToQzone(getActivity(), params, mIUilistener);
             }
         });
-    }*/
+    }
     public String getAbsoluteImagePath(Context context, Uri uri){
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor =  context.getContentResolver().query(uri, proj, null, null, null);

@@ -35,6 +35,7 @@ import com.trackersurvey.http.DownLoadTraceList;
 import com.trackersurvey.http.EndTraceRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.UpLoadGpsRequest;
+import com.trackersurvey.http.UploadTraceRequest;
 import com.trackersurvey.model.GpsData;
 import com.trackersurvey.model.StepData;
 import com.trackersurvey.model.TraceData;
@@ -232,7 +233,7 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
                         @Override
                         public void run() {
                             dismissDialog();
-                            Toast.makeText(getContext(), "获取轨迹列表成功", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getContext(), "获取轨迹列表成功", Toast.LENGTH_SHORT).show();
                             if (trace_Cloud != null) {
                                 initBothTrace();
                             }
@@ -525,13 +526,32 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
 //                        PostEndTrail endTrailThread = new PostEndTrail(uploadHandler,
 //                                URL_ENDTRAIL,traceinfo,stepinfo,deviceID);//2,3
 //                        endTrailThread.start();
-                        EndTraceRequest endTraceRequest = new EndTraceRequest(
-                                sp.getString("token",""), traceinfo);
-                        endTraceRequest.requestHttpData(new ResponseData() {
+                        UploadTraceRequest uploadTraceRequest = new UploadTraceRequest(
+                                sp.getString("token", ""), traceinfo);
+                        uploadTraceRequest.requestHttpData(new ResponseData() {
                             @Override
                             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                                 if (isSuccess) {
-
+                                    if (code.equals("0")) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(getContext(), "上传轨迹成功", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                    if (code.equals("100") || code.equals("101")) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(getContext(), "登录信息过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                                                SharedPreferences.Editor editor = sp.edit();
+                                                editor.putString("token", ""); // 清空token
+                                                editor.apply();
+                                                ActivityCollector.finishActivity("MainActivity");
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         });

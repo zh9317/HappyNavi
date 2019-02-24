@@ -20,6 +20,7 @@ import com.trackersurvey.fragment.QuestionnaireFragment;
 import com.trackersurvey.util.AppManager;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
+import com.trackersurvey.util.ShareToWeChat;
 
 /**
  * 已有功能：
@@ -78,6 +79,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             actionBar.hide();
         }
         AppManager.getAppManager().addActivity(this);
+        ShareToWeChat.registToWeChat(getApplicationContext() );
         initView();
         fragmentManager = getSupportFragmentManager();
         setTabSelection(0);
