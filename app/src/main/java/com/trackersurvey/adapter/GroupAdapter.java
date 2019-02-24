@@ -87,6 +87,17 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
         }
     }
 
+    public void setGroups(ArrayList<GroupInfoData> groups) {
+        this.groups = groups;
+        URLArray = new String[groups.size()];
+        IconName = new String[groups.size()];
+        for (int i = 0; i < URLArray.length; i++) {
+            URLArray[i] = BASE_URL_NEW + groups.get(i).getGroupPicUrl();
+            IconName[i] = groups.get(i).getGroupPicUrl().substring(8);       // "/images/XinLab.jpg"
+            Log.i("dongsiyuanURLArray", "GroupAdapter: " + URLArray[i] + " " + IconName[i]);
+        }
+    }
+
     public void refresh(boolean isMulChoice, boolean isNew, ArrayList<GroupInfoData> groups) {
         this.isMulChoice = isMulChoice;
         this.selectid.clear();
@@ -193,8 +204,9 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
                     String groupinfo = GsonHelper.toJson(groups.get(pos));
                     Log.i("dongsiyuanGroupinfo", "onClick: " + groups.get(pos));
 
-                    refreshListener.clickRefresh();
-
+//                    if (refreshListener != null) {
+//                        refreshListener.clickRefresh();
+//                    }
                     Intent intent = new Intent();
                     intent.putExtra("handletype", handleType);
                     intent.putExtra("groupinfo", groupinfo);

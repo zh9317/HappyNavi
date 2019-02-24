@@ -181,13 +181,13 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
                     if (isFirstCreated) {
                         mAdapter = new GroupAdapter(context, selectedcount, groups, "join", groupList);
                         groupList.setAdapter(mAdapter);
-                        mAdapter.setRefreshListener(new GroupAdapter.RefreshListener() {
-                            @Override
-                            public void clickRefresh() {
-                                Intent intent = new Intent(getContext(), GroupInfoActivity.class);
-                                startActivityForResult(intent, 1);
-                            }
-                        });
+//                        mAdapter.setRefreshListener(new GroupAdapter.RefreshListener() {
+//                            @Override
+//                            public void clickRefresh() {
+//                                Intent intent = new Intent(getContext(), GroupInfoActivity.class);
+//                                startActivityForResult(intent, 1);
+//                            }
+//                        });
                         isFirstCreated = false;
                     } else {
                         showMenu(false, true);
@@ -355,4 +355,6 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
             context.unregisterReceiver(refreshReciver);
         }
     }
+
+
 }

@@ -102,10 +102,10 @@ public class GroupInfoActivity extends BaseActivity {
         Intent intent = getIntent();
         handleType = intent.getStringExtra("handletype");
         String groupStr = intent.getStringExtra("groupinfo");
+        Log.i("dongisyuanhandleType", "init: " + handleType);
         if (handleType == null || handleType.equals("") ||
                 groupStr == null || groupStr.equals("")) {
             ToastUtil.show(this, getResources().getString(R.string.tips_errorversion));
-
             return;
         }
         if (handleType.equals("join")) {
@@ -154,6 +154,9 @@ public class GroupInfoActivity extends BaseActivity {
                                             @Override
                                             public void run() {
                                                 ToastUtil.show(GroupInfoActivity.this, getResources().getString(R.string.tips_applygroupsuccess));
+                                                Message message = new Message();
+                                                message.what = 4;
+                                                handler.sendMessage(message);
                                             }
                                         });
                                     }

@@ -121,7 +121,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
         return view;
     }
 
-    private void init() {
+    public void init() {
         //        PostGroupInfo groupThread = new PostGroupInfo(handler, url_GetMyGroup, Common.getUserID(context), Common.getDeviceId(context), "MyGroups");
         //        groupThread.start();
 
@@ -136,6 +136,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
                         for (int i = 0; i < groups.size(); i++) {
                             Log.i("dongsiyuanGroupInfoData", "onResponseData: " + groups.get(i).toString());
                         }
+
                         // 通知adapter更新
                         Message message = new Message();
                         message.what = 0;
@@ -154,6 +155,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
+            Log.i("dongsiyuanonReceive", "onReceive: ");
             init();
         }
     }
@@ -176,6 +178,8 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
                         groupList.setAdapter(mAdapter);
                         isFirstCreated = false;
                     } else {
+                        mAdapter.setGroups(groups);
+                        mAdapter.notifyDataSetChanged();
                         showMenu(false, true);
                     }
                     if (groups.size() == 0) {
@@ -292,10 +296,10 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO Auto-generated method stub
                             showDialog(getResources().getString(R.string.tip), getResources().getString(R.string.tips_handling));
-                            ArrayList<String> tobeExitID = new ArrayList<String>();
+                            ArrayList<Integer> tobeExitID = new ArrayList<>();
 
                             for (int i = 0; i < size; i++) {
-                                //                                tobeExitID.add(groups.get(selectid.get(i)).getGroupID());
+                                tobeExitID.add(groups.get(selectid.get(i)).getGroupID());
                             }
                             String tobeExit = GsonHelper.toJson(tobeExitID);
                             Log.i("trailadapter", "tobeexit:" + tobeExit);
@@ -364,6 +368,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("dongsiActivityResult", "onActivityResult: ");
 
         switch (resultCode) {
             case 1:
