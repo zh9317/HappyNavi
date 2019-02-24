@@ -2,6 +2,7 @@ package com.trackersurvey.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.sip.SipSession;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +50,8 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
 
     private boolean isFirstShow;//是否是第一次启动
 
+    private RefreshListener refreshListener;
+
     public GroupAdapter(Context context, TextView txtcount,
                         ArrayList<GroupInfoData> groups, String handleType, ListView listView) {
         this.context = context;
@@ -81,6 +84,17 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
                 ischeck.put(i, false);
                 visiblecheck.put(i, CheckBox.INVISIBLE);
             }
+        }
+    }
+
+    public void setGroups(ArrayList<GroupInfoData> groups) {
+        this.groups = groups;
+        URLArray = new String[groups.size()];
+        IconName = new String[groups.size()];
+        for (int i = 0; i < URLArray.length; i++) {
+            URLArray[i] = BASE_URL_NEW + groups.get(i).getGroupPicUrl();
+            IconName[i] = groups.get(i).getGroupPicUrl().substring(8);       // "/images/XinLab.jpg"
+            Log.i("dongsiyuanURLArray", "GroupAdapter: " + URLArray[i] + " " + IconName[i]);
         }
     }
 
@@ -189,13 +203,16 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
                     }
                     String groupinfo = GsonHelper.toJson(groups.get(pos));
                     Log.i("dongsiyuanGroupinfo", "onClick: " + groups.get(pos));
+
+//                    if (refreshListener != null) {
+//                        refreshListener.clickRefresh();
+//                    }
                     Intent intent = new Intent();
                     intent.putExtra("handletype", handleType);
                     intent.putExtra("groupinfo", groupinfo);
 
                     intent.setClass(context, GroupInfoActivity.class);
                     context.startActivity(intent);
-
                 }
             }
 
@@ -245,7 +262,9 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
         // TODO Auto-generated method stub
         if (scrollState == SCROLL_STATE_IDLE) {//滑动结束
             //加载图片
-            mLoader.loadImagesNonScroll(mStart, mEnd);
+            if (URLArray.length > 0 && IconName.length > 0) {
+                mLoader.loadImagesNonScroll(mStart, mEnd);
+            }
         } else {//滑动时停止加载，防止滑动时由于异步任务重绘UI导致的卡顿
             mLoader.cancelAllTasks();
         }
@@ -257,8 +276,18 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
         mStart = firstVisibleItem;
         mEnd = firstVisibleItem + visibleItemCount;
         if (isFirstShow && visibleItemCount > 0) {
-            mLoader.loadImagesNonScroll(mStart, mEnd);
+            if (URLArray.length > 0 && IconName.length > 0) {
+                mLoader.loadImagesNonScroll(mStart, mEnd);
+            }
             isFirstShow = false;
         }
+    }
+
+    public interface RefreshListener {
+        void clickRefresh();
+    }
+
+    public void setRefreshListener(RefreshListener listener) {
+        refreshListener = listener;
     }
 }

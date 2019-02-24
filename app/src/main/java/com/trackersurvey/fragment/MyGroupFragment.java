@@ -28,6 +28,7 @@ import com.trackersurvey.adapter.GroupAdapter;
 import com.trackersurvey.bean.GroupInfoData;
 import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.DownloadUserGroupList;
+import com.trackersurvey.http.ExitGroupRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.PostGroupInfo;
 import com.trackersurvey.httpconnection.PostJoinOrExitGroup;
@@ -98,6 +99,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
         tiptxt = (TextView) view.findViewById(R.id.tip);
         tiptxt.setOnClickListener(this);
         //refreshtip=(TextView)view.findViewById(R.id.refreshtip);
+
         refreshReciver = new RefreshBroadcastReciver();
         IntentFilter pullFilter = new IntentFilter();
         pullFilter.addAction(MYGROUPREFRESH_ACTION);
@@ -120,20 +122,19 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
         return view;
     }
 
-    private void init() {
-        //        PostGroupInfo groupThread = new PostGroupInfo(handler, url_GetMyGroup, Common.getUserID(context), Common.getDeviceId(context), "MyGroups");
-        //        groupThread.start();
-
+    public void init() {
         DownloadUserGroupList downloadUserGroupList = new DownloadUserGroupList(sp.getString("token", ""), "1", "100");
         downloadUserGroupList.requestHttpData(new ResponseData() {
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
                     if (code.equals("0")) {
+                        Log.i("dongsiyuanMyGroupIna", "onResponseData: code :" + code);
                         groups = (ArrayList<GroupInfoData>) responseObject;
                         for (int i = 0; i < groups.size(); i++) {
                             Log.i("dongsiyuanGroupInfoData", "onResponseData: " + groups.get(i).toString());
                         }
+
                         // 通知adapter更新
                         Message message = new Message();
                         message.what = 0;
@@ -152,6 +153,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
+            Log.i("dongsiyuanonReceive", "onReceive: ");
             init();
         }
     }
@@ -174,6 +176,8 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
                         groupList.setAdapter(mAdapter);
                         isFirstCreated = false;
                     } else {
+                        mAdapter.setGroups(groups);
+                        mAdapter.notifyDataSetChanged();
                         showMenu(false, true);
                     }
                     if (groups.size() == 0) {
@@ -184,31 +188,6 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
                     }
                     //refreshtip.setVisibility(View.GONE);
                     mPullToRefreshView.onHeaderRefreshComplete("更新于:" + new Date().toLocaleString());
-                    //                    if (msg.obj != null) {
-                    //                        String groupStr = msg.obj.toString().trim();
-                    //                        int lastsize = groups.size();
-                    //                        groups = (ArrayList<GroupInfoData>) GsonHelper.parseJsonToList(groupStr, GroupInfoData.class);
-                    //                        if (isFirstCreated) {
-                    //                            Log.i("trailadapter", "groupsize:" + groups.size());
-                    //                            mAdapter = new GroupAdapter(context, selectedcount, groups, "quit", groupList);
-                    //                            groupList.setAdapter(mAdapter);
-                    //                            isFirstCreated = false;
-                    //
-                    //                        } else {
-                    //
-                    //
-                    //                            showMenu(false, true);
-                    //
-                    //                        }
-                    //                        if (groups.size() == 0) {
-                    //                            tiptxt.setVisibility(View.VISIBLE);
-                    //                            tiptxt.setText(R.string.nojoinedgroup);
-                    //                        } else {
-                    //                            tiptxt.setVisibility(View.INVISIBLE);
-                    //                        }
-                    //                        //refreshtip.setVisibility(View.GONE);
-                    //                        mPullToRefreshView.onHeaderRefreshComplete("更新于:" + new Date().toLocaleString());
-                    //                    }
                     break;
                 case 1://获取列表失败
                     dismissDialog();
@@ -290,13 +269,31 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO Auto-generated method stub
                             showDialog(getResources().getString(R.string.tip), getResources().getString(R.string.tips_handling));
-                            ArrayList<String> tobeExitID = new ArrayList<String>();
+                            ArrayList<Integer> tobeExitID = new ArrayList<>();
 
                             for (int i = 0; i < size; i++) {
-                                //                                tobeExitID.add(groups.get(selectid.get(i)).getGroupID());
+                                tobeExitID.add(groups.get(selectid.get(i)).getGroupID());
+                                Log.i("trailadapter", "tobeexit:" + tobeExitID.get(i));
                             }
                             String tobeExit = GsonHelper.toJson(tobeExitID);
                             Log.i("trailadapter", "tobeexit:" + tobeExit);
+
+                            for (int i = 0; i < size; i++) {
+                                ExitGroupRequest exitGroupRequest = new ExitGroupRequest(sp.getString("token", ""), groups.get(selectid.get(i)).getGroupID());
+                                exitGroupRequest.requestHttpData(new ResponseData() {
+                                    @Override
+                                    public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                                        if (isSuccess) {
+                                            if (code.equals("0")) {
+                                                Message message = new Message();
+                                                message.what = 4;
+                                                handler.sendMessage(message);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+
                             PostJoinOrExitGroup exitThread = new PostJoinOrExitGroup(handler, url_ExitGroup,
                                     Common.getUserId(context), tobeExit,
                                     Common.getDeviceId(context), "QuitGroups");
@@ -358,5 +355,17 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
         if (null != refreshReciver) {
             context.unregisterReceiver(refreshReciver);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("dongsiActivityResult", "onActivityResult: ");
+
+        switch (resultCode) {
+            case 1:
+                init();
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

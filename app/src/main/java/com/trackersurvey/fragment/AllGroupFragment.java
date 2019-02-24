@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.trackersurvey.adapter.GroupAdapter;
 import com.trackersurvey.bean.GroupInfoData;
+import com.trackersurvey.happynavi.GroupInfoActivity;
 import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.DownloadGroupList;
 import com.trackersurvey.http.ResponseData;
@@ -180,6 +181,13 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
                     if (isFirstCreated) {
                         mAdapter = new GroupAdapter(context, selectedcount, groups, "join", groupList);
                         groupList.setAdapter(mAdapter);
+//                        mAdapter.setRefreshListener(new GroupAdapter.RefreshListener() {
+//                            @Override
+//                            public void clickRefresh() {
+//                                Intent intent = new Intent(getContext(), GroupInfoActivity.class);
+//                                startActivityForResult(intent, 1);
+//                            }
+//                        });
                         isFirstCreated = false;
                     } else {
                         showMenu(false, true);
@@ -189,6 +197,10 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
                     }
                     mPullToRefreshView.onHeaderRefreshComplete("更新于:" + new Date().toLocaleString());
 
+                    Intent intent = new Intent();
+                    intent.setAction(MYGROUPREFRESH_ACTION);
+                    Log.i("dongsiyuansendBroadcast", "sendBroadcast: ");
+                    context.sendBroadcast(intent);
 //                    if (msg.obj != null) {
 //                        Log.i("dongsiyuanGroupInfoData", "onResponseData: msg.obj");
 //
@@ -343,4 +355,6 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
             context.unregisterReceiver(refreshReciver);
         }
     }
+
+
 }

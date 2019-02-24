@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
@@ -17,9 +18,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.githang.statusbar.StatusBarCompat;
 import com.trackersurvey.bean.GroupInfoData;
+import com.trackersurvey.http.ExitGroupRequest;
 import com.trackersurvey.http.JoinGroupRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.PostJoinOrExitGroup;
@@ -29,6 +32,7 @@ import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
 import com.trackersurvey.util.GsonHelper;
 import com.trackersurvey.util.MyImageLoader;
+import com.trackersurvey.util.TitleLayout;
 import com.trackersurvey.util.ToastUtil;
 
 import java.io.IOException;
@@ -86,6 +90,8 @@ public class GroupInfoActivity extends BaseActivity {
         tv_groupdetail = (TextView) findViewById(R.id.tv_groupdetail);
         tv_membernums = (TextView) findViewById(R.id.tv_membernums);
         tv_createtime = (TextView) findViewById(R.id.tv_createtime);
+
+
         //GroupButton = (Button) findViewById(R.id.handlegroup);
         if (Common.url != null && !Common.url.equals("")) {
 
@@ -97,10 +103,10 @@ public class GroupInfoActivity extends BaseActivity {
         Intent intent = getIntent();
         handleType = intent.getStringExtra("handletype");
         String groupStr = intent.getStringExtra("groupinfo");
+        Log.i("dongisyuanhandleType", "init: " + handleType);
         if (handleType == null || handleType.equals("") ||
                 groupStr == null || groupStr.equals("")) {
             ToastUtil.show(this, getResources().getString(R.string.tips_errorversion));
-
             return;
         }
         if (handleType.equals("join")) {
@@ -149,6 +155,9 @@ public class GroupInfoActivity extends BaseActivity {
                                             @Override
                                             public void run() {
                                                 ToastUtil.show(GroupInfoActivity.this, getResources().getString(R.string.tips_applygroupsuccess));
+                                                Message message = new Message();
+                                                message.what = 4;
+                                                handler.sendMessage(message);
                                             }
                                         });
                                     }
@@ -196,10 +205,25 @@ public class GroupInfoActivity extends BaseActivity {
                                 // TODO Auto-generated method stub
 
                                 ArrayList<String> tobeExitID = new ArrayList<String>();
-                                //                                tobeExitID.add(groupInfo.getGroupID());
+//                                                                tobeExitID.add(groupInfo.getGroupID());
 
                                 String tobeExit = GsonHelper.toJson(tobeExitID);
                                 Log.i("trailadapter", "tobeexit:" + tobeExit);
+
+                                ExitGroupRequest exitGroupRequest = new ExitGroupRequest(sp.getString("token", ""), groupInfo.getGroupID());
+                                exitGroupRequest.requestHttpData(new ResponseData() {
+                                    @Override
+                                    public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                                        if (isSuccess) {
+                                            if (code.equals("0")) {
+                                                Message message = new Message();
+                                                message.what = 4;
+                                                handler.sendMessage(message);
+                                            }
+                                        }
+                                    }
+                                });
+
                                 PostJoinOrExitGroup exitThread = new PostJoinOrExitGroup(handler, url_ExitGroup,
                                         Common.getUserId(GroupInfoActivity.this), tobeExit,
                                         Common.getDeviceId(GroupInfoActivity.this), "QuitGroups");
