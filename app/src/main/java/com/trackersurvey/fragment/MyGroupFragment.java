@@ -172,7 +172,7 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
 
                     if (isFirstCreated) {
                         Log.i("trailadapter", "groupsize:" + groups.size());
-                        mAdapter = new GroupAdapter(context, selectedcount, groups, "quit", groupList);
+                        mAdapter = new GroupAdapter(context, selectedcount, groups, "quit", groupList, sp.getString("token", ""));
                         groupList.setAdapter(mAdapter);
                         isFirstCreated = false;
                     } else {
