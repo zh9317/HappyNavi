@@ -47,7 +47,7 @@ import java.util.Date;
 
 public class Common {
 
-    public static final String  version         = "1.8.6";
+    public static final String  version         = "2.0.1";
     public static       boolean isUpdationg     = false;
     public static       boolean isNetConnected  = true;
     public static       boolean isWiFiConnected = false;

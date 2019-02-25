@@ -403,7 +403,7 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
                                 // 测试删除轨迹
                                 DeleteTraceRequest deleteTraceRequest = new DeleteTraceRequest(
                                         sp.getString("token", ""),
-                                        String.valueOf(tobedeleteNo.get(0)));
+                                        tobedelete);
                                 Log.i("TraceList", String.valueOf(tobedeleteNo.get(0)));
                                 deleteTraceRequest.requestHttpData(new ResponseData() {
                                     @Override

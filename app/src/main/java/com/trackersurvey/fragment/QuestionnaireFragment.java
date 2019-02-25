@@ -22,6 +22,7 @@ import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.TestForWeb;
 import com.trackersurvey.util.AppManager;
+import com.trackersurvey.util.Common;
 import com.trackersurvey.util.MyWebChromeClient;
 
 import java.io.IOException;
@@ -68,6 +69,7 @@ public class QuestionnaireFragment extends Fragment {
 
     @SuppressLint("JavascriptInterface")
     public void init(){
+        Log.i("Question", "版本号：" + Common.getAppVersionName(getContext()));
         sp = getActivity().getSharedPreferences("config", MODE_PRIVATE);
         //dWebView = findViewById(R.id.dWebView);
         //dWebView.addJavascriptObject(new JsApi(), null);
@@ -93,7 +95,12 @@ public class QuestionnaireFragment extends Fragment {
         settings.setDisplayZoomControls(false);
         settings.setDomStorageEnabled(true);
         webview.setDrawingCacheEnabled(false);
-        webview.loadUrl("http://211.87.235.147:8089/footPrint/questionnaire/wx_getQuestionnaireList?_appkey=wx&Token="+sp.getString("Token",""));
+        Log.i("Question", "http://interface.hptracker.com:8090/questionnaire/wxShowQuestionnaireList?UserID="
+                +sp.getInt("userID", 0)+"&AppID="+Common.version);
+//        webview.loadUrl("http://211.87.235.147:8089/footPrint/questionnaire/wx_getQuestionnaireList?_appkey=wx&Token="+sp.getString("Token",""));
+        webview.loadUrl("http://interface.hptracker.com:8090/questionnaire/wxShowQuestionnaireList?UserID="
+                +sp.getInt("userID", 0)+"&AppID="+Common.version);
+
 //        webview.loadUrl("http://211.87.235.147:8089/footPrint/questionnaire/test?_appkey=wx&Token="+sp.getString("Token",""));
 //        settings.setUseWideViewPort(true);
         //setLoadWithOverviewMode(true);

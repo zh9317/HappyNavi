@@ -47,6 +47,7 @@ public class QuestionaryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionary);
+        Log.i("Question", "版本号：" + Common.getAppVersionName(this));
         StatusBarCompat.setStatusBarColor(this, Color.BLACK); // 修改状态栏颜色
         // 隐藏原始标题栏
         ActionBar actionBar = getSupportActionBar();
@@ -60,6 +61,7 @@ public class QuestionaryActivity extends BaseActivity {
     }
     @SuppressLint("JavascriptInterface")
     public void init(){
+        Log.i("Question", "版本号：" + Common.getAppVersionName(this));
         sp = getSharedPreferences("config", MODE_PRIVATE);
         //dWebView = findViewById(R.id.dWebView);
         //dWebView.addJavascriptObject(new JsApi(), null);
@@ -74,7 +76,7 @@ public class QuestionaryActivity extends BaseActivity {
                 webview.reload();
             }
         });
-        syncCookie("http://211.87.235.147:8089/footPrint/questionnaire/wx_getQuestionnaireList?_appkey=wx&Token=");
+//        syncCookie("http://211.87.235.147:8089/footPrint/questionnaire/wx_getQuestionnaireList?_appkey=wx&Token=");
 //        syncCookie(context, "http://211.87.235.147:8089/footPrint/questionnaire/test?_appkey=wx&Token=");
         WebSettings settings = webview.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -85,7 +87,9 @@ public class QuestionaryActivity extends BaseActivity {
         settings.setDisplayZoomControls(false);
         settings.setDomStorageEnabled(true);
         webview.setDrawingCacheEnabled(false);
-        webview.loadUrl("http://211.87.235.147:8089/footPrint/questionnaire/wx_getQuestionnaireList?_appkey=wx&Token="+sp.getString("Token",""));
+//        webview.loadUrl("http://211.87.235.147:8089/footPrint/questionnaire/wx_getQuestionnaireList?_appkey=wx&Token="+sp.getString("Token",""));
+        webview.loadUrl("http://interface.hptracker.com:8090/questionnaire/wxShowQuestionnaireList?UserID="
+                +sp.getString("userID", "")+"&AppID="+Common.getAppVersionName(this));
 //        webview.loadUrl("http://211.87.235.147:8089/footPrint/questionnaire/test?_appkey=wx&Token="+sp.getString("Token",""));
 //        settings.setUseWideViewPort(true);
         //setLoadWithOverviewMode(true);
