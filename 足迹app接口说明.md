@@ -1,3 +1,5 @@
+**老版本接口文档：http://219.218.118.176:8090/doc/doc.html\#601**
+
 **一、注册登录**
 
 **1、发送验证码：/user/sendSMSCode**
@@ -175,15 +177,15 @@ traceID：
 
 ![](media/3531b885034283f629941b23f2e25b91.png)
 
-**7、安卓端存在本地的多条轨迹信息上传：/trace/uploadTrace**  
-  
+**7、安卓端存在本地的多条轨迹信息上传：/trace/uploadTrace**
+
 参数：  
 token:  
 traceinfo：  
 [{"EndTime":"2017-07-07 22:27:16","Duration":100,"Distance":100,"Steps":200},  
 {"EndTime":"2017-07-07 22:27:16","Duration":100,"Distance":100,"Steps":200},  
-{"EndTime":"2017-07-07 22:27:16","Duration":100,"Distance":100,"Steps":200}]  
-  
+{"EndTime":"2017-07-07 22:27:16","Duration":100,"Distance":100,"Steps":200}]
+
 返回：  
 0：操作成功  
 100：缺少token参数或为空!  
