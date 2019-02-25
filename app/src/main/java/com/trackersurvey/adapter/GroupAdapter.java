@@ -52,19 +52,23 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
 
     private RefreshListener refreshListener;
 
+    private String token;
+
     public GroupAdapter(Context context, TextView txtcount,
-                        ArrayList<GroupInfoData> groups, String handleType, ListView listView) {
+                        ArrayList<GroupInfoData> groups, String handleType, ListView listView, String token) {
         this.context = context;
         this.txtcount = txtcount;
         this.groups = groups;
         this.handleType = handleType;
+        this.token = token;
         mInflater = LayoutInflater.from(context); //(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mLoader = new MyImageLoader(listView);
         URLArray = new String[groups.size()];
         IconName = new String[groups.size()];
         for (int i = 0; i < URLArray.length; i++) {
-            URLArray[i] = BASE_URL_NEW + groups.get(i).getGroupPicUrl();
             IconName[i] = groups.get(i).getGroupPicUrl().substring(8);       // "/images/XinLab.jpg"
+            URLArray[i] = BASE_URL_NEW + groups.get(i).getGroupPicUrl() + "?token=" + token;
+
             Log.i("dongsiyuanURLArray", "GroupAdapter: " + URLArray[i] + " " + IconName[i]);
         }
         //为listview设置滑动监听
@@ -92,8 +96,9 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
         URLArray = new String[groups.size()];
         IconName = new String[groups.size()];
         for (int i = 0; i < URLArray.length; i++) {
-            URLArray[i] = BASE_URL_NEW + groups.get(i).getGroupPicUrl();
             IconName[i] = groups.get(i).getGroupPicUrl().substring(8);       // "/images/XinLab.jpg"
+            URLArray[i] = BASE_URL_NEW + groups.get(i).getGroupPicUrl() + "?token=" + token;
+
             Log.i("dongsiyuanURLArray", "GroupAdapter: " + URLArray[i] + " " + IconName[i]);
         }
     }
@@ -165,7 +170,9 @@ public class GroupAdapter extends BaseAdapter implements ListView.OnScrollListen
 
         }
 //        String url = groups.get(position).getPhotoUrl();
-        String url = "http://219.218.118.176:8090/Image/711.jpg";
+        String url = BASE_URL_NEW + groups.get(position).getGroupPicUrl() + "?token=" + token;
+        Log.i("dongsiyuanURLArray", "GroupAdapter: url "  + url);
+//        String url = "http://219.218.118.176:8090/Image/711.jpg";
         holder.groupPhoto.setTag(url);
         mLoader.showImageIfExist(holder.groupPhoto, url);
         holder.groupName.setText(groups.get(position).getGroupName());
