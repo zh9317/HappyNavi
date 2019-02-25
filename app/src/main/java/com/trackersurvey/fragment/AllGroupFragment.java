@@ -179,7 +179,7 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
                 case 0://获取轨迹列表成功
                     dismissDialog();
                     if (isFirstCreated) {
-                        mAdapter = new GroupAdapter(context, selectedcount, groups, "join", groupList);
+                        mAdapter = new GroupAdapter(context, selectedcount, groups, "join", groupList, sp.getString("token", ""));
                         groupList.setAdapter(mAdapter);
 //                        mAdapter.setRefreshListener(new GroupAdapter.RefreshListener() {
 //                            @Override
