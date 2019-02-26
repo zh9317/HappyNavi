@@ -266,7 +266,8 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/shape_corner_change_pwd_bg" />
+                android:background="@drawable/shape_corner_change_pwd_bg"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/logout_btn"

@@ -2,6 +2,7 @@ package com.trackersurvey.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -236,7 +237,8 @@ public class TraceListAdapter extends BaseAdapter {
                     Intent intent=new Intent();
                     intent.putExtra("trail", trail);
                     intent.putExtra("step", stepstr);
-                    intent.putExtra("isonline", !traceItems.get(pos).isLocal());
+                    Log.i("TraceListAdapter", "isonline:" + !traceItems.get(pos).isLocal());
+                    intent.putExtra("isonline", traceItems.get(pos).isCloud());
                     intent.setClass(context, TraceDetailActivity.class);
                     context.startActivity(intent);
                 }

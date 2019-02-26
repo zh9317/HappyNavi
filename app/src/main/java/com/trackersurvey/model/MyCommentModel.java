@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,12 +20,9 @@ import com.trackersurvey.bean.CommentMediaFilesData;
 import com.trackersurvey.bean.DownThumbData;
 import com.trackersurvey.bean.InterestMarkerData;
 import com.trackersurvey.bean.ListItemData;
-import com.trackersurvey.bean.TraceData;
+import com.trackersurvey.db.MyTraceDBHelper;
 import com.trackersurvey.db.PhotoDBHelper;
 import com.trackersurvey.db.PointOfInterestDBHelper;
-import com.trackersurvey.db.TraceDBHelper;
-import com.trackersurvey.fragment.ShowTraceFragment;
-import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.DeletePOIRequest;
 import com.trackersurvey.http.DownloadPoiListRequest;
 import com.trackersurvey.http.DownloadPoiRequest;
@@ -36,7 +32,6 @@ import com.trackersurvey.httpconnection.GetCloudPicture;
 import com.trackersurvey.httpconnection.GetThumbPic;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.GsonHelper;
-import com.trackersurvey.util.ToastUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -1276,13 +1271,13 @@ public class MyCommentModel {
             switch (msg.what) {
                 case 0: { // 删除成功
                     if (position > -1) {
-                        TraceDBHelper traceHelper = new TraceDBHelper(context);
+                        MyTraceDBHelper traceHelper = new MyTraceDBHelper(context);
                         TraceData tracedata = new TraceData();
                         InterestMarkerData comment = new InterestMarkerData();
                         comment = ((ListItemData) items.get(position).get("listItem")).getEvent();
                         long traceID = comment.getTraceID();
                         String userID = comment.getUserId();
-                        tracedata = traceHelper.queryfromTrailbytraceNo(traceID, userID);
+                        tracedata = traceHelper.queryfromTrailbytraceID(traceID, userID);
                         if (tracedata != null) {
                             tracedata.setPoiCount(tracedata.getPoiCount() - 1);
                             traceHelper.updatetrail(tracedata, traceID, userID);

@@ -266,7 +266,8 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         checkTrace = (ImageView) view.findViewById(R.id.checktraceinfo);
         shareTrace = (ImageView) view.findViewById(R.id.sharetrace);
         sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
-        mTencent = Tencent.createInstance("1105447917", getContext());//用于qq空间分享
+
+//        mTencent = Tencent.createInstance("1105447917", getContext());//用于qq空间分享
 
         // distance = (TextView) view.findViewById(R.id.distance_info);
         // duration = (TextView) view.findViewById(R.id.during_info);
@@ -1480,9 +1481,9 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             ArrayList<Long> tobedeleteNo = new ArrayList<Long>();
             tobedeleteNo.add(trailobj.getTraceID());
             String tobedelete = GsonHelper.toJson(tobedeleteNo);
-            // Log.i("trailadapter","删除:"+tobedelete);
+             Log.i("trailadapter","删除:"+tobedelete);
             DeleteTraceRequest deleteTraceRequest = new DeleteTraceRequest(sp.getString("token", ""),
-                    String.valueOf(trailobj.getTraceID()));
+                    tobedelete);
             deleteTraceRequest.requestHttpData(new ResponseData() {
                 @Override
                 public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
@@ -1491,6 +1492,8 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.i("trailadapter", "删除成功");
+                                    dismissDialog();
                                     ToastUtil.show(context, getResources().getString(R.string.tips_deletesuccess));
                                     Intent intent = new Intent();
                                     intent.setAction(REFRESH_ACTION);
@@ -1503,6 +1506,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissDialog();
                                     Toast.makeText(getContext(), "登录信息过期，请重新登录！", Toast.LENGTH_SHORT).show();
                                     SharedPreferences.Editor editor = sp.edit();
                                     editor.putString("token", ""); // 清空token

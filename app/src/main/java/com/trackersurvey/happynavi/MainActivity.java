@@ -79,7 +79,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             actionBar.hide();
         }
         AppManager.getAppManager().addActivity(this);
-        ShareToWeChat.registToWeChat(getApplicationContext() );
+//        ShareToWeChat.registToWeChat(getApplicationContext() );
         initView();
         fragmentManager = getSupportFragmentManager();
         setTabSelection(0);

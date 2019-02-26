@@ -67,6 +67,7 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
     private ListView traceList;
     private TextView titleTv;
     private TextView titleRightTv;
+    private RelativeLayout titleBack;
     private RelativeLayout menuLayout;//长按弹出的底部菜单
     private Button cancel;//取消
     private Button downupload;//备份
@@ -91,9 +92,6 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
     private String userID,deviceID;
     private boolean isFirstCreateAdatper = true;
 
-    private String URL_ENDTRAIL = null;
-    private String URL_GPSDATA = null;
-    private String URL_GETTRAIL = null;
     private final String REFRESH_ACTION = "android.intent.action.REFRESH_RECEIVER";
     private int interestNum = 0;
 
@@ -111,6 +109,8 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
         titleTv.setText(getResources().getString(R.string.mytrace));
         titleRightTv = traceListLayout.findViewById(R.id.title_right_text);
         titleRightTv.setVisibility(View.GONE);
+        titleBack = traceListLayout.findViewById(R.id.title_back_layout);
+        titleBack.setVisibility(View.GONE);
         // traceListRv = findViewById(R.id.trace_list_rv);
 
         mPullToRefreshView = traceListLayout.findViewById(R.id.pull_refresh_view_tracelist);
@@ -154,9 +154,6 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
         }else{
             Common.url = getResources().getString(R.string.url);
         }
-        URL_ENDTRAIL = Common.url+"reqTraceNo.aspx";
-        URL_GPSDATA = Common.url+"upLocation.aspx";
-        URL_GETTRAIL = Common.url+"reqTraceHistory.aspx";
         userID = Common.getUserID(getContext());
         deviceID = Common.getDeviceId(getContext());
         init();
@@ -289,6 +286,7 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
                 }
             }
             if(!isLocal) {//云端有本地没有
+                Log.i("TraceListFragment", "云端有本地没有啊啊啊啊啊");
                 TraceListItemData item = new TraceListItemData();
                 item.setTrace(trace_Cloud.get(j));
                 item.setLocal(false);

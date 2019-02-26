@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -247,12 +248,12 @@ public class TraceDetailActivity extends BaseActivity implements View.OnClickLis
 
             case R.id.share_wxsession:{//分享到微信好友uid=13969553872&tid=1460716974411
 
-                tracePage.uploadBeforeShare(false);
+//                tracePage.uploadBeforeShare(false);
                 break;
             }
             case R.id.share_wxtinmeline:{//分享到朋友圈
 
-                tracePage.uploadBeforeShare(true);
+//                tracePage.uploadBeforeShare(true);
                 break;
             }
 
@@ -325,6 +326,7 @@ public class TraceDetailActivity extends BaseActivity implements View.OnClickLis
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // TODO Auto-generated method stub
+                                Log.i("trailadapter", "在删除对话框里，点击了确定");
                                 tracePage.deleteTrace();
 
                                 dialog.dismiss();

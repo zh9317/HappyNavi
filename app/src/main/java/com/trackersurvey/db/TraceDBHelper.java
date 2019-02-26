@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class TraceDBHelper {
     private static final String DATABASE_NAME = "GPS_DB";  //数据库名称
-    private static final int DATABASE_VERSION = 5;             //数据库版本号
+    private static final int DATABASE_VERSION = 6;             //数据库版本号
     private static final String TABLE1_NAME = "LOCATION";   //位置信息表
     private static final String TABLE2_NAME = "TRAIL";      //轨迹记录表
     private static final String TABLE3_NAME = "EVENTS";    //事件表

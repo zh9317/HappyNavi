@@ -15,6 +15,8 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.githang.statusbar.StatusBarCompat;
@@ -53,6 +55,7 @@ public class QuestionnaireFragment extends Fragment {
     private TextView refresh;
     private SharedPreferences sp;
     private String webContent;
+    private RelativeLayout titleBack;
 
     @Nullable
     @Override
@@ -62,6 +65,8 @@ public class QuestionnaireFragment extends Fragment {
         StatusBarCompat.setStatusBarColor(getActivity(), Color.BLACK); // 修改状态栏颜色
         titleTv = questionnaireLayout.findViewById(R.id.title_text);
         titleTv.setText(getResources().getString(R.string.questionnaire));
+        titleBack = questionnaireLayout.findViewById(R.id.title_back_layout);
+        titleBack.setVisibility(View.GONE);
         AppManager.getAppManager().addActivity(getActivity());
         init();
         return questionnaireLayout;
