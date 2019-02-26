@@ -977,10 +977,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 Activity.MODE_PRIVATE);
         SharedPreferences.Editor edit = uploadFiles.edit();
 
-        Log.i("comment", "createTime=" + createTime + "|longitude=" + longitude + "|latitude=" + latitude
+        Log.i("dongsiyuancomment", "createTime=" + createTime + "|longitude=" + longitude + "|latitude=" + latitude
                 + "|altitude=" + altitude + "|country=" + country + "|province=" + province + "|city=" + city
-                + "|placeName=" + placeName + "|comment=" + commentText + "|fileNum=" + fileNum
-                + "|traceID=" + traceID + "|videoCount=" + 0 + "|audioCount=" + 0
+                + "|placeName=" + placeName + "|comment=" + commentText + "|fileNum=" + comment.getImageCount()
+                + "|traceID=" + traceID + "|videoCount=" + comment.getVideoCount() + "|audioCount=" + 0
                 + "|userID=" + Common.getUserID(getApplicationContext()) + "|feeling=" + feeling
                 + "|behaviour=" + behaviour + "|stay=" + stay + "|companion=" + companion + "|relation=" + relation
                 + "|stateType=" + stateType + "|share" + share);
@@ -1033,6 +1033,14 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     + tracedata.getTraceName() + tracedata.getTraceID() + tracedata.getUserID());
             traceHelper.updatetrail(tracedata, comment.getTraceID(), comment.getUserId());
         }
+        Log.i("dongsiyuancomment", "createTime=" + createTime + "|longitude=" + longitude + "|latitude=" + latitude
+                + "|altitude=" + altitude + "|country=" + country + "|province=" + province + "|city=" + city
+                + "|placeName=" + placeName + "|comment=" + commentText + "|fileNum=" + comment.getImageCount()
+                + "|traceID=" + traceID + "|videoCount=" + comment.getVideoCount() + "|audioCount=" + 0
+                + "|userID=" + Common.getUserID(getApplicationContext()) + "|feeling=" + feeling
+                + "|behaviour=" + behaviour + "|stay=" + stay + "|companion=" + companion + "|relation=" + relation
+                + "|stateType=" + stateType + "|share" + share);
+
         int result = dbHelper.insertEvent(comment);
         Log.i("Eaa", "comment result= " + result);
         for (int i = 0; i < itemNo; i++) {

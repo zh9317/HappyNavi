@@ -183,6 +183,10 @@ public class CommentUploadService extends Service {
             tracePoiModel.setCompanionType(cursor.getInt(18));
             tracePoiModel.setRelationType(cursor.getInt(19));
             tracePoiModel.setStateType(cursor.getInt(20));
+            tracePoiModel.setImageCount(cursor.getInt(11));
+            tracePoiModel.setVideoCount(cursor.getInt(12));
+            tracePoiModel.setAudioCount(cursor.getInt(13));
+
             share = cursor.getInt(21);
             cursor.close();
         }
