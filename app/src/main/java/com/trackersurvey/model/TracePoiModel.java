@@ -25,7 +25,60 @@ public class TracePoiModel {
     private int RelationType;
     private int StateType;
 
+    private int ImageCount;
+    private int VideoCount;
+    private int AudioCount;
+
+    public int getImageCount() {
+        return ImageCount;
+    }
+
+    public void setImageCount(int imageCount) {
+        ImageCount = imageCount;
+    }
+
+    public int getVideoCount() {
+        return VideoCount;
+    }
+
+    public void setVideoCount(int videoCount) {
+        VideoCount = videoCount;
+    }
+
+    public int getAudioCount() {
+        return AudioCount;
+    }
+
+    public void setAudioCount(int audioCount) {
+        AudioCount = audioCount;
+    }
+
     public TracePoiModel() {
+    }
+
+    public TracePoiModel(String createTime, int userID, String deviceID, long traceID, int poiNo, String comment, String country, String province, String city, String placeName, double longitude, double latitude, double altitude, int motionType, int activityType, int retentionType, int companionType, int relationType, int stateType, int imageCount, int videoCount, int audioCount) {
+        CreateTime = createTime;
+        UserID = userID;
+        DeviceID = deviceID;
+        TraceID = traceID;
+        PoiNo = poiNo;
+        Comment = comment;
+        Country = country;
+        Province = province;
+        City = city;
+        PlaceName = placeName;
+        Longitude = longitude;
+        Latitude = latitude;
+        Altitude = altitude;
+        MotionType = motionType;
+        ActivityType = activityType;
+        RetentionType = retentionType;
+        CompanionType = companionType;
+        RelationType = relationType;
+        StateType = stateType;
+        ImageCount = imageCount;
+        VideoCount = videoCount;
+        AudioCount = audioCount;
     }
 
     public TracePoiModel(String createTime, int userID, String deviceID, long traceID, int poiNo, String comment,
