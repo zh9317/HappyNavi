@@ -115,7 +115,7 @@ public class DeleteCloudComment extends Thread {
             if ("ok".equals(result)) { // 请求成功
                 //Log.i("result", result + " |*| " + "commentOK");
                 //删除事件成功
-                if(deleteFromDB() ==0){
+                if(deleteFromDB() == 0){
                     msg.what = 0;
                     msg.obj = result;
                     mHandler.sendMessage(msg);

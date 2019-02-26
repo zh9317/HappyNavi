@@ -169,15 +169,15 @@ public class PhotoDBHelper {
      * @param where
      * @return
      */
-    public int deleteEvent(String where) {
-        try {
-            dbWrite.delete(USEREVENT_TABLE, where, null);
-            deleteFiles(where);
-        } catch (SQLException e) {
-            return -1;
-        }
-        return 0;
-    }
+//    public int deleteEvent(String where) {
+//        try {
+//            dbWrite.delete(USEREVENT_TABLE, where, null);
+//            deleteFiles(where);
+//        } catch (SQLException e) {
+//            return -1;
+//        }
+//        return 0;
+//    }
 
     // 从用户表中查询
     public Cursor selectEvent(String[] columns, String selection,
@@ -274,6 +274,29 @@ public class PhotoDBHelper {
             String[] FileArgs = {dateTime};
 
             dbWrite.delete(FILE_TABLE, FileWhere, FileArgs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+
+        return 0;
+    }
+
+    /**
+     * 删除一条轨迹的所有兴趣点
+     * @param traceID
+     * @return
+     */
+    public int deleteEvent(String traceID) {
+        try {
+            String UEwhereClause = COLUMNS_UE[10] + "=?";
+            String[] UEwhereArgs = {traceID};
+            dbWrite.delete(USEREVENT_TABLE, UEwhereClause, UEwhereArgs);
+
+            String FileWhere = COLUMNS_FILE[2] + "=?";
+//            String[] FileArgs = {dateTime};
+
+            dbWrite.delete(FILE_TABLE, FileWhere, null);
         } catch (SQLException e) {
             e.printStackTrace();
             return -1;

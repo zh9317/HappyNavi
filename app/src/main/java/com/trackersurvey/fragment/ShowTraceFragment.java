@@ -162,6 +162,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     private boolean isTimeLine = false;// false 分享给好友 true分享到朋友圈
 
     private MyTraceDBHelper helper = null;
+    private PhotoDBHelper dbHelper = null;
 
     private Cursor cursor = null;
 
@@ -300,6 +301,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         routeSearch = new RouteSearch(context);
         routeSearch.setRouteSearchListener(this);
         helper = new MyTraceDBHelper(context);
+        dbHelper = new PhotoDBHelper(context, PhotoDBHelper.DBWRITE);
         helper2 = new PointOfInterestDBHelper(context);//打开兴趣点数据库
         initAMap();
         initModel();
@@ -768,6 +770,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                         break;
                     }
                     case 1: {
+                        Log.i("ShowTraceFrag", "删除错误");
                         Toast.makeText(context, R.string.tips_deletefail_dberror, Toast.LENGTH_SHORT).show();
                         break;
                     }
@@ -1493,6 +1496,12 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                                 @Override
                                 public void run() {
                                     Log.i("trailadapter", "删除成功");
+                                    // 删本地
+                                    helper.deleteTrailByTraceNo(trailobj.getTraceID(), Common.getUserID(context));
+
+                                    // 同时删除兴趣点
+//                                    myComment.deleteComment(trailobj.getStartTime(), trailobj.getEndTime());
+                                    deletePOI(trailobj.getTraceID());
                                     dismissDialog();
                                     ToastUtil.show(context, getResources().getString(R.string.tips_deletesuccess));
                                     Intent intent = new Intent();
@@ -1517,6 +1526,12 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                                 }
                             });
                         }
+                        if (!isOnline) {// 只在本地有这条轨迹，那么删完本地就发广播，否则，在删云端的handler中发广播
+                            Intent intent = new Intent();
+                            intent.setAction(REFRESH_ACTION);
+                            context.sendBroadcast(intent);
+                            getActivity().finish();
+                        }
                     }
                 }
             });
@@ -1524,16 +1539,17 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 //                    tobedelete, Common.getDeviceId(context));
 //            deletetrail.start();
         }
-        // 删本地
-        helper.deleteTrailByTraceNo(trailobj.getTraceID(), Common.getUserId(context));
-        if (!isOnline) {// 只在本地有这条轨迹，那么删完本地就发广播，否则，在删云端的handler中发广播
-            Intent intent = new Intent();
-            intent.setAction(REFRESH_ACTION);
-            context.sendBroadcast(intent);
-            getActivity().finish();
+
+    }
+
+    private int deletePOI(long traceID) {
+        int result = -1;
+        result = dbHelper.deleteEvent(String.valueOf(traceID));
+        dbHelper.closeDB();
+        if (result != 0) {
+            return -1;
         }
-        // 同时删除兴趣点
-        myComment.deleteComment(trailobj.getStartTime(), trailobj.getEndTime());
+        return 0;
     }
 
     public void shareToWX() {
