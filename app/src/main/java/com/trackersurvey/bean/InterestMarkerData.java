@@ -71,7 +71,7 @@ public class InterestMarkerData {
 
     public InterestMarkerData(JSONObject jsonObject) {
         try {
-
+            CreateTime = jsonObject.getString("CreateTime");
             PoiID = jsonObject.getInt("PoiID");
             UserId = jsonObject.getString("UserID");
             PoiNo = jsonObject.getInt("PoiNo");
@@ -90,12 +90,13 @@ public class InterestMarkerData {
             RetentionType = jsonObject.getInt("RetentionType");
             CompanionType = jsonObject.getInt("CompanionType");
             RelationType = jsonObject.getInt("RelationType");
+            StateType = jsonObject.getInt("StateType");
             ImageCount = jsonObject.getInt("ImageCount");
             VideoCount = jsonObject.getInt("VideoCount");
             AudioCount = jsonObject.getInt("AudioCount");
-            StateType = jsonObject.getInt("StateType");
+
             //            DeviceID = jsonObject.getInt("DeviceID");
-            CreateTime = jsonObject.getString("CreateTime");
+
 
         } catch (JSONException e) {
             e.printStackTrace();

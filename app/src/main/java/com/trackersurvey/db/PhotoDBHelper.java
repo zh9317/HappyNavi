@@ -154,6 +154,7 @@ public class PhotoDBHelper {
             values.put(COLUMNS_UE[20], event.getStateType());
             values.put(COLUMNS_UE[21], event.getPoiID());
             //            values.put(COLUMNS_UE[21], event.getShare());
+            Log.i("dongsiyuanPhotoDB", "insertEvent: " + event.getImageCount() + " " + event.getVideoCount());
             long row = dbWrite.insert(USEREVENT_TABLE, null, values);
             Log.i("dongsiyuanPhotoDB", "PhotoDB, row: " + row);
         } catch (SQLException e) {
