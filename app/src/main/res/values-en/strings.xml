@@ -1,0 +1,733 @@
+<resources>
+    <string name="app_name">Happy Tracker</string>
+    <string name="app_name_chinese">Happy Tracker</string>
+    <string name="map">Map</string>
+    <string name="questionnaire">Questionnaire</string>
+    <string name="mine">Me</string>
+    <string name="trace">Trace</string>
+    <string name="refresh">Refresh</string>
+    <string name="no_result">对不起，没有搜索到相关数据！</string>
+    <string name="error_network">搜索失败,请检查网络连接！</string>
+    <string name="error_key">key验证无效！</string>
+    <string name="error_other">未知错误，请稍后重试!错误码为</string>
+    <string name="all_offline">所有城市</string>
+    <string name="advice_title">意见反馈</string>
+    <string name="id">UserID</string>
+    <string name="idlable_div">账号：</string>
+    <string name="id_div">帐\u3000\u3000号 </string>
+    <string name="id_star">帐\u3000\u3000号 *</string>
+    <string name="id_illegal">账号不合法</string>
+    <string name="pwd">Password</string>
+    <string name="confirm_pwd">确认</string>
+    <string name="pwd_star">密\u3000\u3000码 *</string>
+    <string name="pwd_hint">填写任意长度密码</string>
+    <string name="pwd_confirm">密码确认*</string>
+    <string name="pwd_same">填写相同密码</string>
+    <string name="telenum">你的11位手机号码</string>
+    <string name="storeidpwd">记住账号密码</string>
+    <string name="forgetpwd">忘记密码</string>
+    <string name="agree">我同意</string>
+    <string name="protocol">本软件许可和服务协议</string>
+    <string name="register">注册</string>
+    <string name="tips_register">请先注册</string>
+    <string name="register_succ">注册成功</string>
+    <string name="register_fail_exist">该用户已注册</string>
+    <string name="login">登录</string>
+    <string name="login_visiter">游客身份登录</string>
+    <string name="change_password">密码修改</string>
+    <string name="oldpwd_div">原密码*</string>
+    <string name="oldpwd">原密码</string>
+    <string name="newpwd_div">新密码*</string>
+    <string name="newpwd">新密码</string>
+    <string name="input_pwd">输入密码</string>
+    <string name="input_pwd_again">再次输入密码</string>
+    <string name="confirm_newpwd">新密码确认*</string>
+    <string name="savechange">保存修改</string>
+    <string name="save">保存</string>
+    <string name="register_info">注册账号</string>
+    <string name="downmap_title">选择离线地图</string>
+    <string name="downmap_amap">下载高德离线地图</string>
+    <string name="downmap_bmap">下载百度离线地图</string>
+    <string name="getofflinecitylist">正在获取离线城市列表</string>
+    <string name="tips_startdownmap">开始下载离线地图,城市：</string>
+    <string name="choosemaptype">请选择地图模式</string>
+    <string name="amap_vector">高德矢量地图</string>
+    <string name="amap_satallite">高德卫星地图</string>
+    <string name="google_map">谷歌标准地图</string>
+    <string name="google_map_satallite">谷歌卫星地图</string>
+    <string name="google_map_landform">谷歌地形图</string>
+    <string name="bmap_vector">百度矢量地图</string>
+    <string name="bmap_satallite">百度卫星地图</string>
+    <string name="find_pwd">找回密码</string>
+    <string name="yourid_div">你的账号*</string>
+    <string name="yourid">你的账号</string>
+    <string name="input_your_id">请输入手机号</string>
+    <string name="input_your_pwd">请输入密码</string>
+    <string name="phone_number">手机号</string>
+    <string name="verification_code">验证码</string>
+    <string name="short_msg_verification_code">短信验证码</string>
+    <string name="get_verification_code">获取验证码</string>
+    <string name="register_pwd">密\u3000码</string>
+    <string name="register_confirm_pwd">确\u3000认</string>
+    <string name="register_pwd_tips">密码需6-20位数字、字母和符号的组合，不能包含空格</string>
+    <string name="complete">完成</string>
+    <string name="secondpwd_div">备用密码*</string>
+    <string name="input_secpwd">输入备用密码</string>
+    <string name="tofindpwd">用于找回密码</string>
+    <string name="resetpwd">重置密码</string>
+    <string name="upload_photo">上传照片</string>
+    <string name="addpoi">添加兴趣点</string>
+    <string name="addplace">具体地点</string>
+    <string name="photo">拍照</string>
+    <string name="select">选择</string>
+    <string name="comment">评论</string>
+    <string name="cancl">取消</string>
+    <string name="cancel_withdiv">\u3000取消\u3000|</string>
+    <string name="download_withdiv">\u3000下载\u3000|</string>
+    <string name="delete_withdiv">|\u3000删除\u3000</string>
+    <string name="delete">删除</string>
+    <string name="upload_withdiv">\u3000上传\u3000|</string>
+    <string name="downupload_withdiv">\u3000备份\u3000|</string>
+    <string name="total">共计</string>
+    <string name="confirm">确定</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="assume">确认</string>
+    <string name="submit">提交</string>
+
+    <string name="allpic">所有图片</string>
+    <string name="commited">Comments have been uploaded</string>
+    <string name="saysomethint">Say Something...</string>
+    <string name="advicehint">I want to advice...</string>
+    <string name="tips">Tips</string>
+    <string name="areyousuredelete">Do you confirm that remove the pictures you have added?</string>
+    <string name="repeat">请不要选择重复图片</string>
+    <string name="place">显示地点</string>
+    <string name="pushtogetmore">上拉加载更多 </string>
+    <string name="nomorethan9">最多只能添加9个文件</string>
+    <string name="cantusingsdcard">sd卡不可用</string>
+    <string name="addpicture">添加图片</string>
+    <string name="inputyourplace">输入地名...</string>
+    <string name="time">Time:</string>
+    <string name="speed">Speed</string>
+    <string name="speedunit">km/h</string>
+    <string name="person_center">Personal Center</string>
+    <string name="person_info">My Information</string>
+    <string name="mydata">我的资料</string>
+    <string name="mygroup">My Group</string>
+    <string name="nickname">昵称：</string>
+    <string name="nickname_div">昵\u3000\u3000称</string>
+    <string name="nickname_star">昵\u3000\u3000称*</string>
+    <string name="nickname_hint">例如：足迹</string>
+    <string name="birthday">生日</string>
+    <string name="birthday_div">生\u3000\u3000日</string>
+    <string name="birthday_star">生\u3000\u3000日*</string>
+    <string name="doubleclick">双击此处</string>
+    <string name="singleclick">单击此处</string>
+    <string name="zero">0</string>
+    <string name="double_zero">0.0</string>
+    <string name="calories_zero">0.0</string>
+    <string name="velocity_zero">0.0</string>
+    <string name="download_offline">下载管理</string>
+    <string name="notification_txt">定位服务运行中</string>
+    <string name="notification_title">足迹</string>
+    <string name="notification_message">定位服务正在运行</string>
+    <string name="step_label_today">今日步数</string>
+    <string name="step_label">步数</string>
+    <string name="step_count">0</string>
+    <string name="distance_label">距离</string>
+    <string name="distance">0</string>
+    <string name="start_time">开始时间</string>
+    <string name="duration_label">耗时</string>
+    <string name="interest_point">兴趣点</string>
+    <string name="time_value">00:00:00</string>
+    <string name="calorie_label">热量</string>
+    <string name="calorie">0千卡</string>
+    <string name="calorie_unit">千卡</string>
+    <string name="dis_unit">公里</string>
+    <string name="month">月份</string>
+    <string name="y_lable">步数（卡路里）</string>
+    <string name="beijing">北京</string>
+    <string name="totalsize">总大小</string>
+    <string name="seetrace">查看轨迹</string>
+    <string name="logout">退出当前账号</string>
+    <string name="userguide">使用帮助</string>
+    <string name="startpoint">起点：</string>
+    <string name="starticon">起点</string>
+    <string name="endpoint">终点：</string>
+    <string name="endicon">终点</string>
+    <string name="mytrace">我的轨迹</string>
+    <string name="filter">过滤</string>
+    <string name="mark">标记</string>
+    <string name="local">本地</string>
+    <string name="cloud">云端</string>
+    <string name="input_tracename">请输入轨迹名称</string>
+    <string name="choosetype">选择轨迹类型</string>
+    <string name="testtrace">测试轨迹</string>
+    <string name="tips_localnotrace">没有轨迹？赶快记录属于你的精彩轨迹吧！</string>
+    <string name="tips_cloudnotrace">云端没有轨迹，点此刷新试试</string>
+    <string name="tips_cloudnewtrace">发现新轨迹，下拉刷新查看</string>
+    <string name="tips_cloudnotrace_nonet">网络异常，请连接网络后点此刷新</string>
+    <string name="tips_selectvideo">请选择小于20M的视频</string>
+    <string name="tips_advicesubmit">请输入您的宝贵建议</string>
+    <string name="tips_advicesuccess">感谢您的宝贵建议，谢谢</string>
+    <string name="tips_postfail">操作失败，请稍后再试</string>
+    <string name="tips_getcommentsuccess">获取评论成功</string>
+    <string name="tips_netdisconnect">网络异常，请检查网络连接</string>
+    <string name="tips_cannotaddmark">网络异常，无法添加标注</string>
+    <string name="tips_uploadpic_neterror">当前网络状况不佳，等待网络连接后上传照片</string>
+    <string name="tips_npwdnull">新密码不能为空</string>
+    <string name="tips_pwdnull">密码不能为空</string>
+    <string name="tips_npwdillegal">新密码含有非法字符?、!、#等</string>
+    <string name="tips_npwddiffer">两次新密码不一致</string>
+    <string name="tips_pwddiffer">两次密码不一致</string>
+    <string name="tips_opwderror">原密码不正确</string>
+    <string name="tips_pwdchangeok">修改密码成功</string>
+    <string name="tip">提示</string>
+    <string name="tips_changing">修改中，请稍后</string>
+    <string name="tips_takepicfail">拍照失败，请重试或从相册选择照片！</string>
+    <string name="tips_choosevideofail">无法选择视频，请确认媒体库状态！</string>
+    <string name="tips_takevideofail">录像失败，请重试或从文件管理器选择视频！</string>
+    <string name="tips_commentsubmit">只能上传有内容的记录！</string>
+    <string name="tips_selectbehaviour">请选择活动类型</string>
+    <string name="tips_selectduration">请选择停留时长</string>
+    <string name="tips_selectpartnernum">请选择同伴人数</string>
+    <string name="tips_selectrelationship">请选择同伴关系</string>
+    <string name="tips_uploadinbgbegin">正在上传，可在【兴趣点】或【我的相册】查看</string>
+    <string name="tips_uploadinbg">上传照片进度</string>
+    <string name="tips_uploadfaildlg_msg1">上传第</string>
+    <string name="tips_uploadfaildlg_msg2">个文件</string>
+    <string name="tips_uploadfaildlg_msg3">，是否重新传输？</string>
+    <string name="tips_fail">失败</string>
+    <string name="tips_success">成功</string>
+    <string name="tips_error">出错</string>
+    <string name="tryagain">重试</string>
+    <string name="tips_docancle">操作取消</string>
+    <string name="tips_dofail">操作失败，请重试或使用其它方式</string>
+    <string name="tips_savepath">新照片保存在</string>
+    <string name="tips_norighttomkdir">手机不支持新建文件夹，退出拍照</string>
+    <string name="tips_findsdfail">没有找到储存目录</string>
+    <string name="tips_createfilefail">拍照遇到问题了，请点击上方的“+”选择照片吧</string>
+    <string name="tips_nosd">没有储存卡</string>
+    <string name="tips_selectvideoagain">重新选择视频</string>
+    <string name="tips_dlgtle_selectvideo">选择视频方式</string>
+    <string name="tips_dlgtle_selectpic">选择图片方式</string>
+    <string name="downhasnew">已下载，有更新</string>
+    <string name="waiting">等待中</string>
+    <string name="pausing">暂停中</string>
+    <string name="installsuccess">安装成功</string>
+    <string name="decompressing">正在解压</string>
+    <string name="neterror">网络异常</string>
+    <string name="downhaserror">下载出现异常</string>
+    <string name="tips_dlgtle_init">加载中</string>
+    <string name="tips_dlgmsg_inittrace">正在加载轨迹...</string>
+    <string name="tips_dlgmsg_optmizetrace">正在加载轨迹...</string>
+    <string name="tips_dlgmsg_inittracelist">正在加载轨迹列表...</string>
+    <string name="tips_cloudtracenum">云端轨迹条数：</string>
+    <string name="tips_startdown">开始下载</string>
+    <string name="tips_pausedown">暂停下载</string>
+    <string name="tips_downfinish">下载完成</string>
+    <string name="tips_downfail_nodata">下载出错，没有相关数据</string>
+    <string name="tips_uploadsuccess">上传到云端成功</string>
+    <string name="tips_uploadfail">上传到云端失败</string>
+    <string name="tips_deletefail">删除失败</string>
+    <string name="tips_nodata">没有数据</string>
+    <string name="tips_initfail">加载失败，请稍后在再试</string>
+    <string name="tips_inputillegal">您的输入含有!、?、#等非法字符，请重新输入</string>
+    <string name="tips_inputcannotnull">输入不能为空</string>
+    <string name="tips_infonotwhole">信息不完整</string>
+    <string name="tips_birthillegal">生日信息不合法</string>
+    <string name="tips_pleaseinput">请输入</string>
+    <string name="tips_inputnewpwd">请输入新的密码</string>
+    <string name="tips_secpwderror">备用密码错误</string>
+    <string name="tips_idnotexist">验证失败：账号不存在</string>
+    <string name="tips_pwdtiperrpor">验证失败：密码提示信息不正确</string>
+    <string name="close">关闭</string>
+    <string name="idpwdcannotnull">账号密码不能为空</string>
+    <string name="tips_dlgtle_login">正在登录</string>
+    <string name="tips_dlgmsg_login">连接中..请稍后....</string>
+    <string name="tips_dlgmsg_init">加载中，请稍后</string>
+    <string name="tips_loginfail_noid">登陆失败:账号不存在</string>
+    <string name="tips_loginfail_nopwd">登陆失败:密码错误</string>
+    <string name="tips_interrupttrace_msg">检测到上次轨迹记录意外中断，是否继续记录轨迹？</string>
+    <string name="tips_starttrace">开始记录</string>
+    <string name="tips_addmark">点击右侧"相机"按钮可添加标注</string>
+    <string name="tips_choosetype">请选择轨迹类型</string>
+    <string name="end">结束</string>
+    <string name="tips_endtracedlg_msg">确定结束记录吗？</string>
+    <string name="tips_accuracy_msg">当前定位精度较低,建议您开启GPS以提高定位精度</string>
+    <string name="tips_accuracydlg_msg">当前定位精度较低，点击【是】将记录低精度的位置，点击【否】仅采用高精度的位置。</string>
+    <string name="tips_recorderror_nogps">记录失败,未能定位到您的位置</string>
+    <string name="tips_recordsuccess">结束记录，成功上传至云端</string>
+    <string name="tips_recordsuccess_postfail">结束记录，未能上传至云端</string>
+    <string name="tips_recordsuccess_nonet">当前为离线状态，轨迹存储在本地</string>
+    <string name="tips_uploadtracedlg_msgfail">上传轨迹发生未知错误，轨迹存储在本地，系统会定期自动重传没有上传到云端的轨迹，是否立即重试？</string>
+    <string name="tips_uploadtracedlg_msgnonet">当前无网络，轨迹存储在本地，连入网络后系统会自动上传到云端</string>
+    <string name="tips_share_nonet1">请连入网络再进行分享</string>
+    <string name="tips_share_nonet2">分享失败，请检查网络连接后再试</string>
+    <string name="tips_share_fail">分享失败，请稍后再试</string>
+    <string name="tips_uploadpic_nonet">连入WiFi后自动上传</string>
+    <string name="mine_album">我的相册</string>
+    <string name="mine_point">我的积分</string>
+    <string name="mine_group">我的群组</string>
+    <string name="mine_trace">我的轨迹</string>
+    <string name="mine_sport">我的运动</string>
+    <string name="mine_offline_map">离线地图</string>
+    <string name="mine_setting">设置</string>
+    <string name="mine_help">帮助</string>
+    <string name="user_info_head">头像</string>
+    <string name="user_info_nickname">昵称</string>
+    <string name="user_info_real_name">姓名</string>
+    <string name="user_info_hobby">爱好</string>
+    <string name="user_info_id">账号</string>
+    <string name="user_info_birth_date">生日</string>
+    <string name="user_info_sex">性别</string>
+    <string name="select_sex_please">请选择性别</string>
+    <string name="user_info_occupation">职业</string>
+    <string name="select_occupation_please">请选择职业</string>
+    <string name="user_info_education">教育程度</string>
+    <string name="select_education">请选择教育程度</string>
+    <string name="user_info_income">年收入</string>
+    <string name="select_income">请选择年收入</string>
+    <string name="user_info_native_place">籍贯</string>
+    <string name="user_info_address">住址</string>
+    <string name="user_info_marriage">是否已婚</string>
+    <string name="select_marriage">请选择婚姻状况</string>
+    <string name="user_info_child_num">子女数</string>
+    <string name="select_child_num">请选择子女数</string>
+    <string name="user_info_change_info">修改个人信息</string>
+    <string name="user_info_change_pwd">修改密码</string>
+    <string name="user_info_logout">退出账号</string>
+    <string name="tips_deletedlgmsg_album">确定删除本条评论吗？</string>
+    <string name="tips_deletedlgmsg_trace">确定删除选择的轨迹？删除后，该轨迹在本地和云端都将删除且不可恢复。</string>
+    <string name="tips_deletedlgmsg_trace1">确定删除当前轨迹吗？删除后，该轨迹在本地和云端都将删除且不可恢复。</string>
+    <string name="tips_notraceselected">没有选择轨迹</string>
+    <string name="tips_handling">正在处理...</string>
+    <string name="tips_deletedlgmsg">正在删除...</string>
+    <string name="tips_downmsg">正在下载...</string>
+    <string name="tips_downupmsg">正在备份...</string>
+    <string name="tips_uploadmsg">正在上传...</string>
+    <string name="tips_traceexist">轨迹已存在</string>
+    <string name="totaltxt1">共选择了</string>
+    <string name="totaltxt2">项</string>
+    <string name="tips_deletesuccess">删除成功</string>
+    <string name="tips_deletefail_dberror">数据库出错，请升级到最新版本</string>
+    <string name="tips_picnotfound">该图片未成功上传至服务器</string>
+    <string name="tips_videonotfound">该视频未成功上传至服务器</string>
+    <string name="tips_videodownfail">视频下载失败，请稍后再试</string>
+    <string name="tips_changesuccess">修改成功</string>
+    <string name="checkupdate">检查更新</string>
+    <string name="tips_hasnew">有更新</string>
+    <string name="tips_alreadynew">已是最新</string>
+    <string name="tips_updatedlgmsg">正在检查更新，请稍后</string>
+    <string name="tips_updatedlg_tle">更新</string>
+    <string name="tips_updatedlg_msg1">检查到新版本</string>
+    <string name="tips_downnewapk">下载新版本</string>
+    <string name="tips_downprogress">下载进度</string>
+    <string name="tips_updatedlg_msg2">版本号：</string>
+    <string name="tips_updatedlg_msg3">文件大小：</string>
+    <string name="tips_updatedlg_msg4">发布时间：</string>
+    <string name="tips_updatedlg_msg5">更新内容：</string>
+    <string name="tips_updatedlg_msg6">点击确定下载最新版本</string>
+    <string name="tips_update_alreadynew">您正在使用最新版本</string>
+    <string name="tips_autodownnewapk">正在下载最新版应用，可在通知栏查看下载进度，您可在设置中关闭自动下载</string>
+    <string name="tips_gotodownnewapk">开始下载最新版应用，可在通知栏查看下载进度</string>
+    <string name="tips_newapkdown">最新版应用下载完成，请在通知栏点击安装</string>
+    <string name="tips_install">点击安装</string>
+    <string name="sportdata">运动数据</string>
+    <string name="tips_synchronous">同步中</string>
+    <string name="tips_synchronous_succ">同步成功</string>
+    <string name="setbyserver">秒  (后台设定)</string>
+    <string name="hour">小时</string>
+    <string name="minute">分钟</string>
+    <string name="someday">某天</string>
+    <string name="mobconnect_tips">确定在移动网络下上传评论吗？可能会消耗较多流量。如果不想消耗数据流量，请点击【取消】，系统会在连入WiFi后上传。</string>
+    <string name="tips_uploadpic_nowifi">当前无wifi网络连接，连接wifi网络后将自动上传</string>
+    <string name="share_title">轨迹分享</string>
+    <string name="share_detail">轨迹内容</string>
+    <string name="exit">退出</string>
+    <string name="open">开启</string>
+    <string name="tips_clean">确定要清除本应用的缓存数据吗？包括存储在本地的照片、视频、轨迹信息都将会删除</string>
+    <string name="exitdlg">确定退出应用吗？</string>
+    <string name="exitdlg0">当前正在记录轨迹，强制退出会导致轨迹中断，仍要退出应用吗？</string>
+    <string name="exitdlg1">确定退出当前账户吗？</string>
+    <string name="exitdlg2">当前正在记录轨迹，强制退出会导致轨迹中断，仍要退出当前账户吗？</string>
+    <string name="tips_exit">再按一次退出程序</string>
+    <string name="tips_agreeprotocol">请同意本软件许可和服务协议</string>
+    <string name="iagreeprotocol">我同意本软件许可和服务协议</string>
+    <string name="tips_dlgtle_protocol">软件许可和服务协议</string>
+    <string name="tips_dlgmsg_protocol1">1.本软件需要获得您的地理位置信息 </string>
+    <string name="tips_dlgmsg_protocol2">2.本软件需要获得您的通话记录时间以及短信收发时间，绝对不会查看您的通话记录和短信内容</string>
+    <string name="tips_dlgmsg_protocol3">3.您理解并同意：为了向您提供有效的服务，本软件会利用您移动通讯终端的处理器和带宽等资源本软件使用过程中可能产生数据流量的费用，用户需自行向运营商了解相关资费信息，并自行承担相关费用</string>
+    <string name="tips_dlgmsg_protocol4">4.不对您在本软件及服务中相关数据的删除或储存失败负责</string>
+    <string name="tips_dlgmsg_protocol5">5.您使用本软件即视为您已阅读并同意受本协议的约束。开发者讯有权在必要时修改本协议条款。 您可以在本软件的最新版本中查阅相关协议条款。本协议条款变更后，如果您继续使用本软件，即视为您已接受修改后的协议。 如果您不接受修改后的协议，应当停止使用本软件。</string>
+
+    <string name="tips_gpsdlgtle">开启GPS</string>
+    <string name="tips_gpsdlgmsg11">您选择的轨迹类型为【步行】，请先开启GPS再进行记录。</string>
+    <string name="tips_gpsdlgmsg10">已经开始记录轨迹。检测到GPS未开启，建议在电量充足的情况下打开GPS以提高精度。点击【确定】开启GPS。</string>
+    <string name="tips_cannotloc">请开启网络或GPS进行记录操作，点击【开启】将进入GPS设置界面</string>
+    <string name="tips_gpsdlgmsg2">打开方式：\n方法1.在顶部通知栏按下GPS按钮\n方法2.在定位模式中选择"准确度高"</string>
+    <string name="pull_to_refresh_pull_label">下拉刷新</string>
+    <string name="pull_to_refresh_release_label">松开后刷新</string>
+    <string name="pull_to_refresh_refreshing_label">刷新\u2026</string>
+    <string name="pull_to_refresh_footer_release_label">松开后加载</string>
+    <string name="pull_to_refresh_footer_pull_label">上拉加载更多</string>
+    <string name="pull_to_refresh_footer_refreshing_label">加载中\u2026</string>
+    <string name="tips_refreshsuccess">刷新成功</string>
+    <string name="tips_deloffmap">删除离线地图</string>
+    <string name="tips_errorversion">应用出错了，请重试或者重启应用</string>
+    <string name="tips_exception">很抱歉,程序出现异常,即将退出...</string>
+    <string name="noshow">不再提醒</string>
+    <string name="minegroup">我加入的群</string>
+    <string name="allgroup">所有群</string>
+    <string name="addgroup">添加群</string>
+    <string name="joingroup">加入群</string>
+    <string name="exitgroup">退出群</string>
+    <string name="nojoinedgroup">您还没有加入任何群，在【添加群】中查找您感兴趣的群加入吧，点我刷新</string>
+    <string name="nogroup">暂时没有群，点此刷新试试</string>
+    <string name="trytorefresh">网络异常，点此刷新试试</string>
+    <string name="tips_initgroup">正在加载群组信息，请稍后</string>
+    <string name="tips_pleasechoosegroup">请选择群组</string>
+    <string name="tips_quitgroupdlg_msg">确定要退出所选的群吗？</string>
+    <string name="tips_quitgroupsuccess">退群成功</string>
+    <string name="tips_quitgroupfail">退群失败，请重试</string>
+    <string name="tips_applygroupsuccess">已发送申请，等待管理员确认</string>
+    <string name="tips_joinedgroup">该用户已经加入了该群组，无需重复加入!</string>
+    <string name="tips_applygroupfail">申请发送失败，请稍后再试</string>
+    <string name="tips_joingroupsuccess">加群成功</string>
+    <string name="tips_joingroupfail">加群失败，请重试</string>
+    <string name="tips_cleanok">缓存已清除</string>
+    <string name="groupinfo">群信息</string>
+    <string name="group_name">群名称</string>
+    <string name="group_detail">描述</string>
+    <string name="member_nums">成员数</string>
+    <string name="create_time">创建时间</string>
+    <string name="create_man">创建人</string>
+    <string name="manager_ids">管理员</string>
+    <string name="searchgroups">输入群名进行搜索</string>
+    <string name="tips_search_cannotnull">输入不能为空</string>
+    <string name="tips_searching">正在搜索</string>
+    <string name="tips_search_nogroup">没有相关的群</string>
+    <string name="tips_bgrunguide">为了保障应用能够在后台持续运行，请将本应用加入内存清理“白名单”或“保护名单”，如您已完成此操作，请点击【不再提醒】。点击【确定】，将指引您如何操作</string>
+    <string name="addmarker">添加标注</string>
+    <string name="checktraceinfo">轨迹信息</string>
+    <string name="poi">兴趣点</string>
+    <string name="add">添加</string>
+    <string name="feeling">心情:</string>
+    <string name="feelingst">心情状态:</string>
+    <string name="happy">开心</string>
+    <string name="general">一般</string>
+    <string name="unhappy">不开心</string>
+    <string name="behaviour">活动类型:</string>
+    <string name="partner_num">同伴人数:</string>
+    <string name="relation">同伴关系:</string>
+    <string name="duration">停留时长:</string>
+    <string name="selectplease">请选择</string>
+    <string name="url">http://219.218.118.176:8090/Communication/</string>
+    <string name="url_crash">http://219.218.118.176:8090/Communication/upExceptionInfo.aspx</string>
+    <string name="url_heart">http://219.218.118.176:8090/Communication/heartbeat.aspx</string>
+    <string name="url_file">http://219.218.118.176/Mobile/</string>
+    <string name="url_upevent">http://219.218.118.176:8090/Communication/upComment.aspx</string>
+    <string name="url_upfile">http://219.218.118.176/Mobile/upFile.aspx</string>
+    <string name="url_downevent">http://219.218.118.176/Mobile/downComment.aspx</string>
+    <string name="url_downfile">http://219.218.118.176/Mobile/downFile.aspx</string>
+    <string name="url_deleteevent">http://219.218.118.176/Mobile/userChgCmt.aspx</string>
+    <string name="url_wx">http://www.lisoft.com.cn/Share/PoMobile.ashx?</string>
+    <string name="app_copyright1">copyright @2016</string>
+    <string name="app_copyright2">山东大学管理学院和计算机学院共同所有</string>
+    <string name="app_copyright3"></string>
+    <string name="app_copyright4"></string>
+    <string name="app_link">http://www.trackersurvey.com</string>
+    <string name="wxappid">wxbe3210c55c8d7e64</string>
+
+    <string name="item_helpdoc">使用帮助</string>
+    <string name="item_advice">意见反馈</string>
+    <string name="item_checkupdate">检查更新</string>
+    <string name="item_personalinfo">个人信息</string>
+    <string name="item_mydata">我的资料</string>
+    <string name="item_mygroup">我的群组</string>
+    <string name="item_changepwd">修改密码</string>
+    <string name="item_sportdata">运动数据</string>
+    <string name="item_myalbum">我的相册</string>
+    <string name="item_offlinemap">离线地图</string>
+    <string name="item_settings">设置</string>
+    <string name="item_set_bg_run">保持后台运行</string>
+    <string name="item_set_parameter">参数设置</string>
+    <string name="item_clean">清除缓存</string>
+    <string name="item_about">关于足迹</string>
+    <string name="item_exit">退出当前账号</string>
+    <!-- 统设置界面需要要到的字符串 -->
+    <string name="tuli">历史运动数据(绿色表示步数,黄色表示卡路里)</string>
+    <string name="refreshbtn">立即同步</string>
+    <string name="system_settings">系统设置</string>
+    <string name="auto_update_setting">自动更新设置</string>
+    <string name="auto_update_switch_title">自动检查更新</string>
+    <string name="auto_update_switch_key">auto_update_switch</string>
+    <string name="auto_update_switch_summary_on">开启自动检查更新</string>
+    <string name="auto_update_switch_summary_off">关闭自动检查更新</string>
+
+    <string name="auto_upload_switch_title">仅WiFi状态下上传位置</string>
+    <string name="auto_upload_switch_key">auto_upload_switch</string>
+    <string name="auto_upload_switch_summary_on">仅限WiFi网络状态下上传</string>
+    <string name="auto_upload_switch_summary_off">WiFi、GPRS(2G/3G/4G)网络状态下均可上传</string>
+
+    <string name="auto_uploadpic_switch_title">仅WiFi状态下上传视频、图片</string>
+    <string name="auto_uploadpic_switch_key">auto_uploadpic_switch</string>
+    <string name="auto_uploadpic_switch_summary_on">仅限WiFi网络状态下上传</string>
+    <string name="auto_uploadpic_switch_summary_off">WiFi、GPRS(2G/3G/4G)网络状态下均可上传</string>
+
+    <string name="auto_update_frequency_title">时间参数更新频率</string>
+    <string name="auto_update_frequency_key">auto_update_frequency</string>
+    <string name="auto_update_frequency_default_value">60</string>
+    <string name="auto_update_frequency_summary">设置时间参数更新的时间周期</string>
+
+    <string name="language_title">Language</string>
+    <string name="language_key">language</string>
+    <string name="language_default_value">0</string>
+    <string name="language_summary">语言选择</string>
+    <string name="language_chinese">简体中文</string>
+    <string name="language_english">English</string>
+
+    <string name="auto_upload_frequency_title">位置上传时间间隔</string>
+    <string name="auto_upload_frequency_key">auto_upload_frequency</string>
+    <string name="auto_upload_frequency_default_value">30</string>
+    <string name="auto_upload_frequency_summary">设置位置上传时间间隔</string>
+
+    <string name="auto_record_loc_frequency_title">定位时间间隔</string>
+    <string name="auto_record_loc_frequency_key">auto_rec_loc_frequency</string>
+    <string name="auto_record_loc_frequency_default_value">5</string>
+    <string name="auto_record_loc_frequency_summary">设置记录状态下定位时间间隔</string>
+
+    <string name="auto_norecord_loc_frequency_title">非记录状态下定位时间间隔</string>
+    <string name="auto_norecord_loc_frequency_key">auto_norec_loc_frequency</string>
+    <string name="auto_norecord_loc_frequency_default_value">10</string>
+    <string name="auto_norecord_loc_frequency_summary">设置非记录状态下定位时间间隔</string>
+
+    <string name="share_to_wx_session">微信好友</string>
+    <string name="share_to_wx_timeline">微信朋友圈</string>
+    <string name="share_to_qzone">QQ空间</string>
+    <string name="share_to_qq">QQ好友</string>
+    <string name="share_to">分享到</string>
+    <string name="cantdisplayimg">无法显示照片</string>
+    <string name="picture_failed">部分原图下载失败，仅显示缩略图</string>
+
+    <string name="normal">Normal</string>
+    <string name="satellite">Satellite</string>
+
+    <string name="pathplaning">路径规划</string>
+    <string name="select_mode">路径规划模式</string>
+    <string name="walk_mode">步行</string>
+    <string name="drive_mode">驾驶</string>
+    <string name="bus_mode">公交</string>
+    <string name="select_dest">搜索地点</string>
+    <string name="beginning">从</string>
+    <string name="destination">到</string>
+    <string name="walk_to">走着去</string>
+    <string name="drive_to">驾车去</string>
+    <string name="by_bus_to">乘公交</string>
+    <string name="search">搜索</string>
+    <string name="mylocation">我的位置</string>
+    <string name="input_begin">请输入起点</string>
+    <string name="input_end">请输入终点</string>
+    <string name="calculate_tips">点击地图以添加测量点</string>
+    <string name="route_tips">点击地图可添加位置点；点击左上方的回退按钮可删除点击地图所产生的当前位置点；点击右上方的搜索按钮可搜索路径规划的起点和终点；点击右侧路径规划模式图标可切换路径规划模式(默认为步行)，切换模式后需重新设置位置点</string>
+    <string name="guess_you_like">猜你喜欢</string>
+    <string name="latitude">纬度:</string>
+    <string name="longitude">经度:</string>
+    <string name="altitude">海拔:</string>
+
+    <string name="action_settings">设置</string>
+
+    <string-array name="sex">
+        <item>保密</item>
+        <item>男</item>
+        <item>女</item>
+    </string-array>
+
+    <string-array name="education">
+        <item>初中以下</item>
+        <item>初中</item>
+        <item>高中</item>
+        <item>专科</item>
+        <item>本科</item>
+        <item>硕士</item>
+        <item>博士</item>
+    </string-array>
+    <string-array name="occupation">
+        <item>学生</item>
+        <item>教师</item>
+        <item>军人</item>
+        <item>工人</item>
+        <item>农民</item>
+        <item>公务员</item>
+        <item>离退休</item>
+        <item>个体经营</item>
+        <item>公司职员</item>
+        <item>下岗待业</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="income">
+        <item>0-1万元</item>
+        <item>1-2万元</item>
+        <item>2-3万元</item>
+        <item>3-4万元</item>
+        <item>4-5万元</item>
+        <item>5-6万元</item>
+        <item>6-7万元</item>
+        <item>7-8万元</item>
+        <item>8-9万元</item>
+        <item>9-10万元</item>
+        <item>10-20万元</item>
+        <item>20-30万元</item>
+    </string-array>
+    <string-array name="marriage">
+        <item>未婚</item>
+        <item>已婚</item>
+        <item>离异</item>
+    </string-array>
+    <string-array name="children">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <!-- 系统设置界面需要要到的数组 -->
+    <string-array name="auto_update_frequency_entry">
+        <item>10分钟</item>
+        <item>30分钟</item>
+        <item>1小时</item>
+        <item>12小时</item>
+        <item>24小时</item>
+    </string-array>
+    <string-array name="auto_update_frequency_value">
+        <item>10</item>
+        <item>30</item>
+        <item>60</item>
+        <item>720</item>
+        <item>1440</item>
+    </string-array>
+    <string-array name="language_entry">
+        <item>中文（简体）</item>
+        <item>English</item>
+
+
+    </string-array>
+    <string-array name="language_value">
+        <item>0</item>
+        <item>1</item>
+
+
+    </string-array>
+    <string-array name="way_selectvideo">
+        <item>摄像</item>
+        <item>选择文件</item>
+    </string-array>
+    <string-array name="way_selectpic">
+        <item>拍照</item>
+        <item>相册</item>
+    </string-array>
+    <string-array name="personinfo">
+        <item>我的资料</item>
+        <item>我的群组</item>
+        <item>密码修改</item>
+        <item>运动数据</item>
+
+    </string-array>
+    <string-array name="personcenter">
+        <item>个人信息</item>
+        <item>我的相册</item>
+        <item>离线地图</item>
+        <item>使用帮助</item>
+        <item>通用设置</item>
+        <item>设置保持后台运行</item>
+        <item>检查更新</item>
+        <item>意见反馈</item>
+
+    </string-array>
+    <string-array name="aboutmenu">
+
+        <item>使用帮助</item>
+
+        <item>意见反馈</item>
+        <item>检查更新</item>
+    </string-array>
+    <string-array name="downmap">
+        <item>下载高德离线地图</item>
+        <item>下载百度离线地图</item>
+    </string-array>
+    <string-array name="sporttype">
+        <item>步行</item>
+        <item>骑行</item>
+        <item>轮滑</item>
+        <item>汽车</item>
+        <item>火车</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="phonebrand">
+        <item>xiaomi</item>
+        <item>meizu</item>
+        <item>honor</item>
+        <item>huawei</item>
+        <item>vivo</item>
+        <item>oppo</item>
+        <item>htc</item>
+        <item>coolpad</item>
+    </string-array>
+    <string-array name="popmenu">
+        <item>删除轨迹</item>
+        <item>刷新</item>
+
+    </string-array>
+    <string-array name="toolpopmenu">
+        <item>测距离</item>
+        <item>测面积</item>
+        <item>路径规划</item>
+    </string-array>
+    <string-array name="durationarray">
+        <item>小于10分钟</item>
+        <item>10-29分钟</item>
+        <item>30-59分钟</item>
+        <item>大于1小时</item>
+
+    </string-array>
+    <string-array name="behaviourarray">
+        <item>睡眠</item>
+        <item>家务</item>
+        <item>用餐</item>
+        <item>购物</item>
+        <item>工作或业务</item>
+        <item>上学或学习</item>
+        <item>遛弯散步</item>
+        <item>体育锻炼</item>
+        <item>接送家人朋友等</item>
+        <item>社交活动</item>
+        <item>外出办事</item>
+        <item>娱乐休闲</item>
+        <item>联络活动</item>
+        <item>个人护理</item>
+        <item>照顾亲属</item>
+        <item>上网</item>
+        <item>看病就医</item>
+        <item>外出旅游</item>
+        <item>其他</item>
+
+    </string-array>
+    <string-array name="partnernumarray">
+        <item>0</item>
+        <item>1-5人</item>
+        <item>6人及以上</item>
+    </string-array>
+    <string-array name="relationarray">
+        <item>同事</item>
+        <item>同学</item>
+        <item>朋友</item>
+        <item>家人</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="layers_array">
+        <item>@string/normal</item>
+        <item>@string/satellite</item>
+    </string-array>
+</resources>

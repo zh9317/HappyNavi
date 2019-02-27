@@ -1,21 +1,12 @@
 package com.trackersurvey.http;
 
-import android.util.Log;
 
-import com.trackersurvey.model.TracePoiModel;
-import com.trackersurvey.util.Common;
-import com.trackersurvey.util.HMAC_SHA1_Util;
 import com.trackersurvey.util.UrlHeader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.util.List;
-
 import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 /**

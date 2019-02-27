@@ -3,10 +3,14 @@ package com.trackersurvey.happynavi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -24,6 +28,7 @@ import com.trackersurvey.util.ToastUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
@@ -31,6 +36,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private TextView titleRightTv;
     private TextView cacheSizeTv;
     private SharedPreferences sp;
+
+    private int checkedItem = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +60,18 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        Resources resources = getResources();
+        Configuration configure = resources.getConfiguration();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        if (sp.getString("language", "").equals("0")) {
+            configure.locale = Locale.CHINESE;
+        }
+        if (sp.getString("language", "").equals("1")) {
+            configure.locale = Locale.ENGLISH;
+        }
+        resources.updateConfiguration(configure, dm);
+
         LinearLayout parameterLayout = findViewById(R.id.parameter_setting_layout);
         LinearLayout languageLayout = findViewById(R.id.select_language_layout);
         LinearLayout clearCacheLayout = findViewById(R.id.clear_cache_layout);
@@ -63,6 +82,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         clearCacheLayout.setOnClickListener(this);
         backgroundRunLayout.setOnClickListener(this);
         logoutBtn.setOnClickListener(this);
+
+        checkedItem = Integer.parseInt(sp.getString("language", "0"));
     }
 
     @Override
@@ -73,6 +94,41 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 startActivity(intent);
                 break;
             case R.id.select_language_layout:
+                final String[] items = {getResources().getString(R.string.language_chinese),
+                        getResources().getString(R.string.language_english)};
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                builder2.setTitle(getResources().getString(R.string.language_title));
+                builder2.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO Auto-generated method stub
+                        switch (which) {
+                            case 0: // 中文
+                                dialog.dismiss();
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("language", "0");
+                                editor.apply();
+                                Intent intent = new Intent(SettingActivity.this,MainActivity.class);
+                                finish();
+                                startActivity(intent);
+                                break;
+                            case 1: // 英文
+                                dialog.dismiss();
+                                SharedPreferences.Editor editor2 = sp.edit();
+                                editor2.putString("language", "1");
+                                editor2.apply();
+                                Intent intent2 = new Intent(SettingActivity.this,SettingActivity.class);
+                                finish();
+                                startActivity(intent2);
+                                break;
+                            default:
+                                break;
+                        }
+                        checkedItem = which;
+                    }
+                });
+                builder2.create().show(); // 创建对话框并显示
                 break;
             case R.id.clear_cache_layout:
                 CustomDialog.Builder builder = new CustomDialog.Builder(SettingActivity.this);
@@ -177,5 +233,14 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 builder_logout.create().show();
                 break;
         }
+    }
+
+    private void set(String lauType) {
+        // 本地语言设置
+        Resources resources = getResources();
+        Configuration configuration = resources.getConfiguration();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        configuration.locale = Locale.ENGLISH;
+        resources.updateConfiguration(configuration, dm);
     }
 }

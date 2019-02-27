@@ -15,8 +15,7 @@
         android:id="@+id/select_language_layout"
         android:layout_width="match_parent"
         android:layout_height="43dp"
-        android:background="@drawable/bg_mine_layout_press"
-        android:visibility="gone">
+        android:background="@drawable/bg_mine_layout_press">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

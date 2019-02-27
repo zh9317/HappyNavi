@@ -834,6 +834,7 @@ public class MyCommentModel {
                                 // 根据CreateTime判断服务器上的哪些兴趣点本地还没有
                                 eventCTDB = cursor.getString(0);
                                 eventCTCloud = interestMarkerDataList.get(index).getCreateTime();
+                                Log.i("hhhhhhhhhhhhhhh", "eventCTCloud" + interestMarkerDataList.get(index).getCreateTime());
                                 //Log.i("album", ""+eventCTDB+","+eventCTCloud);
                                 long leventCTDB = Common.timeStamp(eventCTDB);
                                 long leventCTCloud = Common.timeStamp(eventCTCloud);
