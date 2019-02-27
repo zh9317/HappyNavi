@@ -83,7 +83,6 @@ public class InterestMarkerData {
                 poiFiles.add(poiFile);
             }
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
