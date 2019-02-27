@@ -133,11 +133,11 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     private List<GpsData> linkTraces = new LinkedList<GpsData>();
     private StepData stepdata = new StepData();
     //private List<LatLng> points = new ArrayList<LatLng>();
-    private List<TraceLatLng> tracePoints = new ArrayList<>();
+    private List<TraceLatLng> tracePoints = new ArrayList<>(); // 用于存储位置点数据（经纬度、运动类型、创建时间）
     private List<LatLng> linkPoints = new LinkedList<LatLng>();
     private List<Integer> start = new ArrayList<Integer>();
     private List<Integer> end = new ArrayList<Integer>();
-    private List<Integer> selectid = new ArrayList<Integer>();// 被过滤的坐标
+    private List<Integer> selectid = new ArrayList<Integer>();// 被过滤的坐标（个数）
     private int s_id = 0;// selectid的下标 用于连接步行规划起点终点不可达的情况
     private List<LatLng> NetPoints = new ArrayList<LatLng>();// 网络定位点
     private List<LatLng> MarkPoints = new ArrayList<LatLng>();// 标注点的经纬度
@@ -349,9 +349,9 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
     private void initPathData() {
         Intent intent = getActivity().getIntent();
-        String trail = intent.getStringExtra("trail");
-        stepstr = intent.getStringExtra("step");
-        isOnline = intent.getBooleanExtra("isonline", true);
+        String trail = intent.getStringExtra("trail"); // TraceListAdapter传过来的轨迹信息
+        stepstr = intent.getStringExtra("step"); // 步数的数据
+        isOnline = intent.getBooleanExtra("isonline", false); // 数据是否已经上传到服务器
         // Log.i("trailadapter", "initPathData,"+trail);
         // Gson gson=new Gson();
         trailobj = GsonHelper.parseJson(trail, TraceData.class);
@@ -880,8 +880,11 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         Log.i("trailadapter", "过滤前坐标数：" + tracePoints.size());
 
         if (tracePoints.size() > 3) {
+            // 从第一个点到倒数第三个点
             for (int i = 0; i < tracePoints.size() - 2; i++) {
+                // 从下一个点到倒数第一个点
                 for (int j = i + 1; j < tracePoints.size(); j++) {
+                    // 去掉位置重复的点
                     if (tracePoints.get(i).getLatLng().latitude == tracePoints.get(j).getLatLng().latitude
                             && tracePoints.get(i).getLatLng().longitude == tracePoints.get(j).getLatLng().longitude) {
                         boolean have = false;
