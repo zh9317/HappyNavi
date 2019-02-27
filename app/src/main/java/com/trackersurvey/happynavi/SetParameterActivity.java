@@ -150,9 +150,7 @@ public class SetParameterActivity extends PreferenceActivity implements Preferen
         uploadFrequencyPref.setSummary(settings.getInt(uploadFrequencyKey, 30)+getResources().getString(R.string.setbyserver));
         rec_loc_FrequencyPref.setSummary(settings.getInt(rec_loc_FrequencyKey, 5)+getResources().getString(R.string.setbyserver));
         //norec_loc_FrequencyPref.setSummary(settings.getInt(norec_loc_FrequencyKey, 10)+"秒  (后台设定)");
-        sp = getSharedPreferences("com.trackersurvey.happynavi_preferences", 0);
-        String language = sp.getString("language", "0");
-        l = Integer.parseInt(language);
+
     }
 
     @Override

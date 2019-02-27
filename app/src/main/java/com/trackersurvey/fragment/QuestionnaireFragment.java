@@ -1,6 +1,7 @@
 package com.trackersurvey.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -191,7 +192,7 @@ public class QuestionnaireFragment extends Fragment {
         Log.i("WebViewCookie", "WebViewCookie:" + cookie);
     }
 
-//    private void initBannerData() {
+    //    private void initBannerData() {
 //        //图片地址
 //        imageUrl = new ArrayList<>();
 //        imageUrl.add("http://img.zcool.cn/community/0197da57bced510000018c1b16d3a7.jpg");

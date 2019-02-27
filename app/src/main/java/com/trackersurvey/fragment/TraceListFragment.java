@@ -759,5 +759,4 @@ public class TraceListFragment extends Fragment implements View.OnClickListener,
             proDialog.dismiss();
         }
     }
-
 }

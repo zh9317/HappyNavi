@@ -93,6 +93,9 @@ import com.trackersurvey.util.SportTypeDialog;
 import com.trackersurvey.util.StepDetector;
 import com.trackersurvey.util.ToastUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -113,100 +116,100 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class MapFragment extends Fragment implements View.OnClickListener, LocationSource, AMapLocationListener,
-        AMap.OnMapClickListener, AMap.OnMarkerClickListener{
+        AMap.OnMapClickListener, AMap.OnMarkerClickListener {
 
-    private View homepageLayout;
-    private ImageButton startTrail;
-    private ImageButton changeSportTypeIb;
-    private ImageButton endTrail;
-    private ImageButton takePhoto;
-    private TextView stepTv;
-    private TextView locationTv;
-    private TextView calculateTv;
+    private View           homepageLayout;
+    private ImageButton    startTrail;
+    private ImageButton    changeSportTypeIb;
+    private ImageButton    endTrail;
+    private ImageButton    takePhoto;
+    private TextView       stepTv;
+    private TextView       locationTv;
+    private TextView       calculateTv;
     private ProgressDialog proDialog = null;
-    private int sportType;
+    private int            sportType;
 
-    private AMap aMap;
-    private MapView mapView;
-    private Marker interestpoint;           //响应用户点击的位置
-    private Marker startMarker = null;      //起点标记
-    private Marker endMarker = null;	    //终点标记
-    private Polyline polyline = null;	    //轨迹连线
-    private PolylineOptions options;		//轨迹线属性
+    private AMap            aMap;
+    private MapView         mapView;
+    private Marker          interestpoint;           //响应用户点击的位置
+    private Marker          startMarker = null;      //起点标记
+    private Marker          endMarker   = null;        //终点标记
+    private Polyline        polyline    = null;        //轨迹连线
+    private PolylineOptions options;        //轨迹线属性
 
     private OnLocationChangedListener mListener;
-    private AMapLocationClient mlocationClient;
+    private AMapLocationClient        mlocationClient;
 
-    private LatLng finalLatLng = new LatLng(0,0);  //轨迹终点
-    private LatLng currentLatLng;				 //定位到的当前位置
+    private LatLng       finalLatLng = new LatLng(0, 0);  //轨迹终点
+    private LatLng       currentLatLng;                 //定位到的当前位置
     private AMapLocation currentAlocation;
-    private List<LatLng> points;				 //轨迹点的成员
+    private List<LatLng> points;                 //轨迹点的成员
 
-    private boolean isstart = false;
-    private boolean ispause = false;
-    private boolean isend = true;
-    private boolean bound_trace = false;
+    private boolean isstart              = false;
+    private boolean ispause              = false;
+    private boolean isend                = true;
+    private boolean bound_trace          = false;
     private boolean bound_comment_upload = false;
-    private boolean istimeset = false;
-    private boolean iscountstep = false;
-    private boolean isShowNonLocDlg = false; //无法定位对话框是否正在显示
+    private boolean istimeset            = false;
+    private boolean iscountstep          = false;
+    private boolean isShowNonLocDlg      = false; //无法定位对话框是否正在显示
 
     private boolean isTraceIDchanged = false;
 
-    public  static final int MENU_ROUTE = 0;
-    public  static final int MENU_NAVI = 1;
+    public static final int MENU_ROUTE = 0;
+    public static final int MENU_NAVI  = 1;
 
-    private long traceID = 0;
-    private int total_step = 0;   //走的总步数
-    private TraceData tracedata = new TraceData(); // 轨迹信息
-    private String traceName = "";
-    private StepData stepdata = new StepData(); // 步行轨迹的步数信息
-    private List<GpsData> tracegps = new ArrayList<GpsData>();
-    private MyBroadcastReceiver myReceiver = null;//用于接收后台发送的定位广播
-    private AccuracyBroadcastReceiver accuracyReciver = null;
-    private BroadcastReceiver connectionReceiver = null; // 用于监听网络状态变化的广播
+    private long                      traceID            = 0;
+    private int                       total_step         = 0;   //走的总步数
+    private TraceData                 tracedata          = new TraceData(); // 轨迹信息
+    private String                    traceName          = "";
+    private StepData                  stepdata           = new StepData(); // 步行轨迹的步数信息
+    private List<GpsData>             tracegps           = new ArrayList<GpsData>();
+    private MyBroadcastReceiver       myReceiver         = null;//用于接收后台发送的定位广播
+    private AccuracyBroadcastReceiver accuracyReciver    = null;
+    private BroadcastReceiver         connectionReceiver = null; // 用于监听网络状态变化的广播
 
-    private LocationService locationService;
+    private LocationService      locationService;
     private CommentUploadService commentUploadService;
-    private Intent locationServiceIntent;
-    private Intent commentServiceIntent;
-    private Intent stepCountServiceIntent ;
-    private Intent updateServiceIntent;
-    private Thread stepThread;
-    private MyTraceDBHelper traceDBHelper;
-    private SharedPreferences sp;  //存储基本配置信息 如账号、密码
-    private SharedPreferences uploadCache;//存储待上传的评论信息
+    private Intent               locationServiceIntent;
+    private Intent               commentServiceIntent;
+    private Intent               stepCountServiceIntent;
+    private Intent               updateServiceIntent;
+    private Thread               stepThread;
+    private MyTraceDBHelper      traceDBHelper;
+    private SharedPreferences    sp;  //存储基本配置信息 如账号、密码
+    private SharedPreferences    uploadCache;//存储待上传的评论信息
 
-    private final String MY_ACTION = "android.intent.action.LOCATION_RECEIVER";
-    private final String PULLREFRESH_ACTION = "android.intent.action.PULLREFRESH_RECEIVER";
-    private final String ACCURACY_ACTION = "android.intent.action.ACCURACY_RECEIVER";
+    private final String              MY_ACTION          = "android.intent.action.LOCATION_RECEIVER";
+    private final String              PULLREFRESH_ACTION = "android.intent.action.PULLREFRESH_RECEIVER";
+    private final String              ACCURACY_ACTION    = "android.intent.action.ACCURACY_RECEIVER";
     //private static final String URL_STARTTRAIL = Common.url+"reqTraceNo.aspx";
-    private String URL_ENDTRAIL = null;
+    private       String              URL_ENDTRAIL       = null;
     //private static final String URL_GET4TIME = Common.url+"request.aspx";
-    private String URL_CHECKUPDATE = null;
-    private String URL_GETPOI = null;
-    public final int REQUSET_COMMENT = 1;
-    private PointOfInterestData behaviourData,durationData, partnerNumData, relationData;
+    private       String              URL_CHECKUPDATE    = null;
+    private       String              URL_GETPOI         = null;
+    public final  int                 REQUSET_COMMENT    = 1;
+    private       PointOfInterestData behaviourData, durationData, partnerNumData, relationData;
     private PointOfInterestDBHelper poiDBHelper = null;
-    private Cursor cursor;
-    private int checkedItem = 0;
-    private double currentLongitude, currentLatitude, currentAltitude, currentLongitude1, currentLatitude1, currentAltitude1;
+    private Cursor                  cursor;
+    private int                     checkedItem = 0;
+    private double                  currentLongitude, currentLatitude, currentAltitude, currentLongitude1, currentLatitude1, currentAltitude1;
     private String[] degreeLngArr, minuteLngArr, secondLngArr, degreeLatArr, minuteLatArr, secondLatArr;
     private String degreeLngStr, minuteLngStr, secondLngStr, degreeLatStr, minuteLatStr, secondLatStr, currentAltitudeStr;
     private double minuteLng1, secondLng1, minuteLat1, secondLat1;
     private PopupWindow mPopupWindow;
 
-    private RelativeLayout showDistance;	//测量模式界面
-    private RelativeLayout showTips;
-    private TileProvider tileProvider;		//瓦片提供者，用于转换地图图层
+    private RelativeLayout     showDistance;    //测量模式界面
+    private RelativeLayout     showTips;
+    private TileProvider       tileProvider;        //瓦片提供者，用于转换地图图层
     private TileOverlayOptions tileOverlayOptions;
-    private TileOverlay tileOverlay;
+    private TileOverlay        tileOverlay;
 
-    private ListView dialogList;
-    private ArrayList<HashMap<String,Object>> dialogListItem;
+    private ListView                           dialogList;
+    private ArrayList<HashMap<String, Object>> dialogListItem;
     //private LinearLayout dialogLayout;
-    private View view;
-    private AlertDialog dialog;
+    private View                               view;
+    private AlertDialog                        dialog;
 
     private PoiChoiceModel poiChoiceModel;
 
@@ -215,6 +218,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homepageLayout = inflater.inflate(R.layout.fragment_map, container, false);
 
+//        EventBus.getDefault().register(this);
         mapView = (MapView) homepageLayout.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
         stepTv = homepageLayout.findViewById(R.id.tv_step);
@@ -234,26 +238,35 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         traceDBHelper = new MyTraceDBHelper(getContext()); // 创建轨迹数据库
         poiDBHelper = new PointOfInterestDBHelper(getContext());//创建POI数据库
         // sp 初始化
-        sp = getActivity().getSharedPreferences("config",MODE_PRIVATE);//私有参数
+        sp = getActivity().getSharedPreferences("config", MODE_PRIVATE);//私有参数
         initAMap(); // 初始化地图
-        if(Common.url != null && !Common.url.equals("")){
+        if (Common.url != null && !Common.url.equals("")) {
 
-        }else{
+        } else {
             Common.url = getResources().getString(R.string.url);
         }
-        URL_ENDTRAIL = Common.url+"reqTraceNo.aspx";
-        URL_CHECKUPDATE=Common.url+"request.aspx";
+        URL_ENDTRAIL = Common.url + "reqTraceNo.aspx";
+        URL_CHECKUPDATE = Common.url + "request.aspx";
         URL_GETPOI = Common.url + "requestInfo.aspx";
         initPOI(); // 获取兴趣点列表选项
-//        int l = TabHost_Main.l;
-//        if(l==0){
-//            initPOI();//下载添加兴趣点下拉列表选项内容
-//        }
-//        if(l==1){
-//            initPOIEN();//英文版
-//        }
+        //        int l = TabHost_Main.l;
+        //        if(l==0){
+        //            initPOI();//下载添加兴趣点下拉列表选项内容
+        //        }
+        //        if(l==1){
+        //            initPOIEN();//英文版
+        //        }
         return homepageLayout;
     }
+//
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onEvent(String str) {
+//        switch (str) {
+//            case "EVENT_REFRESH_LANGUAGE":
+//                getActivity().recreate();
+//                break;
+//        }
+//    }
 
     private void initAMap() {
         //获取屏幕分辨率
@@ -270,15 +283,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 ConnectivityManager connectMgr = (ConnectivityManager) getActivity().
                         getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo netInfo = connectMgr.getActiveNetworkInfo();
-                if(netInfo!=null && netInfo.isConnected()){
+                if (netInfo != null && netInfo.isConnected()) {
                     //有网络连接
-                    if(netInfo.getType()==ConnectivityManager.TYPE_WIFI){
+                    if (netInfo.getType() == ConnectivityManager.TYPE_WIFI) {
                         //wifi连接
                         /**后期设置中加入“wifi状态下自动更新”选项，此处加入bool量判断是否自动检查
                          **/
                         Log.i("phonelog", "当前WiFi连接");
                         Common.isWiFiConnected = true;
-                        if(Common.isUpdationg && Common.fileInfo!=null){
+                        if (Common.isUpdationg && Common.fileInfo != null) {
                             Log.i("phonelog", "WiFi下继续下载");
                             // 通知Service继续下载
                             updateServiceIntent = new Intent(getContext(), DownloadService.class);
@@ -287,30 +300,30 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                             getActivity().startService(updateServiceIntent);
                         } else {
                             // 原参数是getApplicationContext()
-                            if(Common.isAutoUpdate(getContext())) {
+                            if (Common.isAutoUpdate(getContext())) {
                                 Log.i("phonelog", "wifi下检查更新");
                                 String version = null;
-                                if(Common.version == null ||Common.version.equals("")) {
+                                if (Common.version == null || Common.version.equals("")) {
                                     version = Common.getAppVersionName(getContext());
                                 } else {
                                     version = Common.version;
                                 }
                                 // 检查更新app
-                                if(version !=null && !version.equals("")) {
+                                if (version != null && !version.equals("")) {
                                     PostCheckVersion checkVersion = new PostCheckVersion(updatehandler, URL_CHECKUPDATE,
-                                            Common.getDeviceId(getContext()),version);
+                                            Common.getDeviceId(getContext()), version);
                                     checkVersion.start();
                                 }
-                            } else{
+                            } else {
                                 Log.i("phonelog", "自动检查更新关闭");
                             }
                         }
-                    } else if(netInfo.getType()==ConnectivityManager.TYPE_MOBILE) {
+                    } else if (netInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
                         // connect network,读取本地sharedPreferences文件，上传之前未完成上传的部分
                         Log.i("phonelog", "当前GPRS数据连接");
-                        Common.isWiFiConnected=false;
+                        Common.isWiFiConnected = false;
                         Log.i("phonelog", "WiFi连接断开");
-                        if (Common.isUpdationg&&Common.fileInfo!=null) {
+                        if (Common.isUpdationg && Common.fileInfo != null) {
                             // 通知Service暂停下载
                             updateServiceIntent = new Intent(getContext(), DownloadService.class);
                             updateServiceIntent.setAction(DownloadService.ACTION_STOP);
@@ -319,14 +332,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                             Log.i("phonelog", "发送暂停命令");
                         }
                     } else {
-                        Common.isWiFiConnected=false;
+                        Common.isWiFiConnected = false;
                         Log.i("phonelog", "WiFi连接断开");
                     }
                 } else {
                     //无网络连接
                     Log.i("phonelog", "Main，当前无网络");
-                    Common.isWiFiConnected=false;
-                    if(Common.isUpdationg&&Common.fileInfo!=null) {
+                    Common.isWiFiConnected = false;
+                    if (Common.isUpdationg && Common.fileInfo != null) {
                         // 通知Service暂停下载
                         updateServiceIntent = new Intent(getContext(), DownloadService.class);
                         updateServiceIntent.setAction(DownloadService.ACTION_STOP);
@@ -334,12 +347,12 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                         getActivity().startService(updateServiceIntent);
                         Log.i("phonelog", "发送暂停命令");
                     }
-                    if(!Common.checkGPS(getContext())) {
+                    if (!Common.checkGPS(getContext())) {
                         //网络没开，gps没开，无法定位，提示
-                        if(!isShowNonLocDlg) {
-                            isShowNonLocDlg=true;
+                        if (!isShowNonLocDlg) {
+                            isShowNonLocDlg = true;
                             boolean isShowBadLoc = sp.getBoolean("isShowBadLoc", true);
-                            if(isShowBadLoc) {
+                            if (isShowBadLoc) {
                                 Log.i("phonelog", "网络没开，gps没开，无法定位，提示");
                                 showDlg_badloc();
                             }
@@ -359,12 +372,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             registerListener();
             setUpMap();
             // 检测是否是游客身份登录
-            if(!Common.isVisiter()){
+            if (!Common.isVisiter()) {
                 // 开启定位Service
                 setUpService();
             }
         }
     }
+
     // 注册监听
     private void registerListener() {
         aMap.setOnMapClickListener(this); // 地图点击监听
@@ -398,14 +412,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         aMap.moveCamera(CameraUpdateFactory.zoomTo(12));
         double lastLongitude = sp.getFloat("lastLongitude", 0);
         double lastLatitude = sp.getFloat("lastLatitude", 0);
-        if(lastLongitude>0 && lastLatitude>0) {
-            aMap.moveCamera(CameraUpdateFactory.changeLatLng(new LatLng(lastLatitude,lastLongitude)));
+        if (lastLongitude > 0 && lastLatitude > 0) {
+            aMap.moveCamera(CameraUpdateFactory.changeLatLng(new LatLng(lastLatitude, lastLongitude)));
         }
         points = new ArrayList<>();
         interestpoint = aMap.addMarker(new MarkerOptions().anchor(0.5f, 0.5f)
                 .icon(BitmapDescriptorFactory
                         .defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
     }
+
     // 设置Service参数
     public void setUpService() {
         //注册监听后台定位情况的广播，用于更新轨迹显示
@@ -419,8 +434,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         accuracyfilter.addAction(ACCURACY_ACTION);//为IntentFilter添加Action
         getActivity().registerReceiver(accuracyReciver, accuracyfilter);//注册广播
         // 定位服务
-        locationServiceIntent = new Intent(getContext(),  LocationService.class);
-        locationServiceIntent.putExtra("token", sp.getString("token",""));
+        locationServiceIntent = new Intent(getContext(), LocationService.class);
+        locationServiceIntent.putExtra("token", sp.getString("token", ""));
         // 上传兴趣点服务
         commentServiceIntent = new Intent(getContext(), CommentUploadService.class); // 上传兴趣点Service
         //getActivity().startService(commentServiceIntent);
@@ -431,7 +446,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }else {
+        } else {
             // 已申请则开启定位服务
             getActivity().bindService(locationServiceIntent,
                     connection, Context.BIND_AUTO_CREATE);
@@ -439,11 +454,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         getActivity().bindService(locationServiceIntent,
                 connection, Context.BIND_AUTO_CREATE);
         stepCountServiceIntent = new Intent(getContext(), StepCounterService.class);
-		/*
-		 * MainActivity.this.getApplicationContext().
-		 * 在TabActivy的TabHost中的Activity如果需要bindService的话
-		 * ，需要先调用getApplicationContext()获取其所属的Activity的上下文环境才能正常bindService
-		 */
+        /*
+         * MainActivity.this.getApplicationContext().
+         * 在TabActivy的TabHost中的Activity如果需要bindService的话
+         * ，需要先调用getApplicationContext()获取其所属的Activity的上下文环境才能正常bindService
+         */
         if (stepThread == null) {
             stepThread = new Thread() {// 子线程用于监听当前步数的变化
                 @Override
@@ -468,21 +483,21 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
          判断上次轨迹记录是否意外中断，如果有意外中断，提醒用户是否继续记录
          */
         traceID = traceDBHelper.getUnStopStatusExists(Common.getUserId(getContext()));
-        if(traceID != 0){ //存在中断的轨迹,0是轨迹号
+        if (traceID != 0) { //存在中断的轨迹,0是轨迹号
             CustomDialog.Builder builder = new CustomDialog.Builder(getContext());
             builder.setTitle(getResources().getString(R.string.tip));
             builder.setMessage(getResources().getString(R.string.tips_interrupttrace_msg));
-            builder.setNegativeButton(getResources().getString(R.string.cancl),new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getResources().getString(R.string.cancl), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    traceDBHelper.updateStatus( traceID, 2,Common.getUserID(getContext()));
+                    traceDBHelper.updateStatus(traceID, 2, Common.getUserID(getContext()));
                     dialog.dismiss();
                 }
             });
-            builder.setPositiveButton(getResources().getString(R.string.confirm),new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    tracedata = traceDBHelper.queryfromTrailbytraceID(traceID,Common.getUserId(getContext()));
+                    tracedata = traceDBHelper.queryfromTrailbytraceID(traceID, Common.getUserId(getContext()));
                     initStartInfo();
                     dialog.dismiss();
                 }
@@ -490,7 +505,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             builder.create().show();
         }
         boolean isShowBGRGuide = sp.getBoolean("isShowBGRGuide", true);
-        if(isShowBGRGuide){
+        if (isShowBGRGuide) {
             //指引用户如何添加白名单
             showBGRunGuide();
         }
@@ -519,11 +534,12 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
             locationService = binder.getService();
             bound_trace = true;
-            if(!locationService.isWorking()){
+            if (!locationService.isWorking()) {
                 locationService.getToWork();
                 Log.i("LogDemo", "定位服务开始工作了！当前时间是" + Common.currentTime());
             }
         }
+
         @Override
         public void onServiceDisconnected(ComponentName name) {
             bound_trace = false;
@@ -548,39 +564,42 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
 
     // 精度监听广播
     public class AccuracyBroadcastReceiver extends BroadcastReceiver {
-        public AccuracyBroadcastReceiver(){
+        public AccuracyBroadcastReceiver() {
         }
+
         @Override
         public void onReceive(Context context, Intent intent) {
             Common.isHighAccuracy = false;
             ToastUtil.show(getContext(), getResources().getString(R.string.tips_accuracy_msg));
         }
     }
+
     // 监听后台定位情况的广播
     public class MyBroadcastReceiver extends BroadcastReceiver {
-        public MyBroadcastReceiver(){
+        public MyBroadcastReceiver() {
         }
+
         @SuppressLint("SetTextI18n")
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i("backloc", "我收到广播了");
             // 判断用户账号长度是否<10
-//            if(Common.getUserId(getContext()).length()<10) {
-//                Intent mIntent = new Intent();
-//                mIntent.setClass(getContext(), LoginActivity.class);
-//                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(mIntent);
-//                getActivity().finish();
-//            }
+            //            if(Common.getUserId(getContext()).length()<10) {
+            //                Intent mIntent = new Intent();
+            //                mIntent.setClass(getContext(), LoginActivity.class);
+            //                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //                startActivity(mIntent);
+            //                getActivity().finish();
+            //            }
             if (mListener != null && Common.aLocation != null && Common.aLocation.getErrorCode() == 0) {
                 mListener.onLocationChanged(Common.aLocation);// 显示系统小蓝点
                 //Log.i("trailadapter", "main----onLocationChanged");
                 //currentAlocation=aLocation;
                 currentLatLng = new LatLng(Common.aLocation.getLatitude(), Common.aLocation.getLongitude());
                 //在地图页面显示当前位置的经纬度信息
-                currentLongitude = Common.aLocation.getLongitude();	//经度
-                currentLatitude = Common.aLocation.getLatitude();	//纬度
-                currentAltitude = Common.aLocation.getAltitude();	//海拔
+                currentLongitude = Common.aLocation.getLongitude();    //经度
+                currentLatitude = Common.aLocation.getLatitude();    //纬度
+                currentAltitude = Common.aLocation.getAltitude();    //海拔
 
                 currentAltitudeStr = String.valueOf(currentAltitude);
                 BigDecimal currentLongitudeTemp = new BigDecimal(currentLongitude);
@@ -592,57 +611,57 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 BigDecimal currentAltitudeTemp = new BigDecimal(currentAltitude);
                 currentAltitude1 = currentAltitudeTemp.setScale(6, BigDecimal.ROUND_HALF_UP).doubleValue();
 
-                degreeLngArr = String.valueOf(currentLongitude).split("[.]");	//换算经度
-                degreeLngStr = degreeLngArr[0];									//度
-                minuteLng1 = Double.parseDouble("0."+degreeLngArr[1])*60;
+                degreeLngArr = String.valueOf(currentLongitude).split("[.]");    //换算经度
+                degreeLngStr = degreeLngArr[0];                                    //度
+                minuteLng1 = Double.parseDouble("0." + degreeLngArr[1]) * 60;
                 minuteLngArr = String.valueOf(minuteLng1).split("[.]");
-                minuteLngStr = minuteLngArr[0];									//分
-                secondLng1 = Double.parseDouble("0."+minuteLngArr[1])*60;
+                minuteLngStr = minuteLngArr[0];                                    //分
+                secondLng1 = Double.parseDouble("0." + minuteLngArr[1]) * 60;
                 secondLngArr = String.valueOf(secondLng1).split("[.]");
-                secondLngStr = secondLngArr[0];									//秒
+                secondLngStr = secondLngArr[0];                                    //秒
 
-                degreeLatArr = String.valueOf(currentLatitude).split("[.]");	//换算纬度
-                degreeLatStr = degreeLatArr[0];									//度
-                minuteLat1 = Double.parseDouble("0."+degreeLatArr[1])*60;
+                degreeLatArr = String.valueOf(currentLatitude).split("[.]");    //换算纬度
+                degreeLatStr = degreeLatArr[0];                                    //度
+                minuteLat1 = Double.parseDouble("0." + degreeLatArr[1]) * 60;
                 minuteLatArr = String.valueOf(minuteLat1).split("[.]");
-                minuteLatStr = minuteLatArr[0];									//分
-                secondLat1 = Double.parseDouble("0."+minuteLatArr[1])*60;
+                minuteLatStr = minuteLatArr[0];                                    //分
+                secondLat1 = Double.parseDouble("0." + minuteLatArr[1]) * 60;
                 secondLatArr = String.valueOf(secondLat1).split("[.]");
-                secondLatStr = secondLatArr[0];									//秒
+                secondLatStr = secondLatArr[0];                                    //秒
                 //显示当前位置的经纬度
-                if(currentAltitude>0) {
-                    if(currentLongitude > 0 && currentLatitude > 0){
-                        locationTv.setText(getResources().getString(R.string.longitude)+currentLongitude1+"E；"+
-                                getResources().getString(R.string.latitude)+currentLatitude1+"N；"+getResources().getString(R.string.altitude)+currentAltitude1+"m");
+                if (currentAltitude > 0) {
+                    if (currentLongitude > 0 && currentLatitude > 0) {
+                        locationTv.setText(getResources().getString(R.string.longitude) + currentLongitude1 + "E；" +
+                                getResources().getString(R.string.latitude) + currentLatitude1 + "N；" + getResources().getString(R.string.altitude) + currentAltitude1 + "m");
                     }
-                    if(currentLongitude > 0 && currentLatitude < 0){
-                        locationTv.setText(getResources().getString(R.string.longitude)+currentLongitude1+"E；"+
-                                getResources().getString(R.string.latitude)+currentLatitude1+"S；"+getResources().getString(R.string.altitude)+currentAltitude1+"m");
+                    if (currentLongitude > 0 && currentLatitude < 0) {
+                        locationTv.setText(getResources().getString(R.string.longitude) + currentLongitude1 + "E；" +
+                                getResources().getString(R.string.latitude) + currentLatitude1 + "S；" + getResources().getString(R.string.altitude) + currentAltitude1 + "m");
                     }
-                    if(currentLatitude < 0 && currentLatitude > 0){
-                        locationTv.setText(getResources().getString(R.string.longitude)+currentLongitude1+"W；"+
-                                getResources().getString(R.string.latitude)+currentLatitude1+"N；"+getResources().getString(R.string.altitude)+currentAltitude1+"m");
+                    if (currentLatitude < 0 && currentLatitude > 0) {
+                        locationTv.setText(getResources().getString(R.string.longitude) + currentLongitude1 + "W；" +
+                                getResources().getString(R.string.latitude) + currentLatitude1 + "N；" + getResources().getString(R.string.altitude) + currentAltitude1 + "m");
                     }
-                    if(currentLatitude < 0 && currentLatitude < 0){
-                        locationTv.setText(getResources().getString(R.string.longitude)+currentLongitude1+"W；"+
-                                getResources().getString(R.string.latitude)+currentLatitude1+"S；"+getResources().getString(R.string.altitude)+currentAltitude1+"m");
+                    if (currentLatitude < 0 && currentLatitude < 0) {
+                        locationTv.setText(getResources().getString(R.string.longitude) + currentLongitude1 + "W；" +
+                                getResources().getString(R.string.latitude) + currentLatitude1 + "S；" + getResources().getString(R.string.altitude) + currentAltitude1 + "m");
                     }
                 } else {
-                    if(currentLongitude > 0 && currentLatitude > 0){
-                        locationTv.setText(getResources().getString(R.string.longitude)+currentLongitude1+"E；"
-                                +getResources().getString(R.string.latitude)+currentLatitude1+"N");
+                    if (currentLongitude > 0 && currentLatitude > 0) {
+                        locationTv.setText(getResources().getString(R.string.longitude) + currentLongitude1 + "E；"
+                                + getResources().getString(R.string.latitude) + currentLatitude1 + "N");
                     }
-                    if(currentLongitude > 0 && currentLatitude < 0){
-                        locationTv.setText(getResources().getString(R.string.longitude)+currentLongitude1+"E；"
-                                +getResources().getString(R.string.latitude)+currentLatitude1+"S");
+                    if (currentLongitude > 0 && currentLatitude < 0) {
+                        locationTv.setText(getResources().getString(R.string.longitude) + currentLongitude1 + "E；"
+                                + getResources().getString(R.string.latitude) + currentLatitude1 + "S");
                     }
-                    if(currentLatitude < 0 && currentLatitude > 0){
-                        locationTv.setText(getResources().getString(R.string.longitude)+currentLongitude1+"W；"
-                                +getResources().getString(R.string.latitude)+currentLatitude1+"N");
+                    if (currentLatitude < 0 && currentLatitude > 0) {
+                        locationTv.setText(getResources().getString(R.string.longitude) + currentLongitude1 + "W；"
+                                + getResources().getString(R.string.latitude) + currentLatitude1 + "N");
                     }
-                    if(currentLatitude < 0 && currentLatitude < 0){
-                        locationTv.setText(getResources().getString(R.string.longitude)+currentLongitude1+"W；"
-                                +getResources().getString(R.string.latitude)+currentLatitude1+"S");
+                    if (currentLatitude < 0 && currentLatitude < 0) {
+                        locationTv.setText(getResources().getString(R.string.longitude) + currentLongitude1 + "W；"
+                                + getResources().getString(R.string.latitude) + currentLatitude1 + "S");
                     }
                 }
                 SharedPreferences.Editor editor = sp.edit();
@@ -651,27 +670,27 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 editor.commit();
                 // 点击开始记录时，Common.isRecording = true;
                 // 这个条件保证先插入一条带有TraceID的位置数据，再执行refreshTrace()，插入一条轨迹数据
-                if(Common.isRecording){
+                if (Common.isRecording) {
                     aMap.moveCamera(CameraUpdateFactory.changeLatLng(currentLatLng));
-                    if(isstart&&isend){//开启新的轨迹记录
+                    if (isstart && isend) {//开启新的轨迹记录
                         //aMap.clear();
                         //clearTrace();
                         isend = false;
                         //Log.i("LogDemo", "开画");
                     }
-                    if(refreshTrace()){
-                        if(!points.isEmpty()){
+                    if (refreshTrace()) {
+                        if (!points.isEmpty()) {
                             points.clear();
                         }
-                        for(int i=0;i<tracegps.size();i++){
-                            LatLng point = new LatLng(tracegps.get(i).getLatitude(),tracegps.get(i).getLongitude());
+                        for (int i = 0; i < tracegps.size(); i++) {
+                            LatLng point = new LatLng(tracegps.get(i).getLatitude(), tracegps.get(i).getLongitude());
                             points.add(point);
-                            if(points.size() >1){
-                                if(point.equals(points.get(points.size() -2))){//新记录的点与上一个点相同，删除
-                                    points.remove(points.size() -1);
+                            if (points.size() > 1) {
+                                if (point.equals(points.get(points.size() - 2))) {//新记录的点与上一个点相同，删除
+                                    points.remove(points.size() - 1);
                                     //Log.i("LogDemo", "removepoint");
                                 }
-                                finalLatLng=points.get(points.size() -1);
+                                finalLatLng = points.get(points.size() - 1);
                             }
                         }
                         tracegps.clear();
@@ -681,20 +700,20 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             }
         }
     }
-    public void drawPoints(List<LatLng> points){
+
+    public void drawPoints(List<LatLng> points) {
         int size = points.size();
         //Toast.makeText(MainActivity.this, "drawPoints,size="+size, 0).show();
-        LatLng pt = points.get(size-1);
-        if(size == 1) {
-            if(startMarker != null) {
+        LatLng pt = points.get(size - 1);
+        if (size == 1) {
+            if (startMarker != null) {
                 startMarker.remove();
             }
             aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pt, 16));
             startMarker = aMap.addMarker(new MarkerOptions().position(pt).title(getResources()
                     .getString(R.string.starticon)).icon(BitmapDescriptorFactory.fromResource(R.mipmap.start)));
-        }
-        else{
-            if(startMarker == null) {
+        } else {
+            if (startMarker == null) {
                 startMarker = aMap.addMarker(new MarkerOptions().position(points.get(0)).title(getResources()
                         .getString(R.string.starticon)).icon(BitmapDescriptorFactory.fromResource(R.mipmap.start)));
                 aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pt, 16));
@@ -703,31 +722,33 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             options = new PolylineOptions().width(15).geodesic(true).color(Color.GREEN);
             options.addAll(points);
             //polyline.setPoints(options.getPoints());
-            if(polyline != null) {
+            if (polyline != null) {
                 polyline.remove();
             }
             polyline = aMap.addPolyline(options);
         }
     }
+
     public void clearTrace() {
         //Log.i("LogDemo", "clear trace");
-        if(startMarker != null) {
+        if (startMarker != null) {
             startMarker.remove();
         }
-        if(endMarker != null) {
+        if (endMarker != null) {
             endMarker.remove();
         }
-        if(polyline != null) {
+        if (polyline != null) {
             polyline.remove();
             polyline = null;
             //Log.i("LogDemo", "clear polyline!!!");
         }
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.imgbtn_starttrail: // 点击开始记录按钮
-                if(Common.isVisiter()){
+                if (Common.isVisiter()) {
                     Common.DialogForVisiter(getContext());
                     return;
                 }
@@ -735,10 +756,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 if (isend) {
                     startTrail(); // 弹出开始记录对话框，继续接下来的操作
                 } else {//继续记录
-                    Toast.makeText(getContext(), "继续记录",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "继续记录", Toast.LENGTH_SHORT).show();
                     locationService.setTraceID(traceID);
                     locationService.changeStatus(true); // 改为记录轨迹状态
-                    if(tracedata.getSportTypes() == 1){
+                    if (tracedata.getSportTypes() == 1) {
                         //轨迹类型为步行，记录步数
                         locationService.changeSportType(true);
                     }
@@ -748,9 +769,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     // pauseTrail.setVisibility(View.VISIBLE);
                     // takephoto.setVisibility(View.VISIBLE);
                     endTrail.setVisibility(View.VISIBLE);
-                    isstart=true;
-                    ispause=false;
-                    isend=false;
+                    isstart = true;
+                    ispause = false;
+                    isend = false;
                 }
                 break;
             case R.id.change_sport_type_ib:
@@ -761,13 +782,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 CustomDialog.Builder builder = new CustomDialog.Builder(getContext());
                 builder.setTitle(getResources().getString(R.string.end));
                 builder.setMessage(getResources().getString(R.string.tips_endtracedlg_msg));
-                builder.setNegativeButton(getResources().getString(R.string.cancl),new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getResources().getString(R.string.cancl), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
-                builder.setPositiveButton(getResources().getString(R.string.confirm),new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         endTrail();
@@ -779,7 +800,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 //Log.i("LogDemo", "结束记录");
                 break;
             case R.id.imgbtn_takephoto:
-                if(Common.isVisiter()){
+                if (Common.isVisiter()) {
                     Common.DialogForVisiter(getContext());
                     return;
                 }
@@ -790,29 +811,29 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 ArrayList<String> relation = poiDBHelper.getRelation();
 
                 Log.i("dongisyuan兴趣点", "behaviour: " + behaviour.get(1) + "+duration" + duration.get(1)
-                 + "partnerNum" + partnerNum.get(1) + "relation" + relation.get(1));
+                        + "partnerNum" + partnerNum.get(1) + "relation" + relation.get(1));
                 Intent intent = new Intent();
                 intent.setClass(getContext(), CommentActivity.class);
                 /**
                  * 传递经纬度 海拔 traceno，地点
                  * */
-                if(Common.aLocation!=null){ // 首先采用gps位置
-                    intent.putExtra("longitude",Common.aLocation.getLongitude());
+                if (Common.aLocation != null) { // 首先采用gps位置
+                    intent.putExtra("longitude", Common.aLocation.getLongitude());
                     intent.putExtra("latitude", Common.aLocation.getLatitude());
                     intent.putExtra("altitude", Common.aLocation.getAltitude());
                     intent.putExtra("country", Common.aLocation.getCountry());
                     intent.putExtra("province", Common.aLocation.getProvince());
                     intent.putExtra("city", Common.aLocation.getCity());
-                    intent.putExtra("placeName",Common.aLocation.getCity()+Common.aLocation.getStreet());
+                    intent.putExtra("placeName", Common.aLocation.getCity() + Common.aLocation.getStreet());
                 } else {
-                    if(currentAlocation!=null) {
-                        intent.putExtra("longitude",currentAlocation.getLongitude());
+                    if (currentAlocation != null) {
+                        intent.putExtra("longitude", currentAlocation.getLongitude());
                         intent.putExtra("latitude", currentAlocation.getLatitude());
                         intent.putExtra("altitude", currentAlocation.getAltitude());
                         intent.putExtra("country", currentAlocation.getCountry());
                         intent.putExtra("province", currentAlocation.getProvince());
                         intent.putExtra("city", currentAlocation.getCity());
-                        intent.putExtra("placeName",currentAlocation.getCity()+currentAlocation.getStreet());
+                        intent.putExtra("placeName", currentAlocation.getCity() + currentAlocation.getStreet());
                     }
                 }
                 intent.putExtra("traceID", traceID);
@@ -830,19 +851,20 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 break;
         }
     }
+
     // 打开记录轨迹对话框
     public void startTrail() {
         final SportTypeDialog dialog = new SportTypeDialog(getContext(), R.style.dlg_sporttype);
         dialog.setCancelable(false);
         dialog.show();
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface Dialog) {
                 int pos = dialog.getposition();
                 sportType = pos;
-                if(pos != -1){ // 点击确定
+                if (pos != -1) { // 点击确定
                     //Toast.makeText(MainActivity.this, title[pos], 0).show();
-					// 设置轨迹信息
+                    // 设置轨迹信息
                     traceID = System.currentTimeMillis(); // 手机端暂时生成一个轨迹号(就是一个时间戳)
                     // 初始化轨迹信息，设置它的了6个属性
                     traceName = dialog.gettraceName();
@@ -866,8 +888,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             }
         });
     }
+
     public void initStartInfo() {
-        if(!locationService.isWorking()){
+        if (!locationService.isWorking()) {
             locationService.getToWork();
             Log.i("LogDemo", "开始记录轨迹了，此时服务没在工作，所以服务重新开启了！当前时间是" + Common.currentTime());
         }
@@ -882,8 +905,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         aMap.setMyLocationStyle(myLocationStyle); // 改变定位模式为蓝点始终在屏幕中间
         stepdata.setUserID(Common.getUserID(getContext()));
         stepdata.setTraceID(traceID);
-        Log.i("LogDemo", "starttrail,localTraceNo："+traceID+",id:"+Common.getUserId(getContext()));
-        Log.i("LogDemo", "starttrail,traceNo："+traceID+",id:"+Common.getUserId(getContext()));
+        Log.i("LogDemo", "starttrail,localTraceNo：" + traceID + ",id:" + Common.getUserId(getContext()));
+        Log.i("LogDemo", "starttrail,traceNo：" + traceID + ",id:" + Common.getUserId(getContext()));
         List<TraceData> traceList = new ArrayList<>();
         traceList.add(tracedata);
         String traceInfo = GsonHelper.toJson(traceList);
@@ -909,7 +932,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                             if (traceID != 0) {
                                 traceDBHelper.updatetrail(tracedata, traceID, Common.getUserID(getContext()));
                                 Log.i("mmmmmmmmmmmmmmm", "initStartInfo traceDBHelper.updatetrail(tracedata,traceID,Common.getUserID(getContext()));");
-                                traceDBHelper.updatesteps(stepdata, traceID,Common.getUserID(getContext()));
+                                traceDBHelper.updatesteps(stepdata, traceID, Common.getUserID(getContext()));
                                 Log.i("LogDemo", "数据的TraceID替换成功");
                             }
                             Log.i("LogDemo", "获得了轨迹号traceID : " + traceID);
@@ -959,17 +982,17 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
 
         Log.i("HomePage", "改变了轨迹号traceID : " + traceID);
         locationService.changeStatus(true); // 改为记录轨迹状态
-        if(tracedata.getSportTypes() == 1){
+        if (tracedata.getSportTypes() == 1) {
             //轨迹类型为步行，记录步数
             locationService.changeSportType(true);
-            StepDetector.CURRENT_STEP  = traceDBHelper.querryformstepsbyTraceNo(traceID,Common.getUserId(getContext()))
+            StepDetector.CURRENT_STEP = traceDBHelper.querryformstepsbyTraceNo(traceID, Common.getUserId(getContext()))
                     .getSteps();
             total_step = StepDetector.CURRENT_STEP;
             getActivity().startService(stepCountServiceIntent);
             iscountstep = true;
             new Thread(stepThread).start();
             stepTv.setVisibility(View.VISIBLE);
-            stepTv.setText(getResources().getString(R.string.step_label)+"："+total_step);
+            stepTv.setText(getResources().getString(R.string.step_label) + "：" + total_step);
         }
     }
 
@@ -977,12 +1000,12 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         final SportTypeChangeDialog dialog = new SportTypeChangeDialog(getContext(), R.style.dlg_sporttype);
         dialog.setCancelable(false);
         dialog.show();
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface Dialog) {
                 int pos = dialog.getposition();
                 sportType = pos;
-                if(pos != -1){ // 点击确定
+                if (pos != -1) { // 点击确定
                     locationService.changeCurrentSportType(pos);
                     if (sportType == 1) {
                         changeSportTypeIb.setBackgroundResource(R.mipmap.ic_walking);
@@ -1008,24 +1031,24 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     }
 
     // 结束记录
-    public void endTrail(){
+    public void endTrail() {
         /**
          * 本地记录trace内容，非具体位置
          * */
         Log.i("LogDemo", "记录结束了!!!!!!!!!!!!!!!!!!!!!我是记录结束分割线！！！！！！！！！！！！");
         locationService.changeCurrentSportType(0); // 结束记录，运动类型改为0
-        if(refreshTrace()){
-            showDialog(getResources().getString(R.string.tip),getResources().getString(R.string.tips_dlgmsg_login));
+        if (refreshTrace()) {
+            showDialog(getResources().getString(R.string.tip), getResources().getString(R.string.tips_dlgmsg_login));
             points.clear();
             locationService.uploadGPS();
-//            List<TraceData> tracelist = new ArrayList<TraceData>();
+            //            List<TraceData> tracelist = new ArrayList<TraceData>();
             tracedata.setSteps(total_step);
-//            tracelist.add(tracedata);
+            //            tracelist.add(tracedata);
             String traceInfo = GsonHelper.toJson(tracedata);
-//            Log.i("HomePageFragment", "tracelist size:" + tracelist.size());
+            //            Log.i("HomePageFragment", "tracelist size:" + tracelist.size());
             Log.i("HomePageFragment", "traceInfo:" + traceInfo);
             String stepInfo;
-            if(tracedata.getSportTypes() == 1) {
+            if (tracedata.getSportTypes() == 1) {
                 List<StepData> steplist = new ArrayList<StepData>();
                 steplist.add(stepdata);
                 stepInfo = GsonHelper.toJson(steplist);
@@ -1033,11 +1056,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 stepInfo = "";
             }
             //Log.i("LogDemo", "endtrail,"+traceInfo+","+stepInfo);
-            traceDBHelper.updateStatus( traceID, 2, Common.getUserID(getContext()));
+            traceDBHelper.updateStatus(traceID, 2, Common.getUserID(getContext()));
 
             // 结束轨迹
             EndTraceRequest endTraceRequest = new EndTraceRequest(
-                    sp.getString("token",""), traceInfo);
+                    sp.getString("token", ""), traceInfo);
             endTraceRequest.requestHttpData(new ResponseData() {
                 @Override
                 public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
@@ -1049,7 +1072,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                                 dismissDialog();
                             }
                         });
-                    }else {
+                    } else {
                         dismissDialog();
                         //Toast.makeText(MainActivity.this, getResources().getString(R.string.tips_recordsuccess_postfail),Toast.LENGTH_SHORT).show();
                         CustomDialog.Builder builder = new CustomDialog.Builder(getContext());
@@ -1079,16 +1102,16 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             /*PostEndTrail endTrailThread = new PostEndTrail(handler,URL_ENDTRAIL,traceInfo,stepInfo,
                     Common.getDeviceId(getContext()));
             endTrailThread.start();*/
-            endMarker=aMap.addMarker(new MarkerOptions().position(finalLatLng).title(getResources().
+            endMarker = aMap.addMarker(new MarkerOptions().position(finalLatLng).title(getResources().
                     getString(R.string.endicon)).icon(BitmapDescriptorFactory.fromResource(R.mipmap.end)));
             //bdmap.markEnd(finalLatLng);
         } else {
-            ToastUtil.show(getContext(),getResources().getString(R.string.tips_recorderror_nogps));
+            ToastUtil.show(getContext(), getResources().getString(R.string.tips_recorderror_nogps));
         }
         traceID = 0;
         locationService.setTraceID(0);
         locationService.changeStatus(false); // 改为非记录状态
-        if(tracedata.getSportTypes()==1){
+        if (tracedata.getSportTypes() == 1) {
             //轨迹类型为步行，结束轨迹时iswalk置为false，停止记录步数
             iscountstep = false;//结束线程
             locationService.changeSportType(false);//是否步行设置为否
@@ -1102,9 +1125,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         //pauseTrail.setVisibility(View.INVISIBLE);
         endTrail.setVisibility(View.INVISIBLE);
         stepTv.setVisibility(View.INVISIBLE);
-        isstart=false;
-        ispause=false;
-        isend=true;
+        isstart = false;
+        ispause = false;
+        isend = true;
         clearTrace();
         aMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
         //bdmap.setLocationStyle(0);
@@ -1120,41 +1143,41 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         Log.i("LogDemo", "tracegps coontent:" + GsonHelper.toJson(tracedata));
         Log.i("LogDemo", "tracegps size:" + tracegps.size());
         //Gson tracejosn=new Gson();
-        if(tracegps.size() > 0) {
+        if (tracegps.size() > 0) {
             tracedata.setEndTime(Common.currentTime());
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             long duration = 0;
-            try{ //计算时间差
+            try { //计算时间差
                 Date d1 = df.parse(tracedata.getStartTime());
                 Date d2 = df.parse(tracedata.getEndTime());
                 duration = d2.getTime() - d1.getTime();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 return false;
             }
             tracedata.setDuration(duration);
             //计算距离
-            double distance=0.0;
-            if(tracegps.size()>1) {
-                for(int i=0;i<tracegps.size()-1;i++) {
+            double distance = 0.0;
+            if (tracegps.size() > 1) {
+                for (int i = 0; i < tracegps.size() - 1; i++) {
                     distance += AMapUtils.calculateLineDistance(new LatLng(tracegps.get(i).getLatitude(),
                                     tracegps.get(i).getLongitude()),
-                            new LatLng(tracegps.get(i+1).getLatitude(),tracegps.get(i+1).getLongitude()));
+                            new LatLng(tracegps.get(i + 1).getLatitude(), tracegps.get(i + 1).getLongitude()));
                 }
             }
             tracedata.setDistance(distance);
-            if(tracedata.getSportTypes() == 1) {
+            if (tracedata.getSportTypes() == 1) {
                 stepdata.setSteps(total_step);
-                traceDBHelper.updatesteps(stepdata, traceID,Common.getUserID(getContext()));
+                traceDBHelper.updatesteps(stepdata, traceID, Common.getUserID(getContext()));
                 Log.i("LogDemo", "步数表更新数据了");
-                Log.i("LogDemo", "stepdata:"+GsonHelper.toJson(stepdata));
+                Log.i("LogDemo", "stepdata:" + GsonHelper.toJson(stepdata));
                 tracedata.setCalorie(calculateCalorie_Walk(distance));
             }
-            if(tracedata.getSportTypes() == 2) {
+            if (tracedata.getSportTypes() == 2) {
                 tracedata.setCalorie(calculateCalorie_Ride(distance, duration));
 
             }
             PhotoDBHelper photoHelper = new PhotoDBHelper(getContext(), PhotoDBHelper.DBREAD);
-            if(cursor != null && !cursor.isClosed()) {
+            if (cursor != null && !cursor.isClosed()) {
                 cursor.close();
             }
             cursor = photoHelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
@@ -1165,11 +1188,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             tracedata.setPoiCount(poiCount);
             Log.i("mmmmmmmmmmmmmmm", "traceID:" + traceID);
             Log.i("mmmmmmmmmmmmmmm", "本地插入了一条轨迹");
-            traceDBHelper.updatetrail(tracedata,traceID,Common.getUserID(getContext()));
+            traceDBHelper.updatetrail(tracedata, traceID, Common.getUserID(getContext()));
             Log.i("mmmmmmmmmmmmmmm", "refresh traceDBHelper.updatetrail(tracedata,traceID,Common.getUserID(getContext()));");
             Log.i("LogDemo", "轨迹表更新数据了");
-            Log.i("LogDemo", "traceData:"+GsonHelper.toJson(tracedata));
-            traceDBHelper.updateStatus( traceID, 1,Common.getUserID(getContext()));
+            Log.i("LogDemo", "traceData:" + GsonHelper.toJson(tracedata));
+            traceDBHelper.updateStatus(traceID, 1, Common.getUserID(getContext()));
             TraceData traceListTemp = traceDBHelper.queryfromTrailbytraceID(traceID, Common.getUserID(getContext()));
             Log.i("HomePage", "UpdateTrail:" + GsonHelper.toJson(traceListTemp));
             return true;
@@ -1177,11 +1200,12 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             ToastUtil.show(getContext(), "未采集到位置信息，轨迹不保存");
             return false;
         }
-//        else {
-//            ToastUtil.showShortToast(getContext(), "未获取到traceID");
-//            return false;
-//        }
+        //        else {
+        //            ToastUtil.showShortToast(getContext(), "未获取到traceID");
+        //            return false;
+        //        }
     }
+
     /**
      * 实际的步数
      */
@@ -1189,24 +1213,26 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         if (StepDetector.CURRENT_STEP % 2 == 0) {
             total_step = StepDetector.CURRENT_STEP;
         } else {
-            total_step = StepDetector.CURRENT_STEP +1;
+            total_step = StepDetector.CURRENT_STEP + 1;
         }
         total_step = StepDetector.CURRENT_STEP;
     }
+
     private int calculateCalorie_Walk(double distance) {
         //体重（kg）×距离（公里）×1.036
-        return (int)(60*1.036*distance/1000);
+        return (int) (60 * 1.036 * distance / 1000);
     }
-    private int calculateCalorie_Ride(double distance,long duration) {
+
+    private int calculateCalorie_Ride(double distance, long duration) {
         //时速(km/h)×体重(kg)×1.05×运动时间(h)
-        return (int)(60*1.05*distance/1000);
+        return (int) (60 * 1.05 * distance / 1000);
     }
 
     @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch(msg.what){
+            switch (msg.what) {
                 case 0://获取轨迹号成功
                     //ToastUtil.show(MainActivity.this, "开始记录");
                     break;
@@ -1215,13 +1241,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     break;
                 case 2://结束记录轨迹成功
                     dismissDialog();
-                    traceDBHelper.updateStatus( traceID, 0,Common.getUserID(getContext()));
+                    traceDBHelper.updateStatus(traceID, 0, Common.getUserID(getContext()));
                     traceDBHelper.deleteStatus();
                     //云端新增轨迹提醒，提示用户下拉刷新
                     Intent intent = new Intent();
                     intent.setAction(PULLREFRESH_ACTION);
                     getActivity().sendBroadcast(intent);
-                    ToastUtil.show(getContext(),getResources().getString(R.string.tips_recordsuccess));
+                    ToastUtil.show(getContext(), getResources().getString(R.string.tips_recordsuccess));
                     break;
                 case 3://结束记录轨迹失败
                     dismissDialog();
@@ -1231,19 +1257,19 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     builder.setMessage(getResources().getString(R.string.tips_uploadtracedlg_msgfail));
                     builder.setNegativeButton(getResources().getString(R.string.cancl),
                             new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
                     builder.setPositiveButton(getResources().getString(R.string.tryagain),
                             new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            locationService.uploadGPS();
-                            dialog.dismiss();
-                        }
-                    });
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    locationService.uploadGPS();
+                                    dialog.dismiss();
+                                }
+                            });
                     builder.create().show();
                     break;
                 case 4://获取4个时间成功
@@ -1271,9 +1297,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 case 9://更新步数
                     countStep();
                     stepTv.setText(getResources().getString(R.string.step_label) + "：" + total_step);
-                    if(tracedata.getSportTypes() == 1){
+                    if (tracedata.getSportTypes() == 1) {
                         stepdata.setSteps(total_step);
-                        traceDBHelper.updatesteps(stepdata, traceID,Common.getUserID(getContext()));
+                        traceDBHelper.updatesteps(stepdata, traceID, Common.getUserID(getContext()));
                     }
                     break;
                 case 10:
@@ -1281,27 +1307,27 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     break;
                 case 11://endtrail 上传失败，原因：网络未连接
                     dismissDialog();
-                    Toast.makeText(getContext(),getResources().getString(R.string.tips_uploadtracedlg_msgnonet),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.tips_uploadtracedlg_msgnonet), Toast.LENGTH_LONG).show();
                     break;
             }
         }
     };
 
     @SuppressLint("HandlerLeak")
-    private Handler updatehandler=new Handler(){
+    private Handler updatehandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch(msg.what){
+            switch (msg.what) {
                 case 0:
-                    final String[] updatestr=msg.obj.toString().trim().split("&");
+                    final String[] updatestr = msg.obj.toString().trim().split("&");
                     //Log.i("LogDemo","有更新,"+ url);
-                    if(updatestr.length>=5){
+                    if (updatestr.length >= 5) {
                         String version = updatestr[0];
                         String time = updatestr[1];
                         String url = updatestr[2];
                         String detail = updatestr[3];
                         String size = updatestr[4];
-                        Log.i("LogDemo","有更新," + version + size + time + url+detail);
+                        Log.i("LogDemo", "有更新," + version + size + time + url + detail);
                         CustomDialog.Builder builder = new CustomDialog.Builder(getContext());
                         builder.setTitle(getResources().getString(R.string.tips_updatedlg_tle));
                         builder.setMessage(getResources().getString(R.string.tips_updatedlg_msg1) + "\n"
@@ -1312,27 +1338,27 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                                 + getResources().getString(R.string.tips_updatedlg_msg6));
                         builder.setNegativeButton(getResources().getString(R.string.cancl),
                                 new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
                         builder.setPositiveButton(getResources().getString(R.string.confirm),
                                 new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                Common.fileInfo = new FileInfoData(0, updatestr[2]
-                                        ,"HappyNavi" + updatestr[0] + ".apk", 0, 0);//User/userDownApk.aspx
-                                // 通知Service开始下载
-                                updateServiceIntent = new Intent(getContext(), DownloadService.class);
-                                updateServiceIntent.setAction(DownloadService.ACTION_START);
-                                updateServiceIntent.putExtra("fileInfo", Common.fileInfo);
-                                getActivity().startService(updateServiceIntent);
-                                Common.isUpdationg = true;
-                                ToastUtil.show(getContext(), getResources().getString(R.string.tips_gotodownnewapk));
-                            }
-                        });
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        Common.fileInfo = new FileInfoData(0, updatestr[2]
+                                                , "HappyNavi" + updatestr[0] + ".apk", 0, 0);//User/userDownApk.aspx
+                                        // 通知Service开始下载
+                                        updateServiceIntent = new Intent(getContext(), DownloadService.class);
+                                        updateServiceIntent.setAction(DownloadService.ACTION_START);
+                                        updateServiceIntent.putExtra("fileInfo", Common.fileInfo);
+                                        getActivity().startService(updateServiceIntent);
+                                        Common.isUpdationg = true;
+                                        ToastUtil.show(getContext(), getResources().getString(R.string.tips_gotodownnewapk));
+                                    }
+                                });
                         builder.create().show();
                     }
                     break;
@@ -1352,7 +1378,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     /**
      * 获取兴趣点列表选项
      */
-    private void initPOI(){
+    private void initPOI() {
         //从服务器下载停留时长、行为类型、同伴人数、关系等选项的数据
         DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(sp.getString("token", ""));
         downloadPoiChoices.requestHttpData(new ResponseData() {
@@ -1403,7 +1429,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             }
         });
     }
-    private void initPOIEN(){
+
+    private void initPOIEN() {
         //英文版
         DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(sp.getString("Token", ""));
         downloadPoiChoices.requestHttpData(new ResponseData() {
@@ -1456,7 +1483,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                         String commentTime = data.getStringExtra("createTime");
                         commentServiceIntent.putExtra("createTime", commentTime);
                         commentUploadService.getToComment(data.getStringExtra("createTime"));
-//                        getActivity().startService(commentServiceIntent);
+                        //                        getActivity().startService(commentServiceIntent);
                         //commentUploadService.uploadComment(Common.getUserId(getApplicationContext()),
                         //		commentTime);
                     }// 如果是数据流量连接，第一次使用询问是否上传
@@ -1479,7 +1506,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                                             String commentTime = data.getStringExtra("createTime");
                                             commentServiceIntent.putExtra("createTime", commentTime);
                                             commentUploadService.getToComment(data.getStringExtra("createTime"));
-//                                            getActivity().startService(commentServiceIntent);
+                                            //                                            getActivity().startService(commentServiceIntent);
                                             //commentUploadService.uploadComment(
                                             //		Common.getUserId(getApplicationContext()),
                                             //		commentTime);
@@ -1499,19 +1526,18 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                                         }
                                     });
                             builder.create().show();
-                        }
-                        else {
+                        } else {
                             String commentTime = data.getStringExtra("createTime");
                             commentServiceIntent.putExtra("createTime", commentTime);
                             commentUploadService.getToComment(data.getStringExtra("createTime"));
-//                            getActivity().startService(commentServiceIntent);
+                            //                            getActivity().startService(commentServiceIntent);
                             //commentUploadService.uploadComment(
                             //		Common.getUserId(getApplicationContext()),
                             //		commentTime);
                         }
                     } else {
                         // 如果没有网络，将上传相关信息写到cache文件
-                        Toast.makeText(getContext(),getResources().getString(R.string.tips_uploadpic_nonet),
+                        Toast.makeText(getContext(), getResources().getString(R.string.tips_uploadpic_nonet),
                                 Toast.LENGTH_SHORT).show();
                         String commentTime = data.getStringExtra("createTime");
                         String userId = Common.getUserId(getContext());
@@ -1609,7 +1635,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 new android.content.DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        if(Common.isNetConnected) {
+                        if (Common.isNetConnected) {
                             startActivity(new Intent(getContext(), BGRunningGuideActivity.class));
                         } else {
                             ToastUtil.show(getContext(), getResources().getString(R.string.tips_netdisconnect));
@@ -1618,11 +1644,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 });
         builder.setNegativeButton(getResources().getString(R.string.close),
                 new android.content.DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                arg0.dismiss();
-            }
-        } );
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        arg0.dismiss();
+                    }
+                });
         builder.create().show();
     }
 
@@ -1652,31 +1678,31 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 });
         builder.setNegativeButton(getResources().getString(R.string.cancl),
                 new android.content.DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                arg0.dismiss();
-                isShowNonLocDlg = false;
-            }
-        } );
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        arg0.dismiss();
+                        isShowNonLocDlg = false;
+                    }
+                });
         builder.create().show();
     }
 
     //低精度时弹出提示对话框，用户选择是否采用低精度位置
-    private void showDlg_LowAccuracy(){
+    private void showDlg_LowAccuracy() {
         CustomDialog.Builder builder = new CustomDialog.Builder(getContext());
         builder.setTitle(getResources().getString(R.string.tip));
         builder.setMessage(getResources().getString(R.string.tips_accuracydlg_msg));
-        builder.setNegativeButton(getResources().getString(R.string.no),new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-        builder.setPositiveButton(getResources().getString(R.string.yes),new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Common.isHighAccuracy=false;
+                Common.isHighAccuracy = false;
                 dialog.dismiss();
             }
         });
@@ -1686,7 +1712,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     /**
      * 显示进度条对话框
      */
-    public void showDialog(String title,String message) {
+    public void showDialog(String title, String message) {
         if (proDialog == null)
             proDialog = new ProgressDialog(getContext());
         proDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -1737,54 +1763,55 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     @Override
     public void onDestroy() {
         super.onDestroy();
-        iscountstep=false;
+        iscountstep = false;
         deactivate();
-        if(null != mlocationClient){
+        if (null != mlocationClient) {
             mlocationClient.onDestroy();
         }
         //bdmap.stop();
         mapView.onDestroy();
         //bdMapView.onDestroy();
-        if(bound_trace){
+        if (bound_trace) {
             getActivity().unbindService(connection);
-            bound_trace=false;
+            bound_trace = false;
             Log.i("HomePage", "解绑定位服务");
         }
 		/*if(bound_upload){
 			this.getApplicationContext().unbindService(conn_comment);
 			bound_upload=false;
 		}*/
-		if (bound_comment_upload) {
-		    getActivity().unbindService(commentConnection);
-		    bound_comment_upload = false;
+        if (bound_comment_upload) {
+            getActivity().unbindService(commentConnection);
+            bound_comment_upload = false;
             Log.i("HomePage", "解绑上传评论服务");
         }
         Common.isUpdationg = false;
-        if(null != locationServiceIntent){
+        if (null != locationServiceIntent) {
             getActivity().stopService(locationServiceIntent);
             Log.i("HomePage", "停止定位服务");
         }
-        if(null != commentServiceIntent){
+        if (null != commentServiceIntent) {
             getActivity().stopService(commentServiceIntent);
             Log.i("HomePage", "停止服务");
         }
-        if(null != updateServiceIntent){
+        if (null != updateServiceIntent) {
             getActivity().stopService(updateServiceIntent);
             Log.i("HomePage", "停止更新服务");
         }
-        if(null != stepCountServiceIntent){
+        if (null != stepCountServiceIntent) {
             getActivity().stopService(stepCountServiceIntent);
             Log.i("HomePage", "停止记步服务");
         }
-        if(null != myReceiver){
+        if (null != myReceiver) {
             getActivity().unregisterReceiver(myReceiver);
         }
-        if(null != accuracyReciver){
+        if (null != accuracyReciver) {
             getActivity().unregisterReceiver(accuracyReciver);
         }
-        if(null != connectionReceiver){
+        if (null != connectionReceiver) {
             getActivity().unregisterReceiver(connectionReceiver);
         }
         Log.i("LogDemo", "Main-onDestroy");
     }
+
 }

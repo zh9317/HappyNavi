@@ -1,11 +1,13 @@
 package com.trackersurvey.happynavi;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,20 +26,24 @@ import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
 import com.trackersurvey.util.DataCleanManager;
+import com.trackersurvey.util.StoreLanguageSP;
 import com.trackersurvey.util.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-public class SettingActivity extends BaseActivity implements View.OnClickListener{
+public class SettingActivity extends BaseActivity implements View.OnClickListener {
 
-    private TextView titleTv;
-    private TextView titleRightTv;
-    private TextView cacheSizeTv;
+    private TextView          titleTv;
+    private TextView          titleRightTv;
+    private TextView          cacheSizeTv;
     private SharedPreferences sp;
 
     private int checkedItem = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +52,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         StatusBarCompat.setStatusBarColor(this, Color.BLACK); // 修改状态栏颜色
         // 隐藏原始标题栏
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
+        if (actionBar != null) {
             actionBar.hide();
         }
         titleTv = findViewById(R.id.title_text);
@@ -106,21 +112,55 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                         switch (which) {
                             case 0: // 中文
                                 dialog.dismiss();
-                                SharedPreferences.Editor editor = sp.edit();
-                                editor.putString("language", "0");
+                                //                                SharedPreferences.Editor editor = sp.edit();
+                                //                                editor.putString("language", "zh");
+                                //                                editor.apply();
+                                //                                StoreLanguageSP.setLanguageLocal(SettingActivity.this, "zh");
+                                //                                EventBus.getDefault().post("EVENT_REFRESH_LANGUAGE");
+                                //                                Intent intent = new Intent(SettingActivity.this,MainActivity.class);
+                                //                                finish();
+                                //                                startActivity(intent);
+                                SharedPreferences preferences1 = getSharedPreferences("language", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences1.edit();
+                                editor.putString("language", "zh");
                                 editor.apply();
-                                Intent intent = new Intent(SettingActivity.this,MainActivity.class);
-                                finish();
-                                startActivity(intent);
+//                                setResult(RESULT_OK);
+//                                EventBus.getDefault().post("EVENT_REFRESH_LANGUAGE");
+                                 finish();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(getApplication().getPackageName());
+                                        LaunchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(LaunchIntent);
+                                    }
+                                },1);
                                 break;
                             case 1: // 英文
                                 dialog.dismiss();
-                                SharedPreferences.Editor editor2 = sp.edit();
-                                editor2.putString("language", "1");
-                                editor2.apply();
-                                Intent intent2 = new Intent(SettingActivity.this,SettingActivity.class);
+                                //                                SharedPreferences.Editor editor2 = sp.edit();
+                                //                                editor2.putString("language", "en");
+                                //                                editor2.apply();
+                                //                                Intent intent2 = new Intent(SettingActivity.this,SettingActivity.class);
+                                //                                finish();
+                                //                                startActivity(intent2);
+                                //                                StoreLanguageSP.setLanguageLocal(SettingActivity.this, "en");
+                                //                                EventBus.getDefault().post("EVENT_REFRESH_LANGUAGE");
+                                //                                finish();
+                                SharedPreferences preferences = getSharedPreferences("language", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor1 = preferences.edit();
+                                editor1.putString("language", "en");
+                                editor1.apply();
+//                                setResult(RESULT_OK);
                                 finish();
-                                startActivity(intent2);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent LaunchIntent = getPackageManager().getLaunchIntentForPackage(getApplication().getPackageName());
+                                        LaunchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(LaunchIntent);
+                                    }
+                                },1);
                                 break;
                             default:
                                 break;
@@ -134,7 +174,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 CustomDialog.Builder builder = new CustomDialog.Builder(SettingActivity.this);
                 builder.setTitle(getResources().getString(R.string.tip));
                 builder.setMessage(getResources().getString(R.string.tips_clean));
-                builder.setNegativeButton(getResources().getString(R.string.cancl),new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getResources().getString(R.string.cancl), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -142,15 +182,15 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                         dialog.dismiss();
                     }
                 });
-                builder.setPositiveButton(getResources().getString(R.string.confirm),new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO Auto-generated method stub
 
                         DataCleanManager.cleanApplicationData(getApplicationContext(),
-                                Common.LOG_PATH,Common.PHOTO_PATH,
-                                Common.GROUPHEAD_PATH,Common.CACHEPHOTO_PATH,
+                                Common.LOG_PATH, Common.PHOTO_PATH,
+                                Common.GROUPHEAD_PATH, Common.CACHEPHOTO_PATH,
                                 Common.DOWNLOAD_APP_PATH);
                         ToastUtil.show(SettingActivity.this, getResources().getString(R.string.tips_cleanok));
                         try {
@@ -172,26 +212,26 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.logout_btn:
                 String msg = getResources().getString(R.string.exitdlg1);
-                if(Common.isRecording){
+                if (Common.isRecording) {
                     msg = getResources().getString(R.string.exitdlg2);
                 }
                 CustomDialog.Builder builder_logout = new CustomDialog.Builder(this);
                 builder_logout.setTitle(getResources().getString(R.string.exit));
                 builder_logout.setMessage(msg);
-                builder_logout.setNegativeButton(getResources().getString(R.string.cancl),new DialogInterface.OnClickListener() {
+                builder_logout.setNegativeButton(getResources().getString(R.string.cancl), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
-                builder_logout.setPositiveButton(getResources().getString(R.string.confirm),new DialogInterface.OnClickListener() {
+                builder_logout.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
-//                        Common.sendOffline(Common.getDeviceId(getApplicationContext()),getApplication());
-//                        //Common.userId="0";
-//                        Common.layerid_main=0;
+                        //                        Common.sendOffline(Common.getDeviceId(getApplicationContext()),getApplication());
+                        //                        //Common.userId="0";
+                        //                        Common.layerid_main=0;
                         LogoutRequest logoutRequest = new LogoutRequest(sp.getString("token", ""));
                         logoutRequest.requestHttpData(new ResponseData() {
                             @Override
@@ -243,4 +283,12 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         configuration.locale = Locale.ENGLISH;
         resources.updateConfiguration(configuration, dm);
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == RESULT_OK) {
+//            recreate();
+//        }
+//    }
 }

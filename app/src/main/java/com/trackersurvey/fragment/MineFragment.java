@@ -26,6 +26,10 @@ import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.TestRequest;
 import com.trackersurvey.util.RoundImageView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.IOException;
 
 /**
@@ -33,12 +37,12 @@ import java.io.IOException;
  * “我的”页面
  */
 
-public class MineFragment extends Fragment implements View.OnClickListener{
+public class MineFragment extends Fragment implements View.OnClickListener {
 
     private SharedPreferences sp;
-    private RoundImageView headImg;
-    private TextView nickNameTv;
-    private TextView mobilePhoneTv;
+    private RoundImageView    headImg;
+    private TextView          nickNameTv;
+    private TextView          mobilePhoneTv;
 
     @Nullable
     @Override
@@ -63,6 +67,7 @@ public class MineFragment extends Fragment implements View.OnClickListener{
         myGroupLayout.setOnClickListener(this);
         settingLayout.setOnClickListener(this);
         helpLayout.setOnClickListener(this);
+//        EventBus.getDefault().register(this);
         return meLayout;
     }
 
