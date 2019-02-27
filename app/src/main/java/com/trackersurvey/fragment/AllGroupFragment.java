@@ -355,6 +355,4 @@ public class AllGroupFragment extends Fragment implements View.OnClickListener, 
             context.unregisterReceiver(refreshReciver);
         }
     }
-
-
 }

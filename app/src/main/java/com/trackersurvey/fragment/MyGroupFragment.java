@@ -360,12 +360,10 @@ public class MyGroupFragment extends Fragment implements View.OnClickListener, P
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("dongsiActivityResult", "onActivityResult: ");
-
         switch (resultCode) {
             case 1:
                 init();
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 }
