@@ -112,10 +112,10 @@ import java.util.List;
  */
 
 public class ShowTraceFragment extends Fragment implements View.OnClickListener, AMap.OnMapClickListener, AMap.OnMapLoadedListener,
-        RouteSearch.OnRouteSearchListener, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, AMap.InfoWindowAdapter,
-        GeocodeSearch.OnGeocodeSearchListener {
-    private MapView  mapView;
-    private AMap     aMap;
+        RouteSearch.OnRouteSearchListener, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, AMap.InfoWindowAdapter ,
+        GeocodeSearch.OnGeocodeSearchListener{
+    private MapView mapView;
+    private AMap aMap;
     private TextView distance;
     private TextView duration;
     private TextView time;
@@ -123,75 +123,75 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     private TextView step;
     private TextView calorie;
 
-    private String              stepstr = "--";// 从intent获取
-    private Polyline            polyline;
+    private String stepstr = "--";// 从intent获取
+    private Polyline polyline;
     // private Circle circle;// 标记网络定位点
-    private TraceData           trailobj;
-    private PointOfInterestData behaviourData, durationData, partnerNumData, relationData;
-    private ProgressDialog                     proDialog        = null;
-    private List<GpsData>                      traces           = new ArrayList<GpsData>();
-    private List<GpsData>                      linkTraces       = new LinkedList<GpsData>();
-    private StepData                           stepdata         = new StepData();
+    private TraceData trailobj;
+    private PointOfInterestData behaviourData,durationData, partnerNumData, relationData;
+    private ProgressDialog proDialog = null;
+    private List<GpsData> traces = new ArrayList<GpsData>();
+    private List<GpsData> linkTraces = new LinkedList<GpsData>();
+    private StepData stepdata = new StepData();
     //private List<LatLng> points = new ArrayList<LatLng>();
-    private List<TraceLatLng>                  tracePoints      = new ArrayList<>();
-    private List<LatLng>                       linkPoints       = new LinkedList<LatLng>();
-    private List<Integer>                      start            = new ArrayList<Integer>();
-    private List<Integer>                      end              = new ArrayList<Integer>();
-    private List<Integer>                      selectid         = new ArrayList<Integer>();// 被过滤的坐标
-    private int                                s_id             = 0;// selectid的下标 用于连接步行规划起点终点不可达的情况
-    private List<LatLng>                       NetPoints        = new ArrayList<LatLng>();// 网络定位点
-    private List<LatLng>                       MarkPoints       = new ArrayList<LatLng>();// 标注点的经纬度
-    private List<GpsData>                      keyPoints        = new ArrayList<GpsData>();// 显示时间的关键点
-    private List<Long>                         arrayMillSeconds = new ArrayList<Long>();
-    private List<Marker>                       arrayMarker      = new ArrayList<Marker>();
-    private ArrayList<HashMap<String, Object>> items            = new ArrayList<HashMap<String, Object>>();
+    private List<TraceLatLng> tracePoints = new ArrayList<>();
+    private List<LatLng> linkPoints = new LinkedList<LatLng>();
+    private List<Integer> start = new ArrayList<Integer>();
+    private List<Integer> end = new ArrayList<Integer>();
+    private List<Integer> selectid = new ArrayList<Integer>();// 被过滤的坐标
+    private int s_id = 0;// selectid的下标 用于连接步行规划起点终点不可达的情况
+    private List<LatLng> NetPoints = new ArrayList<LatLng>();// 网络定位点
+    private List<LatLng> MarkPoints = new ArrayList<LatLng>();// 标注点的经纬度
+    private List<GpsData> keyPoints = new ArrayList<GpsData>();// 显示时间的关键点
+    private List<Long> arrayMillSeconds = new ArrayList<Long>();
+    private List<Marker> arrayMarker = new ArrayList<Marker>();
+    private ArrayList<HashMap<String, Object>> items = new ArrayList<HashMap<String, Object>>();
 
-    private       DriveRouteResult driveRouteResult;// 驾车模式查询结果
-    private       WalkRouteResult  walkRouteResult;// 步行模式查询结果
-    private       RouteSearch      routeSearch;
-    private       String           URL_GETTRAIL    = null;
-    private       String           URL_ENDTRAIL    = null;
-    private       String           URL_GPSDATA     = null;
-    private       String           URL_GETPOI      = null;
-    public final  String           UPDATEUI_ACTION = "android.intent.action.UPDATEUI_RECEIVER";// 给ShowPoiFragment发的广播
-    private final String           REFRESH_ACTION  = "android.intent.action.REFRESH_RECEIVER";// 给TraceListActivity发的广播
+    private DriveRouteResult driveRouteResult;// 驾车模式查询结果
+    private WalkRouteResult walkRouteResult;// 步行模式查询结果
+    private RouteSearch routeSearch;
+    private String URL_GETTRAIL = null;
+    private String URL_ENDTRAIL = null;
+    private String URL_GPSDATA = null;
+    private String URL_GETPOI = null;
+    public final String UPDATEUI_ACTION = "android.intent.action.UPDATEUI_RECEIVER";// 给ShowPoiFragment发的广播
+    private final String REFRESH_ACTION = "android.intent.action.REFRESH_RECEIVER";// 给TraceListActivity发的广播
 
     private boolean isOnline;
-    private boolean canShare1  = false;
-    private boolean canShare2  = false; // 本地轨迹上传成功才能分享
+    private boolean canShare1 = false;
+    private boolean canShare2 = false; // 本地轨迹上传成功才能分享
     private boolean isTimeLine = false;// false 分享给好友 true分享到朋友圈
 
-    private MyTraceDBHelper helper   = null;
-    private PhotoDBHelper   dbHelper = null;
+    private MyTraceDBHelper helper = null;
+    private PhotoDBHelper dbHelper = null;
 
     private Cursor cursor = null;
 
     private PointOfInterestDBHelper helper2 = null;
 
-    private       int            maptype = 0;
+    private int maptype = 0;
     public static MyCommentModel myComment;// 用于获取标记信息
 
-    private Context           context;
+    private Context context;
     private SharedPreferences sp;
     /**
      * 以下是标注相关
      */
-    private LatLng            markLatLng = null;// 选择的添加标注的位置
+    private LatLng markLatLng = null;// 选择的添加标注的位置
     //private LatLonPoint markLatLonPoint;
     //private GeocodeSearch geocodeSearch;
-    private long              startMills = 0;
-    private long              endMills   = 0;
-    private SeekBar           seekbar    = null;
-    private ImageView         mark_left, mark_right, addMarker, checkTrace, shareTrace;
-    private String   startTimeStr = "00:00:00";
-    private String   endTimeStr   = "00:00:00";
+    private long startMills = 0;
+    private long endMills = 0;
+    private SeekBar seekbar = null;
+    private ImageView mark_left, mark_right, addMarker, checkTrace, shareTrace;
+    private String startTimeStr = "00:00:00";
+    private String endTimeStr = "00:00:00";
     private TextView moveText, startTime, endTime;
     private PopupWindow mPopupWindow;
 
     /**
      * 轨迹总时长
      */
-    private int totalSeconds    = 0;
+    private int totalSeconds = 0;
     private int currentProgress = 0;
 
     /**
@@ -204,20 +204,20 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
      */
     private TextMoveLayout textMoveLayout;
 
-    private       ViewGroup.LayoutParams layoutParams;
+    private ViewGroup.LayoutParams layoutParams;
     /**
      * 托动条的移动步调
      */
-    private       float                  moveStep       = 0;
-    private       Marker                 selectedMarker = null;
-    private final int                    REQUESTMARK    = 0x11;
+    private float moveStep = 0;
+    private Marker selectedMarker = null;
+    private final int REQUESTMARK = 0x11;
     // private CommentUploadService commentUploadService;
     // private Intent uploadService;
     // private boolean bound_upload=false;
-    private       SharedPreferences      uploadCache;// 存储待上传的评论信息
+    private SharedPreferences uploadCache;// 存储待上传的评论信息
 
-    private Tencent       mTencent;//用于qq空间分享
-    private Bundle        params;
+    private Tencent mTencent;//用于qq空间分享
+    private Bundle params;
     private MyIUilistener mIUilistener;//用于qq空间分享
 
     private long currentTraceID;
@@ -229,22 +229,22 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         View view = null;
 
         // 中英文切换
-        //        Resources resources = getResources();
-        //        Configuration configure = resources.getConfiguration();
-        //        DisplayMetrics dm = resources.getDisplayMetrics();
-        //        if(TabHost_Main.l==0){
-        //            configure.locale = Locale.CHINESE;
-        //        }
-        //        if(TabHost_Main.l==1){
-        //            configure.locale = Locale.ENGLISH;
-        //        }
-        //        resources.updateConfiguration(configure, dm);
-        //        if(l == 0){
-        //            view = inflater.inflate(R.layout.fragment_showpath, null);
-        //        }
-        //        if(l == 1){
-        //            view = inflater.inflate(R.layout.fragment_showpath_en, null);
-        //        }
+//        Resources resources = getResources();
+//        Configuration configure = resources.getConfiguration();
+//        DisplayMetrics dm = resources.getDisplayMetrics();
+//        if(TabHost_Main.l==0){
+//            configure.locale = Locale.CHINESE;
+//        }
+//        if(TabHost_Main.l==1){
+//            configure.locale = Locale.ENGLISH;
+//        }
+//        resources.updateConfiguration(configure, dm);
+//        if(l == 0){
+//            view = inflater.inflate(R.layout.fragment_showpath, null);
+//        }
+//        if(l == 1){
+//            view = inflater.inflate(R.layout.fragment_showpath_en, null);
+//        }
         view = inflater.inflate(R.layout.fragment_show_trace, null);
         context = getActivity();
         mapView = (MapView) view.findViewById(R.id.show_amapView);
@@ -268,7 +268,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         shareTrace = (ImageView) view.findViewById(R.id.sharetrace);
         sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
 
-        //        mTencent = Tencent.createInstance("1105447917", getContext());//用于qq空间分享
+//        mTencent = Tencent.createInstance("1105447917", getContext());//用于qq空间分享
 
         // distance = (TextView) view.findViewById(R.id.distance_info);
         // duration = (TextView) view.findViewById(R.id.during_info);
@@ -317,16 +317,15 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         URL_ENDTRAIL = Common.url + "reqTraceNo.aspx";
         URL_GPSDATA = Common.url + "upLocation.aspx";
         URL_GETPOI = Common.url + "requestInfo.aspx";
-        //        if(l==0){
-        //            initPOI();//下载添加兴趣点下拉列表选项内容
-        //        }
-        //        if(l==1){
-        //            initPOIEN();//英文版
-        //        }
-        //        initPOI();
+//        if(l==0){
+//            initPOI();//下载添加兴趣点下拉列表选项内容
+//        }
+//        if(l==1){
+//            initPOIEN();//英文版
+//        }
+//        initPOI();
         return view;
     }
-
     /**
      * 初始化AMap对象
      */
@@ -403,7 +402,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                                 dismissDialog();
                             }
                         });
-                    } else {
+                    }else {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -481,10 +480,10 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             case R.id.addmark:
                 markLatLng = new LatLng(tracePoints.get(praseProgressToPosition(currentProgress)).getLatLng().latitude,
                         tracePoints.get(praseProgressToPosition(currentProgress)).getLatLng().longitude);
-                //                markLatLonPoint = new LatLonPoint(markLatLng.latitude, markLatLng.longitude);
-                //                RegeocodeQuery regeocodeQuery = new RegeocodeQuery(markLatLonPoint, 500f, GeocodeSearch.AMAP);
-                //                geocodeSearch = new GeocodeSearch(getContext());
-                //                geocodeSearch.setOnGeocodeSearchListener(this);
+//                markLatLonPoint = new LatLonPoint(markLatLng.latitude, markLatLng.longitude);
+//                RegeocodeQuery regeocodeQuery = new RegeocodeQuery(markLatLonPoint, 500f, GeocodeSearch.AMAP);
+//                geocodeSearch = new GeocodeSearch(getContext());
+//                geocodeSearch.setOnGeocodeSearchListener(this);
                 //从POI数据库中取数据
                 ArrayList<String> behaviour = helper2.getBehaviour();
                 ArrayList<String> duration = helper2.getDuration();
@@ -532,7 +531,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                 // ToastUtil.show(context, "待添加");
                 break;
             case R.id.sharetrace:
-                if (!Common.isNetConnected) {
+                if(!Common.isNetConnected){
                     ToastUtil.show(context, getResources().getString(R.string.tips_share_nonet1));
                     return;
                 }
@@ -572,7 +571,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(), "分享到QQ空间的功能待开发", Toast.LENGTH_SHORT).show();
-                        //                        ShareToQZone();
+//                        ShareToQZone();
                     }
                 });
                 ImageButton shareQQ = (ImageButton) contentView.findViewById(R.id.share_qq);
@@ -581,7 +580,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(), "分享到QQ好友的功能待开发", Toast.LENGTH_SHORT).show();
-                        //                        ShareToQQ();
+//                        ShareToQQ();
                     }
                 });
                 break;
@@ -608,7 +607,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                         traces = GsonHelper.parseJsonToList(msg.obj.toString().trim(), GpsData.class);
                         // Toast.makeText(context, "收到轨迹条数："+traces.size(),
                         // Toast.LENGTH_SHORT).show();
-                        Log.i("traildetail", "traildetail" + msg.obj);
+                        Log.i("traildetail", "traildetail"+msg.obj);
                         if (traces.size() > 0) {
                             initLocation();
                             if (Common.isNetConnected && trailobj.getSportTypes() != 5) {
@@ -674,7 +673,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-                    if (msg.obj != null) {
+                    if(msg.obj!=null){
                         String[] poiStr = msg.obj.toString().trim().split("#");
                         String[] behaviourStr = poiStr[1].split("[$]");
                         String[] durationStr = poiStr[0].split("[$]");
@@ -687,23 +686,23 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                         //Log.i("poiStr", poiStr[0]);
                         helper2.delete();
                         try {
-                            for (int i = 0; i < behaviourStr.length; i++) {
+                            for(int i = 0;i<behaviourStr.length;i++){
                                 behaviourData.setKey(i);
                                 behaviourData.setValue(behaviourStr[i]);
                                 helper2.insertBehaviour(behaviourData);
                             }
-                            for (int i = 0; i < durationStr.length; i++) {
+                            for(int i = 0;i<durationStr.length;i++){
                                 durationData.setKey(i);
                                 durationData.setValue(durationStr[i]);
                                 //将数据插入到POI数据库中
                                 helper2.insertDuration(durationData);
                             }
-                            for (int i = 0; i < partnerNumStr.length; i++) {
+                            for(int i = 0;i<partnerNumStr.length;i++){
                                 partnerNumData.setKey(i);
                                 partnerNumData.setValue(partnerNumStr[i]);
                                 helper2.insertPartnerNum(partnerNumData);
                             }
-                            for (int i = 0; i < relationStr.length; i++) {
+                            for(int i = 0;i<relationStr.length;i++){
                                 relationData.setKey(i);
                                 relationData.setValue(relationStr[i]);
                                 helper2.insertPartnerRelation(relationData);
@@ -794,13 +793,13 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     private void initMarker() {
         Log.i("ShowTrace", "initMarker");
         myComment.setTimeRegion(trailobj.getStartTime(), trailobj.getEndTime());
-        //        myComment.initMarkerItemsFromDB();
+//        myComment.initMarkerItemsFromDB();
 
         myComment.initItemsByTraceID(trailobj.getTraceID());
 
         //创建或打开数据库，如果数据库中没有数据就从服务器请求兴趣点数据
         PhotoDBHelper phelper = new PhotoDBHelper(context, PhotoDBHelper.DBREAD);
-        if (cursor != null && !cursor.isClosed()) {
+        if(cursor != null && !cursor.isClosed()){
             cursor.close();
         }
         String from = traces.get(0).getCreateTime();
@@ -809,10 +808,10 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         Log.i("trailobjinitMarker", "startTime:" + trailobj.getStartTime() + "endTime" + trailobj.getEndTime());
         Log.i("trailobjinitMarker", "initMarker: " + from + " " + to);
 
-        //        cursor = phelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
-        //                + Common.getUserId(context)+" and datetime("
-        //                + PhotoDBHelper.COLUMNS_UE[0] + ") between '"+from+
-        //                "' and '"+to+"'", null, null, null, null);
+//        cursor = phelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
+//                + Common.getUserId(context)+" and datetime("
+//                + PhotoDBHelper.COLUMNS_UE[0] + ") between '"+from+
+//                "' and '"+to+"'", null, null, null, null);
 
         cursor = phelper.selectEvent(null, PhotoDBHelper.COLUMNS_UE[10] + "="
                 + trailobj.getTraceID(), null, null, null, "datetime("
@@ -820,7 +819,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
         Log.i("dongsiyuaninitMarker()", "initMarker: " + cursor.getCount());
         //如果数据库中没有数据，就从服务器中请求兴趣点数据
-        if (Common.isNetConnected && (cursor.getCount() == 0)) {
+        if(Common.isNetConnected&&(cursor.getCount()==0)){
             Log.i("dongsiyuan没有数据", "initMarker: ");
             myComment.initMarkerItemsOnline(trailobj.getTraceID());
         }
@@ -836,7 +835,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         if (Common.isNetConnected) {
             // 网络连接，更新本地标注信息
             Log.i("mark", "更新标注");
-            Log.i("trailobj", "trailobj:" + trailobj + "currentTraceID: " + currentTraceID);
+            Log.i("trailobj", "trailobj:"+trailobj + "currentTraceID: " + currentTraceID);
 
             myComment.refreshMarkerItemsOnline(currentTraceID);
 
@@ -845,7 +844,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             Log.i("dongsiyuansendBroadcast", "sendBroadcast: ");
             context.sendBroadcast(intent);
             //drawMarker();
-            Log.i("itemsss", "ShowTraceFragment:" + myComment.getItems().toString());
+            Log.i("itemsss", "ShowTraceFragment:"+myComment.getItems().toString());
         } else {
             ToastUtil.show(context, getResources().getString(R.string.tips_netdisconnect));
         }
@@ -874,7 +873,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                     .anchor(0.5f, 0.5f)));
 
         }
-        Log.i("arrayMarker", "arryMarkerTime.size = " + arryMarkerTime.size());
+        Log.i("arrayMarker", "arryMarkerTime.size = "+arryMarkerTime.size());
     }
 
     public void locationFilter() {
@@ -982,10 +981,10 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         if (selectid.size() == 0) {
             PolylineOptions options;
             List<LatLng> points = new ArrayList<>();
-            for (int i = 0; i < tracePoints.size() - 1; i++) {
-                if (tracePoints.get(i).getSportType() == tracePoints.get(i + 1).getSportType() && i != tracePoints.size() - 2) {
+            for (int i = 0; i < tracePoints.size()-1; i++) {
+                if (tracePoints.get(i).getSportType() == tracePoints.get(i+1).getSportType() && i != tracePoints.size()-2) {
                     points.add(tracePoints.get(i).getLatLng());
-                } else {
+                }else {
                     if (tracePoints.get(i).getSportType() == 1) {
                         options = new PolylineOptions().width(10).geodesic(true).color(Color.BLUE);// 初始化轨迹属性
                     } else if (tracePoints.get(i).getSportType() == 2) {
@@ -999,47 +998,47 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                     } else {
                         options = new PolylineOptions().width(10).geodesic(true).color(Color.GRAY);
                     }
-                    points.add(tracePoints.get(i + 1).getLatLng());
+                    points.add(tracePoints.get(i+1).getLatLng());
                     options.addAll(points);
                     aMap.addPolyline(options);
                     if (tracePoints.get(i).getSportType() == 1) {
                         aMap.addMarker(new MarkerOptions().position(points.get(0)).
                                 icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_walking)).title(tracePoints.get(0).getCreateTime()));
-                        aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_walking)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                        aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_walking)).title(tracePoints.get(points.size()-1).getCreateTime()));
                     } else if (tracePoints.get(i).getSportType() == 2) {
                         aMap.addMarker(new MarkerOptions().position(points.get(0)).
                                 icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_cycling)).title(tracePoints.get(0).getCreateTime()));
-                        aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_cycling)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                        aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_cycling)).title(tracePoints.get(points.size()-1).getCreateTime()));
                     } else if (tracePoints.get(i).getSportType() == 3) {
                         aMap.addMarker(new MarkerOptions().position(points.get(0)).
                                 icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_rollerblading)).title(tracePoints.get(0).getCreateTime()));
-                        aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_rollerblading)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                        aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_rollerblading)).title(tracePoints.get(points.size()-1).getCreateTime()));
                     } else if (tracePoints.get(i).getSportType() == 4) {
                         aMap.addMarker(new MarkerOptions().position(points.get(0)).
                                 icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_driving)).title(tracePoints.get(0).getCreateTime()));
-                        aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_driving)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                        aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_driving)).title(tracePoints.get(points.size()-1).getCreateTime()));
                     } else if (tracePoints.get(i).getSportType() == 5) {
                         aMap.addMarker(new MarkerOptions().position(points.get(0)).
                                 icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_train)).title(tracePoints.get(0).getCreateTime()));
-                        aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_train)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                        aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_train)).title(tracePoints.get(points.size()-1).getCreateTime()));
                     } else {
                         aMap.addMarker(new MarkerOptions().position(points.get(0)).
                                 icon(BitmapDescriptorFactory.fromResource(R.mipmap.others)).title(tracePoints.get(0).getCreateTime()));
-                        aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.others)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                        aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                                icon(BitmapDescriptorFactory.fromResource(R.mipmap.others)).title(tracePoints.get(points.size()-1).getCreateTime()));
                     }
                     points.clear();
                 }
             }
             //options.addAll(points);
-            //            if (polyline != null) {
-            //                polyline.remove();
-            //            }
+//            if (polyline != null) {
+//                polyline.remove();
+//            }
             //polyline = aMap.addPolyline(options);
             // BDMap_drawpath_normal(points);
         } else if (selectid.size() == 1) {
@@ -1153,26 +1152,26 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         // .fillColor(Color.argb(0, 255, 255, 255)).strokeWidth(20));
         // }
         // Log.i("trailadapter","过滤后剩下点的个数："+points.size()+"");
-        /*
-         * for(int i=0;i<points.size();i++){ Log.i("trailadapter",
-         * "过滤，第"+i+"个记录：("+points.get(i).longitude+","+points.get(i).latitude+
-         * ")");
-         *
-         * }
-         */
+		/*
+		 * for(int i=0;i<points.size();i++){ Log.i("trailadapter",
+		 * "过滤，第"+i+"个记录：("+points.get(i).longitude+","+points.get(i).latitude+
+		 * ")");
+		 *
+		 * }
+		 */
         aMap.addMarker(
                 new MarkerOptions().position(tracePoints.get(0).getLatLng()).icon(BitmapDescriptorFactory.fromResource(R.mipmap.start))
                         .title(traces.get(0).getCreateTime()).anchor(0.5f, 0.5f));
         aMap.addMarker(new MarkerOptions().position(tracePoints.get(tracePoints.size() - 1).getLatLng())
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.end))
                 .title(traces.get(tracePoints.size() - 1).getCreateTime()).anchor(0.5f, 0.5f));
-        //		for (int i = 0; i < keyPoints.size(); i++) {
-        //			aMap.addMarker(new MarkerOptions()
-        //					.position(new LatLng(keyPoints.get(i).getLatitude(), keyPoints.get(i).getLongitude()))
-        //					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_keypoint))
-        //					.title(keyPoints.get(i).getcreateTime()).anchor(0.5f, 0.5f));
-        //
-        //		}
+//		for (int i = 0; i < keyPoints.size(); i++) {
+//			aMap.addMarker(new MarkerOptions()
+//					.position(new LatLng(keyPoints.get(i).getLatitude(), keyPoints.get(i).getLongitude()))
+//					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_keypoint))
+//					.title(keyPoints.get(i).getcreateTime()).anchor(0.5f, 0.5f));
+//
+//		}
         // 设置所有maker显示在当前可视区域地图中
         // include(points.get(0)).include(points.get(points.size()-1)).build()
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -1190,10 +1189,10 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
         PolylineOptions options;
         List<LatLng> points = new ArrayList<>();
-        for (int i = 0; i < tracePoints.size() - 1; i++) {
-            if (tracePoints.get(i).getSportType() == tracePoints.get(i + 1).getSportType() && i != tracePoints.size() - 2) {
+        for (int i = 0; i < tracePoints.size()-1; i++) {
+            if (tracePoints.get(i).getSportType() == tracePoints.get(i+1).getSportType() && i != tracePoints.size()-2) {
                 points.add(tracePoints.get(i).getLatLng());
-            } else {
+            }else {
                 if (tracePoints.get(i).getSportType() == 1) {
                     options = new PolylineOptions().width(10).geodesic(true).color(Color.BLUE);// 初始化轨迹属性
                 } else if (tracePoints.get(i).getSportType() == 2) {
@@ -1207,60 +1206,60 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                 } else {
                     options = new PolylineOptions().width(10).geodesic(true).color(Color.BLUE);
                 }
-                points.add(tracePoints.get(i + 1).getLatLng());
+                points.add(tracePoints.get(i+1).getLatLng());
                 options.addAll(points);
                 aMap.addPolyline(options);
                 if (tracePoints.get(i).getSportType() == 1) {
                     aMap.addMarker(new MarkerOptions().position(points.get(0)).
                             icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_walking)).title(tracePoints.get(0).getCreateTime()));
-                    aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_walking)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                    aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_walking)).title(tracePoints.get(points.size()-1).getCreateTime()));
                 } else if (tracePoints.get(i).getSportType() == 2) {
                     aMap.addMarker(new MarkerOptions().position(points.get(0)).
                             icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_cycling)).title(tracePoints.get(0).getCreateTime()));
-                    aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_cycling)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                    aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_cycling)).title(tracePoints.get(points.size()-1).getCreateTime()));
                 } else if (tracePoints.get(i).getSportType() == 3) {
                     aMap.addMarker(new MarkerOptions().position(points.get(0)).
                             icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_rollerblading)).title(tracePoints.get(0).getCreateTime()));
-                    aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_rollerblading)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                    aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_rollerblading)).title(tracePoints.get(points.size()-1).getCreateTime()));
                 } else if (tracePoints.get(i).getSportType() == 4) {
                     aMap.addMarker(new MarkerOptions().position(points.get(0)).
                             icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_driving)).title(tracePoints.get(0).getCreateTime()));
-                    aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_driving)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                    aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_driving)).title(tracePoints.get(points.size()-1).getCreateTime()));
                 } else if (tracePoints.get(i).getSportType() == 5) {
                     aMap.addMarker(new MarkerOptions().position(points.get(0)).
                             icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_train)).title(tracePoints.get(0).getCreateTime()));
-                    aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_train)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                    aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_train)).title(tracePoints.get(points.size()-1).getCreateTime()));
                 } else {
                     aMap.addMarker(new MarkerOptions().position(points.get(0)).
                             icon(BitmapDescriptorFactory.fromResource(R.mipmap.others)).title(tracePoints.get(0).getCreateTime()));
-                    aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).
-                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.others)).title(tracePoints.get(points.size() - 1).getCreateTime()));
+                    aMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).
+                            icon(BitmapDescriptorFactory.fromResource(R.mipmap.others)).title(tracePoints.get(points.size()-1).getCreateTime()));
                 }
                 points.clear();
             }
         }
-        //        if (polyline != null) {
-        //            polyline.remove();
-        //        }
-        //        polyline = aMap.addPolyline(options);
+//        if (polyline != null) {
+//            polyline.remove();
+//        }
+//        polyline = aMap.addPolyline(options);
         aMap.addMarker(
                 new MarkerOptions().position(points.get(0)).icon(BitmapDescriptorFactory.fromResource(R.mipmap.start))
                         .title(traces.get(0).getCreateTime()).anchor(0.5f, 0.5f));
         aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1))
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.end))
                 .title(traces.get(points.size() - 1).getCreateTime()).anchor(0.5f, 0.5f));
-        //		for (int i = 0; i < keyPoints.size(); i++) {
-        //			aMap.addMarker(new MarkerOptions()
-        //					.position(new LatLng(keyPoints.get(i).getLatitude(), keyPoints.get(i).getLongitude()))
-        //					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_keypoint))
-        //					.title(keyPoints.get(i).getcreateTime()).anchor(0.5f, 0.5f));
-        //
-        //		}
+//		for (int i = 0; i < keyPoints.size(); i++) {
+//			aMap.addMarker(new MarkerOptions()
+//					.position(new LatLng(keyPoints.get(i).getLatitude(), keyPoints.get(i).getLongitude()))
+//					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_keypoint))
+//					.title(keyPoints.get(i).getcreateTime()).anchor(0.5f, 0.5f));
+//
+//		}
         // 设置所有maker显示在当前可视区域地图中
         // include(points.get(0)).include(points.get(points.size()-1)).build()
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -1408,14 +1407,14 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             }
         }
         //用于qq空间分享
-        //        mIUilistener = new MyIUilistener();
-        //        Tencent.onActivityResultData(requestCode, resultCode, data, mIUilistener);
-        //        if(requestCode == Constants.REQUEST_API){
-        //            if(requestCode == Constants.REQUEST_QQ_SHARE ||
-        //                    requestCode == Constants.REQUEST_QZONE_SHARE || requestCode == Constants.REQUEST_OLD_SHARE){
-        //                Tencent.handleResultData(data, mIUilistener);
-        //            }
-        //        }
+//        mIUilistener = new MyIUilistener();
+//        Tencent.onActivityResultData(requestCode, resultCode, data, mIUilistener);
+//        if(requestCode == Constants.REQUEST_API){
+//            if(requestCode == Constants.REQUEST_QQ_SHARE ||
+//                    requestCode == Constants.REQUEST_QZONE_SHARE || requestCode == Constants.REQUEST_OLD_SHARE){
+//                Tencent.handleResultData(data, mIUilistener);
+//            }
+//        }
     }
 
     @Override
@@ -1463,7 +1462,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
     /**
      * 7/27起 停用该方法
-     * <p>
+     *
      * public void addPoi(){ Log.i("mark", "latlng size = "+linkPoints.size()+"
      * gpsdata size = "+ linkTraces.size()); List<GpsData> arrayTrace = new
      * ArrayList<GpsData>(linkTraces); List<LatLng> arrayLatLng = new
@@ -1485,7 +1484,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             ArrayList<Long> tobedeleteNo = new ArrayList<Long>();
             tobedeleteNo.add(trailobj.getTraceID());
             String tobedelete = GsonHelper.toJson(tobedeleteNo);
-            Log.i("trailadapter", "删除:" + tobedelete);
+             Log.i("trailadapter","删除:"+tobedelete);
             DeleteTraceRequest deleteTraceRequest = new DeleteTraceRequest(sp.getString("token", ""),
                     tobedelete);
             deleteTraceRequest.requestHttpData(new ResponseData() {
@@ -1501,7 +1500,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                                     helper.deleteTrailByTraceNo(trailobj.getTraceID(), Common.getUserID(context));
 
                                     // 同时删除兴趣点
-                                    //                                    myComment.deleteComment(trailobj.getStartTime(), trailobj.getEndTime());
+//                                    myComment.deleteComment(trailobj.getStartTime(), trailobj.getEndTime());
                                     deletePOI(trailobj.getTraceID());
                                     dismissDialog();
                                     ToastUtil.show(context, getResources().getString(R.string.tips_deletesuccess));
@@ -1536,9 +1535,9 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                     }
                 }
             });
-            //            PostDeleteTrail deletetrail = new PostDeleteTrail(handler, URL_GETTRAIL, Common.getUserId(context),
-            //                    tobedelete, Common.getDeviceId(context));
-            //            deletetrail.start();
+//            PostDeleteTrail deletetrail = new PostDeleteTrail(handler, URL_GETTRAIL, Common.getUserId(context),
+//                    tobedelete, Common.getDeviceId(context));
+//            deletetrail.start();
         }
 
     }
@@ -1561,9 +1560,9 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         String detail = getResources().getString(R.string.distance_label) + ":"
                 + Common.transformDistance(trailobj.getDistance()) + getResources().getString(R.string.dis_unit) + "\n"
                 + getResources().getString(R.string.duration_label) + ":" + Common.transformTime(trailobj.getDuration());
-        //		ShareToWeChat.shareWeb((context),
-        //				Common.url_wx + "uid=" + Common.getUserId(context) + "&tid=" + trailobj.getTraceNo(), isTimeLine, title,
-        //				detail);
+//		ShareToWeChat.shareWeb((context),
+//				Common.url_wx + "uid=" + Common.getUserId(context) + "&tid=" + trailobj.getTraceNo(), isTimeLine, title,
+//				detail);
         ShareToWeChat.shareWeb((context),
                 "http://219.218.118.176:8089/Share/PoMobile.ashx?" + "uid=" +
                         Common.getUserId(context) + "&tid=" + trailobj.getTraceID(), isTimeLine, title,
@@ -1586,17 +1585,17 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
         traces_upload.add(trailobj);
         // 上传位置
-        //        PostGpsData gpsthread = new PostGpsData(shareHandler, URL_GPSDATA, GsonHelper.toJson(traces),
-        //                Common.getDeviceId(context));
-        //        gpsthread.start();
-        UpLoadGpsRequest upLoadGpsRequest = new UpLoadGpsRequest(sp.getString("token", ""),
+//        PostGpsData gpsthread = new PostGpsData(shareHandler, URL_GPSDATA, GsonHelper.toJson(traces),
+//                Common.getDeviceId(context));
+//        gpsthread.start();
+        UpLoadGpsRequest upLoadGpsRequest = new UpLoadGpsRequest(sp.getString("token",""),
                 GsonHelper.toJson(traces));
         upLoadGpsRequest.requestHttpData(new ResponseData() {
             @Override
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
                     if (code.equals("0")) {
-                        Log.i("ShowTraceFragment", "上传成功");
+                        Log.i("ShowTraceFragment","上传成功");
                     }
                 }
             }
@@ -1607,9 +1606,9 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             stepinfo = GsonHelper.toJson(steps_upload);
         }
         // Log.i("trailadapter","上传的轨迹："+traceinfo+","+stepinfo);
-        //        PostEndTrail endTrailThread = new PostEndTrail(shareHandler, URL_ENDTRAIL, traceinfo, stepinfo,
-        //                Common.getDeviceId(context));
-        //        endTrailThread.start();
+//        PostEndTrail endTrailThread = new PostEndTrail(shareHandler, URL_ENDTRAIL, traceinfo, stepinfo,
+//                Common.getDeviceId(context));
+//        endTrailThread.start();
 
     }
 
@@ -2107,8 +2106,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             }
         });
     }
-
-    private void initPOI() {
+    private void initPOI(){
         //从服务器下载停留时长、行为类型、同伴人数、关系等选项的数据
         DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(sp.getString("token", ""));
         downloadPoiChoices.requestHttpData(new ResponseData() {
@@ -2147,7 +2145,6 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             }
         });
     }
-
     private class MyIUilistener implements IUiListener {
 
         @Override
@@ -2165,8 +2162,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 
         }
     }
-
-    public void ShareToQQ() {
+    public void ShareToQQ(){
         String title = getResources().getString(R.string.share_title);
         String detail = getResources().getString(R.string.distance_label) + ":"
                 + Common.transformDistance(trailobj.getDistance()) + getResources().getString(R.string.dis_unit) + "\n"
@@ -2188,10 +2184,9 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             }
         });
     }
-
     //用于qq空间分享
     //此功能有缺陷，不知道怎么将工程中的res/drawable下的图片添加到分享中，待改进
-    public void ShareToQZone() {
+    public void ShareToQZone(){
         String title = getResources().getString(R.string.share_title);
         String detail = getResources().getString(R.string.distance_label) + ":"
                 + Common.transformDistance(trailobj.getDistance()) + getResources().getString(R.string.dis_unit) + "\n"
@@ -2203,12 +2198,12 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, "http://219.218.118.176:8089/Share/PoMobile.ashx?" +
                 "uid=" + Common.getUserId(context) + "&tid=" + trailobj.getTraceID());
         ArrayList<String> imgUrlList = new ArrayList<String>();
-        //		Resources r = context.getApplicationContext().getResources();
-        //		Uri uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE+"://"
-        //		+r.getResourcePackageName(R.drawable.ic_launcher_wx)+"/"
-        //		+r.getResourceTypeName(R.drawable.ic_launcher_wx)+"/"
-        //		+r.getResourceEntryName(R.drawable.ic_launcher_wx));
-        //		String a = uri.toString();
+//		Resources r = context.getApplicationContext().getResources();
+//		Uri uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE+"://"
+//		+r.getResourcePackageName(R.drawable.ic_launcher_wx)+"/"
+//		+r.getResourceTypeName(R.drawable.ic_launcher_wx)+"/"
+//		+r.getResourceEntryName(R.drawable.ic_launcher_wx));
+//		String a = uri.toString();
         imgUrlList.add("http://footprint.lisoft.com.cn/images/logo.png");
         params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgUrlList);//图片地址
         ThreadManager.getMainHandler().post(new Runnable() {
@@ -2219,31 +2214,28 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             }
         });
     }
-
-    public String getAbsoluteImagePath(Context context, Uri uri) {
+    public String getAbsoluteImagePath(Context context, Uri uri){
         String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+        Cursor cursor =  context.getContentResolver().query(uri, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
-
-    public static String getRealFilePath(final Context context, final Uri uri) {
-        if (null == uri)
-            return null;
+    public static String getRealFilePath( final Context context, final Uri uri ) {
+        if ( null == uri ) return null;
         final String scheme = uri.getScheme();
         String data = null;
-        if (scheme == null)
+        if ( scheme == null )
             data = uri.getPath();
-        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+        else if ( ContentResolver.SCHEME_FILE.equals( scheme ) ) {
             data = uri.getPath();
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
-            if (null != cursor) {
-                if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    if (index > -1) {
-                        data = cursor.getString(index);
+        } else if ( ContentResolver.SCHEME_CONTENT.equals( scheme ) ) {
+            Cursor cursor = context.getContentResolver().query( uri, new String[] { MediaStore.Images.ImageColumns.DATA }, null, null, null );
+            if ( null != cursor ) {
+                if ( cursor.moveToFirst() ) {
+                    int index = cursor.getColumnIndex( MediaStore.Images.ImageColumns.DATA );
+                    if ( index > -1 ) {
+                        data = cursor.getString( index );
                     }
                 }
                 cursor.close();
