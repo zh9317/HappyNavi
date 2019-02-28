@@ -137,7 +137,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     private List<LatLng> linkPoints = new LinkedList<LatLng>();
     private List<Integer> start = new ArrayList<Integer>();
     private List<Integer> end = new ArrayList<Integer>();
-    private List<Integer> selectid = new ArrayList<Integer>();// 被过滤的坐标（个数）
+    private List<Integer> selectid = new ArrayList<Integer>();// 被过滤的坐标
     private int s_id = 0;// selectid的下标 用于连接步行规划起点终点不可达的情况
     private List<LatLng> NetPoints = new ArrayList<LatLng>();// 网络定位点
     private List<LatLng> MarkPoints = new ArrayList<LatLng>();// 标注点的经纬度
@@ -611,7 +611,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                         if (traces.size() > 0) {
                             initLocation();
                             if (Common.isNetConnected && trailobj.getSportTypes() != 5) {
-                                //AMap_drawpath_optimize(points);
+                                AMap_drawpath_optimize(tracePoints);
                             } else {
                                 AMap_drawpath_normal(tracePoints);
                                 // BDMap_drawpath_normal(points);
@@ -721,6 +721,12 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     };
 
     public void initLocation() {
+//        float distance12 = AMapUtils.calculateLineDistance(new LatLng(36.64533311631944,117.14827907986111),
+//                new LatLng(36.64557373046875,117.14955864800348));
+//        float distance23 = AMapUtils.calculateLineDistance(new LatLng(36.64557373046875,117.14955864800348),
+//                new LatLng(36.651666,117.153024));
+//        Log.i("distance Test", "test distance12 = " + distance12);
+//        Log.i("distance Test", "test distance23 = " + distance23);
         for (int i = 0; i < traces.size(); i++) {
             //LatLng point = new LatLng(traces.get(i).getLatitude(), traces.get(i).getLongitude());
             // LatLng 经纬度保留小数点后6位
@@ -908,6 +914,8 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                         tracePoints.get(i + 2).getLatLng());
                 float d13 = AMapUtils.calculateLineDistance(tracePoints.get(i).getLatLng(),
                         tracePoints.get(i + 2).getLatLng());
+                // 如果1、2点距离超过了1、3点距离的5倍且2、3点距离超过了1、3点距离的5倍，或者1、2点距离小于5m
+                // 则中间那个点视为异常点
                 if (d12 > (d13 * 5) && d23 > (d13 * 5) || d12 < 5.0) {
                     boolean have = false;
                     for (int k = 0; k < selectid.size(); k++) {
@@ -918,7 +926,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                         }
                     }
                     if (!have) {
-                        selectid.add(i + 1);
+                        selectid.add(i + 1); // 记录中间那个点
                     }
                 }
             }
@@ -929,7 +937,6 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                 int deleteid = selectid.get(i);
                 tracePoints.remove(deleteid);
                 traces.remove(deleteid);
-
             }
             int key = 10;
             if (tracePoints.size() > 100) {
@@ -948,21 +955,26 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             for (int i = 0; i < traces.size(); i++) {// 提取出轨迹点的时间 单位 毫秒
                 arrayMillSeconds.add(praseStrToMillsecond(traces.get(i).getCreateTime()));
             }
+            Log.i("ShowTrace", "第一次记录异常点：selectid.size() = " + selectid.size());
             selectid.clear();
             if (tracePoints.size() >= 3) {
-                for (int i = 0; i < tracePoints.size() - 2; i++) {
+                for (int i = 0; i < tracePoints.size() - 2; i++) { // 从第一个点到倒数第三个点
                     float d12 = AMapUtils.calculateLineDistance(tracePoints.get(i).getLatLng(),
                             tracePoints.get(i + 1).getLatLng());
                     float d23 = AMapUtils.calculateLineDistance(tracePoints.get(i + 1).getLatLng(),
                             tracePoints.get(i + 2).getLatLng());
-                    if (d12 > 10 * d23 && d12 > 50.0) {
+                    if (d12 > 5 * d23 && d12 > 50.0) {
                         selectid.add(i);
-                    } else if (i == (tracePoints.size() - 3) && d12 * 10 < d23 && d23 > 50.0) {
+                        Log.i("ShowTrace", "记录中间点");
+                    } else if (i == (tracePoints.size() - 3) && d12 * 5 < d23 && d23 > 50.0) {
                         selectid.add(i + 1);
+                        Log.i("ShowTrace", "记录倒数第二个点");
                     }
                 }
             }
-        } else {
+            Log.i("ShowTrace", "第二次记录异常点：selectid.size() = " + selectid.size());
+            // 这一次记录的异常点，在画轨迹时，使用高德的路径规划功能
+        } else { // 位置点数小于等于2
             for (int i = 0; i < tracePoints.size(); i++) {
                 linkPoints.add(tracePoints.get(i).getLatLng());
                 linkTraces.add(traces.get(i));
@@ -974,7 +986,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         Log.i("trailadapter", "过滤后坐标数：" + tracePoints.size() + "步行规划路段数：" + selectid.size());
     }
 
-    // 高德画路径
+    // 高德画路径（优化后）
     public void AMap_drawpath_optimize(List<TraceLatLng> tracePoints) {
 
         //Log.i("ShowTrace", "type:"+type+"     points:" + GsonHelper.toJson(points));
@@ -985,6 +997,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
             PolylineOptions options;
             List<LatLng> points = new ArrayList<>();
             for (int i = 0; i < tracePoints.size()-1; i++) {
+                // 如果当前点的运动类型与下一点的相同，
                 if (tracePoints.get(i).getSportType() == tracePoints.get(i+1).getSportType() && i != tracePoints.size()-2) {
                     points.add(tracePoints.get(i).getLatLng());
                 }else {
@@ -1044,17 +1057,19 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 //            }
             //polyline = aMap.addPolyline(options);
             // BDMap_drawpath_normal(points);
-        } else if (selectid.size() == 1) {
-            if (selectid.get(0) == 0) {
+        } else if (selectid.size() == 1) { // 只有一个异常点
+            if (selectid.get(0) == 0) { // 如果第一个点是异常点
+                Log.i("ShowTrace", "第一个点是异常点");
                 PolylineOptions options = new PolylineOptions().width(10).geodesic(true).color(Color.BLUE);// 初始化轨迹属性
-                for (int i = 1; i < tracePoints.size(); i++) {
+                for (int i = 1; i < tracePoints.size(); i++) { // 从第二个点开始画到最后一个点
                     options.add(tracePoints.get(i).getLatLng());
 
                 }
                 aMap.addPolyline(options);
-            } else if (selectid.get(0) == tracePoints.size() - 2) {
+            } else if (selectid.get(0) == tracePoints.size() - 2) { // 如果倒数第二个点是异常点
+                Log.i("ShowTrace", "倒数第二个点是异常点");
                 PolylineOptions options = new PolylineOptions().width(10).geodesic(true).color(Color.BLUE);// 初始化轨迹属性
-                for (int i = 0; i < tracePoints.size() - 1; i++) {
+                for (int i = 0; i < tracePoints.size() - 1; i++) { // 从第一个点开始画到倒数第二个点
                     options.add(tracePoints.get(i).getLatLng());
 
                 }
@@ -1074,15 +1089,14 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
                 }
                 aMap.addPolyline(options);
             }
-        } else if (selectid.size() > 1) {
-            if (selectid.get(0) == 0) {
+        } else if (selectid.size() > 1) { // 异常点有两个或两个以上
+            if (selectid.get(0) == 0) { // 如果第一个点是异常点
                 PolylineOptions options;
 
                 for (int i = 1; i < selectid.size(); i++) {
                     options = new PolylineOptions().width(10).geodesic(true).color(Color.BLUE);
-                    for (int j = selectid.get(i - 1) + 1; j <= selectid.get(i); j++) {
+                    for (int j = selectid.get(i - 1) + 1; j <= selectid.get(i); j++) { // 从第二个点画到第二个异常点
                         options.add(tracePoints.get(j).getLatLng());
-
                     }
                     aMap.addPolyline(options);
                 }
@@ -1119,8 +1133,8 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         }
 
         if (selectid.size() > 0) {// 存在需要进行路径规划的轨迹
-            showDialog(getResources().getString(R.string.tips_dlgtle_init),
-                    getResources().getString(R.string.tips_dlgmsg_optmizetrace));
+            showDialog(getResources().getString(R.string.tips_dlgtle_init), // 加载中
+                    getResources().getString(R.string.tips_dlgmsg_optmizetrace)); // 正在加载轨迹
 
             s_id = 0;
             if (trailobj.getSportTypes() <= 3 || trailobj.getSportTypes() == 6) {// 步行、骑行、轮滑、其他状态采用步行规划
