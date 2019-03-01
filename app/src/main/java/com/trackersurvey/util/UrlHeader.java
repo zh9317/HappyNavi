@@ -42,6 +42,8 @@ public class UrlHeader {
     public static final String JOIN_GROUP = "/group/joinGroup";    // 用户申请加群
     public static final String EXIT_GROUP_URL = "/group/exitGroup";
 
+    public static final String DOWNLOAD_FILE = "/poi/downloadFile";
+
     // 老版本的接口还有这些：
     // 删除兴趣点
     // 用户是否上下线
