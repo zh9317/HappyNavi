@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
@@ -24,12 +26,14 @@ import com.trackersurvey.db.MyTraceDBHelper;
 import com.trackersurvey.db.PhotoDBHelper;
 import com.trackersurvey.db.PointOfInterestDBHelper;
 import com.trackersurvey.http.DeletePOIRequest;
+import com.trackersurvey.http.DownloadMediaFiles;
 import com.trackersurvey.http.DownloadPoiListRequest;
 import com.trackersurvey.http.DownloadPoiRequest;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.DeleteCloudComment;
 import com.trackersurvey.httpconnection.GetCloudPicture;
 import com.trackersurvey.httpconnection.GetThumbPic;
+import com.trackersurvey.util.ByteHttpUtil;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.GsonHelper;
 
@@ -38,6 +42,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -78,6 +83,8 @@ public class MyCommentModel {
     private String  endTime;
 
     public final String UPDATEUI_ACTION = "android.intent.action.UPDATEUI_RECEIVER";// 给ShowPoiFragment发的广播
+
+    private HashMap<Integer, Integer> mediaFiles = new HashMap<>();
 
     public ArrayList<HashMap<String, Object>> getItems() {
         return items;
@@ -259,13 +266,30 @@ public class MyCommentModel {
                             writedDbHelper.insertEvent(interestMarkerDataList.get(i));
                             Log.i("dongsiyuan", "onResponseData: 插入兴趣点数据" + i);
 
-                            int fileNum = interestMarkerDataList.get(i).getImageCount();
                             // 插入文件表
-                            for (int j = 0; j < fileNum; j++) {
+                            int imageCount = interestMarkerDataList.get(i).getImageCount();
+                            InterestMarkerData.PoiFile poiFile = new InterestMarkerData.PoiFile();
+                            Log.i("dongiysuanimageCount", "onResponseData: " + imageCount);
+                            int count = 0;
+                            for (int j = 0; j < imageCount; j++) {
                                 CommentMediaFilesData ev = new CommentMediaFilesData();
                                 ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
                                 ev.setFileNo(j);
                                 ev.setFileType(CommentMediaFilesData.TYPE_PIC);
+                                ev.setFileID(interestMarkerDataList.get(i).getPoiFiles().get(j).getFileID());
+                                Log.i("dongsiyuansetFileID", "onResponseData: " + interestMarkerDataList.get(i).getPoiFiles().get(j).getFileID());
+                                writedDbHelper.inserFile(ev);
+                                count++;
+                            }
+
+                            int videoCount = interestMarkerDataList.get(i).getVideoCount();
+                            // 插入文件表
+                            for (int j = 0; j < videoCount; j++) {
+                                CommentMediaFilesData ev = new CommentMediaFilesData();
+                                ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
+                                ev.setFileNo(j + count);
+                                ev.setFileType(CommentMediaFilesData.TYPE_VIDEO);
+                                ev.setFileID(interestMarkerDataList.get(i).getPoiFiles().get(j).getFileID());
                                 writedDbHelper.inserFile(ev);
                             }
                         }
@@ -369,12 +393,33 @@ public class MyCommentModel {
                                 } else {
                                     // 数据库中的一行小于云端的一行，云端一行本地没有，插入该行,数据库cursor不前移
                                     writedDbHelper.insertEvent(interestMarkerDataList.get(index));
-                                    Log.i("Eaa_insert",
-                                            "getComment insert event:"
-                                                    + eventCTCloud);
+                                    Log.i("Eaa_insert", "getComment insert event:" + eventCTCloud);
                                     // 插入文件表
-                                    //
-                                    //
+                                    mediaFiles = new HashMap<>();
+                                    int imageCount = interestMarkerDataList.get(index).getImageCount();
+                                    InterestMarkerData.PoiFile poiFile = new InterestMarkerData.PoiFile();
+                                    int count = 0;
+                                    for (int j = 0; j < imageCount; j++) {
+                                        CommentMediaFilesData ev = new CommentMediaFilesData();
+                                        ev.setDateTime(interestMarkerDataList.get(index).getCreateTime());
+                                        ev.setFileNo(j);
+                                        ev.setFileType(CommentMediaFilesData.TYPE_PIC);
+                                        ev.setFileID(interestMarkerDataList.get(index).getPoiFiles().get(j).getFileID());
+                                        Log.i("dongsiyuansetFileID", "onResponseData: " + interestMarkerDataList.get(index).getPoiFiles().get(j).getFileID());
+                                        writedDbHelper.inserFile(ev);
+                                        count++;
+                                    }
+
+                                    int videoCount = interestMarkerDataList.get(index).getVideoCount();
+                                    // 插入文件表
+                                    for (int j = 0; j < videoCount; j++) {
+                                        CommentMediaFilesData ev = new CommentMediaFilesData();
+                                        ev.setDateTime(interestMarkerDataList.get(index).getCreateTime());
+                                        ev.setFileNo(j + count);
+                                        ev.setFileType(CommentMediaFilesData.TYPE_VIDEO);
+                                        ev.setFileID(interestMarkerDataList.get(index).getPoiFiles().get(j).getFileID());
+                                        writedDbHelper.inserFile(ev);
+                                    }
                                     index++;
                                 }
                             }
@@ -396,13 +441,35 @@ public class MyCommentModel {
 
                     }
                     // 将本地没有的几行插入数据库
+                    mediaFiles = new HashMap<>();
                     for (int i = index; i < eventsNum; i++) {
                         writedDbHelper.insertEvent(interestMarkerDataList.get(i));
-
-                        //                            int fileNum = interestMarkerDataList.get(i).getFileNum();
                         // 插入文件表
-                        //
-                        //
+                        int imageCount = interestMarkerDataList.get(i).getImageCount();
+                        InterestMarkerData.PoiFile poiFile = new InterestMarkerData.PoiFile();
+                        int count = 0;
+                        for (int j = 0; j < imageCount; j++) {
+                            CommentMediaFilesData ev = new CommentMediaFilesData();
+                            ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
+                            ev.setFileNo(j);
+                            ev.setFileType(CommentMediaFilesData.TYPE_PIC);
+                            ev.setFileID(interestMarkerDataList.get(i).getPoiFiles().get(j).getFileID());
+                            Log.i("dongsiyuansetFileID", "onResponseData: " + interestMarkerDataList.get(index).getPoiFiles().get(j).getFileID());
+                            writedDbHelper.inserFile(ev);
+                            count++;
+                        }
+
+                        int videoCount = interestMarkerDataList.get(i).getVideoCount();
+                        // 插入文件表
+                        for (int j = 0; j < videoCount; j++) {
+                            CommentMediaFilesData ev = new CommentMediaFilesData();
+                            ev.setDateTime(interestMarkerDataList.get(i).getCreateTime());
+                            ev.setFileNo(j + count);
+                            ev.setFileType(CommentMediaFilesData.TYPE_VIDEO);
+                            ev.setFileID(interestMarkerDataList.get(i).getPoiFiles().get(j).getFileID());
+                            Log.i("dongsiyuansetFileID", "onResponseData: " + interestMarkerDataList.get(index).getPoiFiles().get(j).getFileID());
+                            writedDbHelper.inserFile(ev);
+                        }
                     }
 
                     if (from.equals("album")) {
@@ -541,7 +608,7 @@ public class MyCommentModel {
             while (fileCursor.moveToNext()) {
                 files[index] = new CommentMediaFilesData(fileCursor.getInt(0),
                         fileCursor.getString(1), fileCursor.getString(2),
-                        fileCursor.getInt(3), fileCursor.getString(4));
+                        fileCursor.getInt(3), fileCursor.getString(4), fileCursor.getInt(5));
                 // Log.i("Eaa_fileCursor", "" + index);
                 index++;
             }
@@ -908,17 +975,65 @@ public class MyCommentModel {
     /**
      * 下载文件
      *
-     * @param type
-     * @param filePosition
+     * @param
+     * @param fileID
      * @param listPosition
+     * @param filePosition
+     * @param type
      */
-    public void downloadFile(int listPosition, int filePosition, int type) {
+    public void downloadFile(int listPosition, int filePosition, int type, int fileID) {
         RequestFile rf = new RequestFile(listPosition, filePosition, type);
-        String commmentId = ((ListItemData) items.get(listPosition).get(
-                "listItem")).getTime();
+        String commmentId = ((ListItemData) items.get(listPosition).get("listItem")).getTime();
+
+        int PoiID = ((ListItemData) items.get(listPosition).get("listItem")).getPoiID();
+
+        Log.i("dongsiyuandownloadFile", "PoiID: " + PoiID + " fileUrl : " + fileID);
+        Log.i("dongsiyuandownloadFile", "downloadFile: " + sp.getString("token", ""));
+
+        DownloadMediaFiles downloadMediaFiles = new DownloadMediaFiles(sp.getString("token", ""), fileID);
+        downloadMediaFiles.requestHttpData(new ByteHttpUtil.ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, Object responseObject) throws IOException {
+                if (isSuccess) {
+                    InputStream inputStream = (InputStream) responseObject;
+
+                    //将输入流数据转化为Bitmap位图数据
+                    Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+                    String imageName = Common.currentTimeMill();
+                    File file = new File(Common.PHOTO_PATH + imageName + "_cloud.jpg");
+                    file.createNewFile();
+                    //创建文件输出流对象用来向文件中写入数据
+                    FileOutputStream out=new FileOutputStream(file);
+                    //将bitmap存储为jpg格式的图片
+                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,out);
+                    //刷新文件流
+                    out.flush();
+                    out.close();
+
+                    Log.i("dongsiyuandownloadFile", "inputStream: " + inputStream);
+//                    FileOutputStream fileOutputStream = null;
+//                    try {
+//                        String imageName = Common.currentTimeMill();
+//                        File file = new File(Common.PHOTO_PATH + imageName + "_cloud.jpg");
+//                        fileOutputStream = new FileOutputStream(file);
+//                        byte[] buffer = new byte[2048];
+//                        int len = 0;
+//                        while ((len = inputStream.read(buffer)) != -1) {
+//                            fileOutputStream.write(buffer, 0, len);
+//                        }
+//                        fileOutputStream.flush();
+//                    } catch (IOException e) {
+//                        Log.i("wangshu", "IOException");
+//                        e.printStackTrace();
+//                    }
+                }
+            }
+        });
+
         GetCloudPicture gcp = new GetCloudPicture(rf, Common.URL_DOWNFILE,
                 Common.getUserId(context), commmentId, "" + filePosition,
                 Common.getDeviceId(context));
+
         Log.i("Eaa", "downloadFile:" + commmentId);
         gcp.start();
     }
@@ -1671,7 +1786,7 @@ public class MyCommentModel {
                     while (fileCursor.moveToNext()) {
                         files[cursorIndex] = new CommentMediaFilesData(fileCursor.getInt(0),
                                 fileCursor.getString(1), fileCursor.getString(2),
-                                fileCursor.getInt(3), fileCursor.getString(4));
+                                fileCursor.getInt(3), fileCursor.getString(4), fileCursor.getInt(5));
                         cursorIndex++;
                     }
                     if (position < items.size()) {
@@ -1717,8 +1832,7 @@ public class MyCommentModel {
                     // 如果请求的文件是图片
                     if (fileType == CommentMediaFilesData.TYPE_PIC) {
                         String fileStr = msg.obj.toString().trim();
-                        if (null == fileStr || "noPic".equals(fileStr)
-                                || "null".equals(fileStr)) {
+                        if (null == fileStr || "noPic".equals(fileStr) || "null".equals(fileStr)) {
                             mDownFile.onFileDownload(-1, listPosition, fileNo);
                             return;
                         }
@@ -1726,12 +1840,10 @@ public class MyCommentModel {
                         Log.i("Eaa", "File downloaded:");
                         byte[] picByte = Base64.decode(fileStr, Base64.DEFAULT);
                         BufferedOutputStream bos = null;
-                        PhotoDBHelper writeDBHelper = new PhotoDBHelper(context,
-                                PhotoDBHelper.DBWRITE);
+                        PhotoDBHelper writeDBHelper = new PhotoDBHelper(context, PhotoDBHelper.DBWRITE);
                         String imageName = Common.currentTimeMill();
 
-                        File file = new File(Common.PHOTO_PATH + imageName
-                                + "_cloud.jpg");
+                        File file = new File(Common.PHOTO_PATH + imageName + "_cloud.jpg");
                         FileOutputStream fos;
                         try {
                             fos = new FileOutputStream(file);
