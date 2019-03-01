@@ -242,10 +242,8 @@ public class ListBaseAdapter extends BaseAdapter {
             }
         }
         if (type == ItemType_text) {
-            TextView bottomText = (TextView) convertView
-                    .findViewById(R.id.bottomTextOflist);
-            bottomText
-                    .setText((String) items.get(listPosition).get("listItem"));
+            TextView bottomText = (TextView) convertView.findViewById(R.id.bottomTextOflist);
+            bottomText.setText((String) items.get(listPosition).get("listItem"));
             return convertView;
 
         }
@@ -295,7 +293,7 @@ public class ListBaseAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-//                deleCommentListener.clickDelete(dateTime, listPosition);
+                //                deleCommentListener.clickDelete(dateTime, listPosition);
                 deleCommentListener.clickDelete(dateTime, itemEntity.getPoiID(), itemEntity.getTraceID());
             }
         });
@@ -336,27 +334,25 @@ public class ListBaseAdapter extends BaseAdapter {
             }
             holder.sAdapter = new GridItemAdapter(context, imageItems, colWidth);
             holder.gridview.setAdapter(holder.sAdapter);
-            // 点击九宫格，查看大图，当该评论所有图片本地都存在时，可滑动查看所有图片，当该评论有>=1张图片未成功下载时，只能查看点击的图片，不能滑动到相邻的图片。望以后改进！
+            // 点击九宫格，查看大图，当该评论所有图片本地都存在时，可滑动查看所有图片，
+            // 当该评论有>=1张图片未成功下载时，只能查看点击的图片，不能滑动到相邻的图片。望以后改进！
             holder.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 //private boolean isDownloaded;
 
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     //计算所点击的item之前的所有照片数
                     int count = 0;
                     CommentMediaFilesData[] lid1 = null;
                     for (int j = 0; j < listPosition; j++) {
-                        lid1 = ((ListItemData) items.get(j)
-                                .get("listItem")).getFiles();
+                        lid1 = ((ListItemData) items.get(j).get("listItem")).getFiles();
                         for (int k = 0; k < lid1.length; k++) {
                             count++;
                         }
                     }
 
-                    CommentMediaFilesData[] lid5 = ((ListItemData) items.get(listPosition)
-                            .get("listItem")).getFiles();
+                    CommentMediaFilesData[] lid5 = ((ListItemData) items.get(listPosition).get("listItem")).getFiles();
                     boolean isDownloaded = true;
                     boolean isClickedDownloaded = true;
                     int clickedType = lid5[position].getFileType();
@@ -367,28 +363,29 @@ public class ListBaseAdapter extends BaseAdapter {
 
                     //下载所有未下载的图片
                     for (int j = 0; j < items.size(); j++) {
-                        CommentMediaFilesData[] lid = ((ListItemData) items.get(j)
-                                .get("listItem")).getFiles();
+                        CommentMediaFilesData[] lid = ((ListItemData) items.get(j).get("listItem")).getFiles();
                         Log.i("lidddd", "" + lid.length);
                         for (int i = 0; i < lid.length; i++) {
                             int type = lid[i].getFileType();
                             if (type == clickedType) {
                                 String pathName = lid[i].getFileName();
                                 String thumbpathName = lid[i].getThumbnailName();
+                                int FileID = lid[i].getFileID();
+                                Log.i("dongisyuanFileID", "onItemClick: " + FileID);
                                 pathes.add(pathName);
                                 thumbpathes.add(thumbpathName);
                                 //Log.i("pathes", pathes.toString());
                                 // 如果本地没有该图片，向云端请求
                                 if ("".equals(pathName) || null == pathName
                                         || !(new File(pathName).exists())) {
-                                    ProgressBar pb = (ProgressBar) view
-                                            .findViewById(R.id.down_img_pb);
+                                    ProgressBar pb = (ProgressBar) view.findViewById(R.id.down_img_pb);
                                     pb.setVisibility(View.VISIBLE);          //出现一个环形进度条
                                     if (posInItems > -1) {
-                                        downFile(posInItems, i, type, pb);
-                                        Log.i("pos", "posInItems=" + posInItems);
+                                        downFile(posInItems, i, type, pb, FileID);
+                                        Log.i("dongsiyuanpos-1", "posInItems=" + posInItems + " fileposition" + i);
                                     } else {
-                                        downFile(j, i, type, pb);
+                                        downFile(j, i, type, pb, FileID);
+                                        Log.i("dongsiyuanpos", "posInItems=" + j + " fileposition" + i);
                                     }
                                     view.setClickable(false);
                                     isDownloaded = false;
@@ -523,9 +520,8 @@ public class ListBaseAdapter extends BaseAdapter {
     /**
      * 通知Model下载文件
      */
-    private void downFile(int listPosition, int filePosition, int type,
-                          ProgressBar pb) {
-        myComment.downloadFile(listPosition, filePosition, type);
+    private void downFile(int listPosition, int filePosition, int type, ProgressBar pb, int fileID) {
+        myComment.downloadFile(listPosition, filePosition, type, fileID);
         downloadingFiles.put("" + listPosition + filePosition, pb);
     }
 
@@ -535,8 +531,7 @@ public class ListBaseAdapter extends BaseAdapter {
     MyCommentModel.DownFileListener fileDownloaded = new MyCommentModel.DownFileListener() {
         @Override
         public void onFileDownload(int msg, int listPosition, int filePosition) {
-            ProgressBar pb = downloadingFiles.remove("" + listPosition
-                    + filePosition);
+            ProgressBar pb = downloadingFiles.remove("" + listPosition + filePosition);
             if (pb != null) {
                 pb.setVisibility(View.GONE);
             }
@@ -549,8 +544,7 @@ public class ListBaseAdapter extends BaseAdapter {
     /**
      * 通知model下载缩略图
      */
-    private void downThumbFile(GridItemAdapter gridView, int position,
-                               String time) {
+    private void downThumbFile(GridItemAdapter gridView, int position, String time) {
         if (!downloadingThumbs.containsKey(position)) {
             downloadingThumbs.put(position, gridView);
             myComment.downloadThumbFile(position, time);
