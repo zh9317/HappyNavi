@@ -435,7 +435,7 @@ public class ListBaseAdapter3 extends BaseAdapter {
      */
     private void downFile(int listPosition, int filePosition, int type,
                           ProgressBar pb) {
-        myComment.downloadFile(listPosition, filePosition, type);
+        myComment.downloadFile(listPosition, listPosition, filePosition, type);
         downloadingFiles.put("" + listPosition + filePosition, pb);
     }
 
