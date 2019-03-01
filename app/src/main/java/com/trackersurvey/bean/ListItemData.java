@@ -7,19 +7,20 @@ import java.util.Arrays;
  */
 
 public class ListItemData {
-    private String time;  //时间
-    private String place;   //地点
-    private InterestMarkerData event;
-    private CommentMediaFilesData  files[];
-    private String comment;  //评论
-    private int feeling;     //心情状态
-    private int behaviour;   //活动类型
-    private int duration;    //停留时长
-    private int companion;   //同伴人数
-    private int relation;    //同伴关系
-    private int poiID;
-    private long traceID;
-    public ListItemData(InterestMarkerData event,CommentMediaFilesData files[]){
+    private String                time;  //时间
+    private String                place;   //地点
+    private InterestMarkerData    event;
+    private CommentMediaFilesData files[];
+    private String                comment;  //评论
+    private int                   feeling;     //心情状态
+    private int                   behaviour;   //活动类型
+    private int                   duration;    //停留时长
+    private int                   companion;   //同伴人数
+    private int                   relation;    //同伴关系
+    private int                   poiID;
+    private long                  traceID;
+
+    public ListItemData(InterestMarkerData event, CommentMediaFilesData files[]) {
         this.event = event;
         this.files = files;
         this.time = event.getCreateTime();
@@ -121,7 +122,8 @@ public class ListItemData {
     public void setRelation(int relation) {
         this.relation = relation;
     }
-    public void setOneFile(int i,CommentMediaFilesData file){
+
+    public void setOneFile(int i, CommentMediaFilesData file) {
         files[i] = file;
     }
 

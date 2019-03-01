@@ -66,18 +66,4 @@ public class DownloadPoiRequest extends HttpUtil {
         }
         return response;
     }
-
-    // 解析云端发来Json数据用gson对应类
-    private class CloudPOI {
-        private LinkedList<InterestMarkerData> List;
-        String More;
-
-        public String getMore() {
-            return More;
-        }
-
-        public LinkedList<InterestMarkerData> getEvent() {
-            return this.List;
-        }
-    }
 }

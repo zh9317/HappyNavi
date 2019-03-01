@@ -20,15 +20,15 @@ import java.util.HashMap;
  */
 
 public class GridItemAdapter extends BaseAdapter {
-    private Context context;
+    private Context                            context;
     private ArrayList<HashMap<String, String>> imageItems;
-    private ProgressBar pb;
-    private BitmapUtils bitmapUtils;
-    private int colWidth;
+    private ProgressBar                        pb;
+    private BitmapUtils                        bitmapUtils;
+    private int                                colWidth;
 
 
     public GridItemAdapter(Context context,
-                           ArrayList<HashMap<String, String>> imageItems,int colWidth){
+                           ArrayList<HashMap<String, String>> imageItems, int colWidth) {
         this.context = context;
         this.imageItems = imageItems;
         bitmapUtils = new BitmapUtils(context);
@@ -36,7 +36,7 @@ public class GridItemAdapter extends BaseAdapter {
     }
 
 
-    public GridItemAdapter setItems(ArrayList<HashMap<String, String>> imageItems){
+    public GridItemAdapter setItems(ArrayList<HashMap<String, String>> imageItems) {
         this.imageItems = imageItems;
         return this;
     }
@@ -74,9 +74,7 @@ public class GridItemAdapter extends BaseAdapter {
         BitmapDisplayConfig bdc = new BitmapDisplayConfig();
         bdc.setBitmapMaxSize(new BitmapSize(colWidth, colWidth)
                 .scaleDown(2));
-        bitmapUtils.display(downImg,
-                ((HashMap<String, String>) getItem(position))
-                        .get("itemImage"),bdc);
+        bitmapUtils.display(downImg, ((HashMap<String, String>) getItem(position)).get("itemImage"), bdc);
         pb.setVisibility(View.GONE);
         return convertView;
     }
