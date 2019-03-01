@@ -6,11 +6,13 @@ package com.trackersurvey.bean;
  */
 
 public class CommentMediaFilesData {
-    private int fileNo;    //文件编号
+    private int fileID;    //文件编号
     private String fileName;   //文件路径名
     private String dateTime;  //对应评论的主键
     private int fileType;   //文件类型  图片1，视频2，音频3
     private String thumbnailName;//缩略图路径
+
+    private int fileNo;
 
     public static final int TYPE_PIC = 1;
     public static final int TYPE_VIDEO = 2;
@@ -19,20 +21,21 @@ public class CommentMediaFilesData {
     public CommentMediaFilesData() {
     }
 
-    public CommentMediaFilesData(int fileNo, String fileName, String dateTime, int fileType, String thumbnailName) {
-        this.fileNo = fileNo;
+    public CommentMediaFilesData(int fileNo, String fileName, String dateTime, int fileType, String thumbnailName, int fileID) {
         this.fileName = fileName;
         this.dateTime = dateTime;
         this.fileType = fileType;
         this.thumbnailName = thumbnailName;
+        this.fileID = fileID;
+        this.fileNo= fileNo;
     }
 
-    public int getFileNo() {
-        return fileNo;
+    public int getFileID() {
+        return fileID;
     }
 
-    public void setFileNo(int fileNo) {
-        this.fileNo = fileNo;
+    public void setFileID(int fileID) {
+        this.fileID = fileID;
     }
 
     public String getFileName() {
@@ -65,5 +68,13 @@ public class CommentMediaFilesData {
 
     public void setThumbnailName(String thumbnailName) {
         this.thumbnailName = thumbnailName;
+    }
+
+    public int getFileNo() {
+        return fileNo;
+    }
+
+    public void setFileNo(int fileNo) {
+        this.fileNo = fileNo;
     }
 }
