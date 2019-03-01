@@ -30,8 +30,8 @@ public class PhotoDBHelper {
             "Duration", "Companion", "Relationship", "StateType", "PoiID", "Share"};
 
     private static final String   FILE_TABLE   = "EventFile";
-    public static final  String[] COLUMNS_FILE = {"FileID", "FileName",
-            "CreateTime", "FileType", "ThumbnailName"};
+    public static final  String[] COLUMNS_FILE = {"FileNO", "FileName",
+            "CreateTime", "FileType", "ThumbnailName", "FileID"};
 
     private DBOpenHelper   helper;
     private SQLiteDatabase dbRead;
@@ -60,13 +60,14 @@ public class PhotoDBHelper {
                 + "));";
         private static final String CREATE_EVENTFILE = "CREATE TABLE "
                 + FILE_TABLE + "(" + COLUMNS_FILE[0] + " integer ,"
-                + COLUMNS_FILE[1] + " TEXT ," + COLUMNS_FILE[2]
-                + " datetime NOT NULL," + COLUMNS_FILE[3]
-                + " INTEGER NOT NULL," + COLUMNS_FILE[4]
-                + " TEXT , PRIMARY KEY(" + COLUMNS_FILE[0] + ","
-                + COLUMNS_FILE[2] + "),FOREIGN KEY(" + COLUMNS_FILE[1]
-                + ") REFERENCES " + USEREVENT_TABLE + "(" + COLUMNS_UE[0]
-                + "));";
+                + COLUMNS_FILE[1] + " TEXT ,"
+                + COLUMNS_FILE[2] + " datetime NOT NULL,"
+                + COLUMNS_FILE[3] + " INTEGER NOT NULL,"
+                + COLUMNS_FILE[4] + " TEXT , "
+                + COLUMNS_FILE[5] + " INTEGER NOT NULL," +
+                "PRIMARY KEY(" + COLUMNS_FILE[0] + "," + COLUMNS_FILE[2] + ")," +
+                "FOREIGN KEY(" + COLUMNS_FILE[1] + ") " +
+                "REFERENCES " + USEREVENT_TABLE + "(" + COLUMNS_UE[0] + "));";
 
         public DBOpenHelper(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
@@ -202,8 +203,10 @@ public class PhotoDBHelper {
             values.put(COLUMNS_FILE[2], files.getDateTime());
             values.put(COLUMNS_FILE[3], files.getFileType());
             values.put(COLUMNS_FILE[4], files.getThumbnailName());
+            values.put(COLUMNS_FILE[5], files.getFileID());
+
             long row = dbWrite.insert(FILE_TABLE, null, values);
-            Log.i("PhotoDB", "insertFile, row = " + row);
+            Log.i("PhotoDB", "insertFile, row = " + row + " files.getFileID() " + files.getFileID());
         } catch (Exception e) {
             return -1;
         }
