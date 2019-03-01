@@ -41,6 +41,7 @@ public class InterestMarkerData {
     private int    DeviceID;
     private String CreateTime;    //创建时间
 
+    private int FileID;
     private ArrayList<PoiFile> poiFiles;
 
     public InterestMarkerData() {
@@ -288,6 +289,14 @@ public class InterestMarkerData {
         this.poiFiles = poiFiles;
     }
 
+    public int getFileID() {
+        return FileID;
+    }
+
+    public void setFileID(int fileID) {
+        FileID = fileID;
+    }
+
     @Override
     public String toString() {
         return "InterestMarkerData{" +
@@ -315,9 +324,12 @@ public class InterestMarkerData {
                 ", StateType=" + StateType +
                 ", DeviceID=" + DeviceID +
                 ", CreateTime='" + CreateTime + '\'' +
+                ", FileID=" + FileID +
+                ", poiFiles=" + poiFiles +
                 '}';
     }
-    class PoiFile {
+
+    public static class PoiFile {
         private int fileNo;
         private String fileSmallPic;
         private String fileUrl;
@@ -334,6 +346,10 @@ public class InterestMarkerData {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        public PoiFile() {
+
         }
 
         public int getFileNo() {
@@ -374,6 +390,17 @@ public class InterestMarkerData {
 
         public void setFileID(int fileID) {
             this.fileID = fileID;
+        }
+
+        @Override
+        public String toString() {
+            return "PoiFile{" +
+                    "fileNo=" + fileNo +
+                    ", fileSmallPic='" + fileSmallPic + '\'' +
+                    ", fileUrl='" + fileUrl + '\'' +
+                    ", fileType='" + fileType + '\'' +
+                    ", fileID=" + fileID +
+                    '}';
         }
     }
 }
