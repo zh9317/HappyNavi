@@ -3,14 +3,7 @@ package com.trackersurvey.util;
 import android.util.Log;
 
 import com.trackersurvey.happynavi.LoginActivity;
-import com.trackersurvey.http.HttpUtil;
-import com.trackersurvey.http.ResponseData;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -32,7 +25,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class ByteHttpUtil {
 
     private static OkHttpClient client;
-    public         Object       responseObject; // 请求返回Data字段值
+    public         InputStream       responseObject; // 请求返回Data字段值
     public         String       message;
     public         String       code;
     //    public         String       responseString;
@@ -147,22 +140,6 @@ public class ByteHttpUtil {
                 // Json字符串
                 inputStream = response.body().byteStream();
 
-                FileOutputStream fileOutputStream = null;
-                try {
-                    String imageName = Common.currentTimeMill();
-                    File file = new File(Common.PHOTO_PATH + imageName + "_cloud.jpg");
-                    fileOutputStream = new FileOutputStream(file);
-                    byte[] buffer = new byte[2048];
-                    int len = 0;
-                    while ((len = inputStream.read(buffer)) != -1) {
-                        fileOutputStream.write(buffer, 0, len);
-                    }
-                    fileOutputStream.flush();
-                } catch (IOException e) {
-                    Log.i("wangshu", "IOException");
-                    e.printStackTrace();
-                }
-
                 ByteHttpUtil responseData = new ByteHttpUtil();
                 //Log.i("HttpUtil", "responseString:" + responseString);
                 Log.i("HttpUtil", "这儿打印了");
@@ -195,7 +172,7 @@ public class ByteHttpUtil {
     }
 
     public interface ResponseData {
-        void onResponseData(boolean isSuccess, Object responseObject) throws IOException;
+        void onResponseData(boolean isSuccess, InputStream inputStream) throws IOException;
     }
 
 }

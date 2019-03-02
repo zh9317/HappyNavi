@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
@@ -43,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -993,24 +995,37 @@ public class MyCommentModel {
         DownloadMediaFiles downloadMediaFiles = new DownloadMediaFiles(sp.getString("token", ""), fileID);
         downloadMediaFiles.requestHttpData(new ByteHttpUtil.ResponseData() {
             @Override
-            public void onResponseData(boolean isSuccess, Object responseObject) throws IOException {
+            public void onResponseData(boolean isSuccess, InputStream responseObject) throws IOException {
                 if (isSuccess) {
-                    InputStream inputStream = (InputStream) responseObject;
-
-                    //将输入流数据转化为Bitmap位图数据
-                    Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+                    long downloadedLength = 0; // 记录已下载的文件长度
+                    InputStream inputStream = responseObject;
+                    RandomAccessFile accessFile = null;
+                    File file = null;
                     String imageName = Common.currentTimeMill();
-                    File file = new File(Common.PHOTO_PATH + imageName + "_cloud.jpg");
-                    file.createNewFile();
-                    //创建文件输出流对象用来向文件中写入数据
-                    FileOutputStream out=new FileOutputStream(file);
-                    //将bitmap存储为jpg格式的图片
-                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,out);
-                    //刷新文件流
-                    out.flush();
-                    out.close();
-
+                    String dir = Common.PHOTO_PATH + imageName;
+                    file = new File(dir + "_cloud.jpg");
+//                    if (file.exists()){
+//                        // 如果已存在就读取已下载的字节数，这样可以在后面启动断点续传功能
+//                        downloadedLength = file.length();
+//                        Log.i("DownloadTask", "downloadedLength:"+downloadedLength);
+//                    }
+                    accessFile = new RandomAccessFile(file, "rw");
+//                    accessFile.seek(downloadedLength);
+                    byte[] b = new byte[1024];
+                    int len;
+                    while ((len = inputStream.read(b)) != -1){
+                        accessFile.write(b, 0, len);
+                    }
                     Log.i("dongsiyuandownloadFile", "inputStream: " + inputStream);
+
+//                    InputStream is = null;
+//                    byte[] buf = new byte[2048];
+//                    int len = 0;
+//                    FileOutputStream fos = null;
+//                    // 储存下载文件的目录
+//                    String imageName = Common.currentTimeMill();
+//                    String savePath = isExistDir(Common.PHOTO_PATH + imageName + "_cloud.jpg");
+
 //                    FileOutputStream fileOutputStream = null;
 //                    try {
 //                        String imageName = Common.currentTimeMill();
@@ -1030,12 +1045,28 @@ public class MyCommentModel {
             }
         });
 
-        GetCloudPicture gcp = new GetCloudPicture(rf, Common.URL_DOWNFILE,
-                Common.getUserId(context), commmentId, "" + filePosition,
-                Common.getDeviceId(context));
+//        GetCloudPicture gcp = new GetCloudPicture(rf, Common.URL_DOWNFILE,
+//                Common.getUserId(context), commmentId, "" + filePosition,
+//                Common.getDeviceId(context));
+//
+//        Log.i("Eaa", "downloadFile:" + commmentId);
+//        gcp.start();
+    }
 
-        Log.i("Eaa", "downloadFile:" + commmentId);
-        gcp.start();
+    /**
+     * @param saveDir
+     * @return
+     * @throws IOException
+     * 判断下载目录是否存在
+     */
+    private String isExistDir(String saveDir) throws IOException {
+        // 下载位置
+        File downloadFile = new File(Environment.getExternalStorageDirectory(), saveDir);
+        if (!downloadFile.mkdirs()) {
+            downloadFile.createNewFile();
+        }
+        String savePath = downloadFile.getAbsolutePath();
+        return savePath;
     }
 
     /**
