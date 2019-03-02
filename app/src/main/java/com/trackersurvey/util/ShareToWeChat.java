@@ -54,7 +54,7 @@ public class ShareToWeChat {
             Log.i("Eaa_wx", "发送到微信");
         }else{
             Log.i("Eaa_wx", "发送到微信返回false");
-        };
+        }
     }
 
 

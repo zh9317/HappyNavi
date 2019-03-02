@@ -248,12 +248,12 @@ public class TraceDetailActivity extends BaseActivity implements View.OnClickLis
 
             case R.id.share_wxsession:{//分享到微信好友uid=13969553872&tid=1460716974411
 
-//                tracePage.uploadBeforeShare(false);
+                tracePage.uploadBeforeShare(false);
                 break;
             }
             case R.id.share_wxtinmeline:{//分享到朋友圈
 
-//                tracePage.uploadBeforeShare(true);
+                tracePage.uploadBeforeShare(true);
                 break;
             }
 

@@ -1581,8 +1581,7 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 //				Common.url_wx + "uid=" + Common.getUserId(context) + "&tid=" + trailobj.getTraceNo(), isTimeLine, title,
 //				detail);
         ShareToWeChat.shareWeb((context),
-                "http://219.218.118.176:8089/Share/PoMobile.ashx?" + "uid=" +
-                        Common.getUserId(context) + "&tid=" + trailobj.getTraceID(), isTimeLine, title,
+                "http://www.baidu.com", isTimeLine, title,
                 detail);
 
     }

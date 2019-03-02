@@ -88,14 +88,12 @@ import com.trackersurvey.util.ActivityCollector;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
 import com.trackersurvey.util.GsonHelper;
+import com.trackersurvey.util.ShareToWeChat;
 import com.trackersurvey.util.SportTypeChangeDialog;
 import com.trackersurvey.util.SportTypeDialog;
 import com.trackersurvey.util.StepDetector;
 import com.trackersurvey.util.ToastUtil;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -217,6 +215,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homepageLayout = inflater.inflate(R.layout.fragment_map, container, false);
+        ShareToWeChat.registToWeChat(getContext());
 
 //        EventBus.getDefault().register(this);
         mapView = (MapView) homepageLayout.findViewById(R.id.map);
