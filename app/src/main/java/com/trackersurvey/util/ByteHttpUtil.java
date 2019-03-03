@@ -25,10 +25,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class ByteHttpUtil {
 
     private static OkHttpClient client;
-    public         InputStream       responseObject; // 请求返回Data字段值
+    public         InputStream  responseObject; // 请求返回Data字段值
     public         String       message;
     public         String       code;
-    //    public         String       responseString;
     public         InputStream  inputStream;
     public static  String       s;
     public static  int          isConnected;
@@ -44,11 +43,6 @@ public class ByteHttpUtil {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         if (client == null) {
             client = new OkHttpClient.Builder()
-                    //.readTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
-                    //.writeTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
-                    //.connectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
-                    //FaceBook 网络调试器，可在Chrome调试网络请求，查看SharePreferences,数据库等
-                    //.addNetworkInterceptor(new StethoInterceptor())
                     .connectTimeout(15, TimeUnit.SECONDS)
                     .addNetworkInterceptor(httpLoggingInterceptor)
                     .cookieJar(new CookieJar() {
@@ -67,6 +61,7 @@ public class ByteHttpUtil {
                     })
                     .build();
         }
+
         RequestBody requestBody = this.parameter();
         if (requestBody == null) {
             Log.i("Cookie", "requestBody == null");

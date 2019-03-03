@@ -21,7 +21,7 @@ public class PhotoDBHelper {
     public static final int DBWRITE = 2;
 
     private static final String DB_NAME    = "happyNavi.db";
-    private static final int    DB_VERSION = 4;
+    private static final int    DB_VERSION = 5;
 
     private static final String   USEREVENT_TABLE = "UserEvent";
     public static final  String[] COLUMNS_UE      = {"CreateTime", "PoiNo", "Longitude",
@@ -108,6 +108,13 @@ public class PhotoDBHelper {
                         + "PlaceName,Context,TraceNo,FileNum,Video,Audio,UserID,Feeling,Behaviour,Duration,Companion,"
                         + "Relationship from " + USEREVENT_TABLE + "_TEMP");
                 db.execSQL("drop table " + USEREVENT_TABLE + "_TEMP");
+
+            } else if (oldVersion == 4) {
+                db.execSQL("ALTER TABLE " + FILE_TABLE + " RENAME TO " + FILE_TABLE + "_TEMP");
+                db.execSQL(CREATE_EVENTFILE);
+                db.execSQL("insert into " + FILE_TABLE + "(" + "FileNO, FileName, CreateTime, FileType, ThumbnailName" +
+                        ")" + "select FileNO, FileName, CreateTime, FileType, ThumbnailName from " + FILE_TABLE + "_TEMP");
+                db.execSQL("drop table " + FILE_TABLE + "_TEMP");
             }
         }
 

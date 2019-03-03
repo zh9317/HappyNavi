@@ -43,6 +43,7 @@ public class UrlHeader {
     public static final String EXIT_GROUP_URL = "/group/exitGroup";
 
     public static final String DOWNLOAD_FILE = "/poi/downloadFile";
+    public static final String DOWNLOAD_THUMB_FILE = "/poi/downloadFileByPoiID";
 
     // 老版本的接口还有这些：
     // 删除兴趣点

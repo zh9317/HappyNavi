@@ -241,6 +241,7 @@ public class ListBaseAdapter3 extends BaseAdapter {
         }
         //Log.i("Eaa", "listPosition" + listPosition + " ||");
         itemEntity = (ListItemData) items.get(listPosition).get("listItem");
+        int poiID = itemEntity.getPoiID();
         ArrayList<String> partnerNum = new ArrayList<String>();
         ArrayList<String> relation = new ArrayList<String>();
         ArrayList<String> duration = new ArrayList<String>();
@@ -420,9 +421,9 @@ public class ListBaseAdapter3 extends BaseAdapter {
             // 如果不是全部缩略图都有
             if (!allThumb) {
                 if(posInItems > -1){
-                    downThumbFile(holder.sAdapter, posInItems, dateTime);
+                    downThumbFile(holder.sAdapter, posInItems, dateTime, poiID);
                 }else{
-                    downThumbFile(holder.sAdapter, listPosition, dateTime);
+                    downThumbFile(holder.sAdapter, listPosition, dateTime, poiID);
                 }
             }
 
@@ -460,10 +461,10 @@ public class ListBaseAdapter3 extends BaseAdapter {
      * 通知model下载缩略图
      */
     private void downThumbFile(GridItemAdapter gridView, int position,
-                               String time) {
+                               String time, int poiID) {
         if (!downloadingThumbs.containsKey(position)) {
             downloadingThumbs.put(position, gridView);
-            myComment.downloadThumbFile(position, time);
+            myComment.downloadThumbFile(position, time, poiID);
         }
     }
 
