@@ -666,60 +666,6 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
         }
     };
 
-    //传递给PostPointOfInterestData的handler1
-    @SuppressLint("HandlerLeak")
-    private Handler handler1 = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    if(msg.obj!=null){
-                        String[] poiStr = msg.obj.toString().trim().split("#");
-                        String[] behaviourStr = poiStr[1].split("[$]");
-                        String[] durationStr = poiStr[0].split("[$]");
-                        String[] partnerNumStr = poiStr[2].trim().split("[$]");
-                        String[] relationStr = poiStr[3].trim().split("[$]");
-                        behaviourData = new PointOfInterestData();
-                        durationData = new PointOfInterestData();
-                        partnerNumData = new PointOfInterestData();
-                        relationData = new PointOfInterestData();
-                        //Log.i("poiStr", poiStr[0]);
-                        helper2.delete();
-                        try {
-                            for(int i = 0;i<behaviourStr.length;i++){
-                                behaviourData.setKey(i);
-                                behaviourData.setValue(behaviourStr[i]);
-                                helper2.insertBehaviour(behaviourData);
-                            }
-                            for(int i = 0;i<durationStr.length;i++){
-                                durationData.setKey(i);
-                                durationData.setValue(durationStr[i]);
-                                //将数据插入到POI数据库中
-                                helper2.insertDuration(durationData);
-                            }
-                            for(int i = 0;i<partnerNumStr.length;i++){
-                                partnerNumData.setKey(i);
-                                partnerNumData.setValue(partnerNumStr[i]);
-                                helper2.insertPartnerNum(partnerNumData);
-                            }
-                            for(int i = 0;i<relationStr.length;i++){
-                                relationData.setKey(i);
-                                relationData.setValue(relationStr[i]);
-                                helper2.insertPartnerRelation(relationData);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                    break;
-                case 1:
-
-                    break;
-            }
-        }
-    };
-
     public void initLocation() {
 //        float distance12 = AMapUtils.calculateLineDistance(new LatLng(36.64533311631944,117.14827907986111),
 //                new LatLng(36.64557373046875,117.14955864800348));
@@ -1265,11 +1211,11 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
 //        }
 //        polyline = aMap.addPolyline(options);
         aMap.addMarker(
-                new MarkerOptions().position(points.get(0)).icon(BitmapDescriptorFactory.fromResource(R.mipmap.start))
+                new MarkerOptions().position(tracePoints.get(0).getLatLng()).icon(BitmapDescriptorFactory.fromResource(R.mipmap.start))
                         .title(traces.get(0).getCreateTime()).anchor(0.5f, 0.5f));
-        aMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1))
+        aMap.addMarker(new MarkerOptions().position(tracePoints.get(tracePoints.size() - 1).getLatLng())
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.end))
-                .title(traces.get(points.size() - 1).getCreateTime()).anchor(0.5f, 0.5f));
+                .title(traces.get(tracePoints.size() - 1).getCreateTime()).anchor(0.5f, 0.5f));
 //		for (int i = 0; i < keyPoints.size(); i++) {
 //			aMap.addMarker(new MarkerOptions()
 //					.position(new LatLng(keyPoints.get(i).getLatitude(), keyPoints.get(i).getLongitude()))

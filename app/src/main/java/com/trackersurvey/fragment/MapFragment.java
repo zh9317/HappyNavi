@@ -248,24 +248,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         URL_CHECKUPDATE = Common.url + "request.aspx";
         URL_GETPOI = Common.url + "requestInfo.aspx";
         initPOI(); // 获取兴趣点列表选项
-        //        int l = TabHost_Main.l;
-        //        if(l==0){
-        //            initPOI();//下载添加兴趣点下拉列表选项内容
-        //        }
-        //        if(l==1){
-        //            initPOIEN();//英文版
-        //        }
         return homepageLayout;
     }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEvent(String str) {
-//        switch (str) {
-//            case "EVENT_REFRESH_LANGUAGE":
-//                getActivity().recreate();
-//                break;
-//        }
-//    }
 
     private void initAMap() {
         //获取屏幕分辨率
@@ -403,7 +387,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
         aMap.setLocationSource(this);// 设置定位监听
         aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
         aMap.getUiSettings().setCompassEnabled(true);  //启用罗盘
-        aMap.getUiSettings().setScaleControlsEnabled(true);//启用比例尺
+        aMap.getUiSettings().setScaleControlsEnabled(false);//启用比例尺
         aMap.getUiSettings().setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_CENTER);//设置缩放按钮在右侧中间位置
         //aMap.getUiSettings().setZoomGesturesEnabled(false);//屏蔽双击放大地图操作
         aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
@@ -1097,10 +1081,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                 }
             });
 
-
-            /*PostEndTrail endTrailThread = new PostEndTrail(handler,URL_ENDTRAIL,traceInfo,stepInfo,
-                    Common.getDeviceId(getContext()));
-            endTrailThread.start();*/
             endMarker = aMap.addMarker(new MarkerOptions().position(finalLatLng).title(getResources().
                     getString(R.string.endicon)).icon(BitmapDescriptorFactory.fromResource(R.mipmap.end)));
             //bdmap.markEnd(finalLatLng);
@@ -1423,44 +1403,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                                 ActivityCollector.finishActivity("MainActivity");
                             }
                         });
-                    }
-                }
-            }
-        });
-    }
-
-    private void initPOIEN() {
-        //英文版
-        DownloadPoiChoices downloadPoiChoices = new DownloadPoiChoices(sp.getString("Token", ""));
-        downloadPoiChoices.requestHttpData(new ResponseData() {
-            @Override
-            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
-                if (isSuccess) {
-                    poiChoiceModel = (PoiChoiceModel) responseObject;
-                    behaviourData = new PointOfInterestData();
-                    durationData = new PointOfInterestData();
-                    partnerNumData = new PointOfInterestData();
-                    relationData = new PointOfInterestData();
-                    poiDBHelper.delete();
-                    for (int i = 0; i < poiChoiceModel.getActivityTypeList().size(); i++) {
-                        behaviourData.setKey(poiChoiceModel.getActivityTypeList().get(i).getActivityType());
-                        behaviourData.setValue(poiChoiceModel.getActivityTypeList().get(i).getActivityName_EN());
-                        poiDBHelper.insertBehaviour(behaviourData);
-                    }
-                    for (int i = 0; i < poiChoiceModel.getRetentionTypeList().size(); i++) {
-                        durationData.setKey(poiChoiceModel.getRetentionTypeList().get(i).getRetentionType());
-                        durationData.setValue(poiChoiceModel.getRetentionTypeList().get(i).getRetentionTypeName_E());
-                        poiDBHelper.insertDuration(durationData);
-                    }
-                    for (int i = 0; i < poiChoiceModel.getCompanionTypeList().size(); i++) {
-                        partnerNumData.setKey(poiChoiceModel.getCompanionTypeList().get(i).getCompanionType());
-                        partnerNumData.setValue(poiChoiceModel.getCompanionTypeList().get(i).getCompanionTypeName_E());
-                        poiDBHelper.insertPartnerNum(partnerNumData);
-                    }
-                    for (int i = 0; i < poiChoiceModel.getRelationTypeList().size(); i++) {
-                        relationData.setKey(poiChoiceModel.getRelationTypeList().get(i).getRelationType());
-                        relationData.setValue(poiChoiceModel.getRelationTypeList().get(i).getRelationTypeName_E());
-                        poiDBHelper.insertPartnerRelation(relationData);
                     }
                 }
             }
