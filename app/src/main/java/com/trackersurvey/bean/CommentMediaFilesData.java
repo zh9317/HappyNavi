@@ -6,13 +6,13 @@ package com.trackersurvey.bean;
  */
 
 public class CommentMediaFilesData {
-    private int fileID;    //文件编号
+    private int fileID;
     private String fileName;   //文件路径名
     private String dateTime;  //对应评论的主键
     private int fileType;   //文件类型  图片1，视频2，音频3
     private String thumbnailName;//缩略图路径
 
-    private int fileNo;
+    private int fileNo;     //文件编号
 
     public static final int TYPE_PIC = 1;
     public static final int TYPE_VIDEO = 2;

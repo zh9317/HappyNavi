@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Base64;
@@ -23,6 +21,7 @@ import com.trackersurvey.bean.CommentMediaFilesData;
 import com.trackersurvey.bean.DownThumbData;
 import com.trackersurvey.bean.InterestMarkerData;
 import com.trackersurvey.bean.ListItemData;
+import com.trackersurvey.bean.ThumbMediaFiles;
 import com.trackersurvey.db.MyTraceDBHelper;
 import com.trackersurvey.db.PhotoDBHelper;
 import com.trackersurvey.db.PointOfInterestDBHelper;
@@ -30,9 +29,9 @@ import com.trackersurvey.http.DeletePOIRequest;
 import com.trackersurvey.http.DownloadMediaFiles;
 import com.trackersurvey.http.DownloadPoiListRequest;
 import com.trackersurvey.http.DownloadPoiRequest;
+import com.trackersurvey.http.DownloadThumbMediaFiles;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.httpconnection.DeleteCloudComment;
-import com.trackersurvey.httpconnection.GetCloudPicture;
 import com.trackersurvey.httpconnection.GetThumbPic;
 import com.trackersurvey.util.ByteHttpUtil;
 import com.trackersurvey.util.Common;
@@ -983,9 +982,14 @@ public class MyCommentModel {
      * @param filePosition
      * @param type
      */
-    public void downloadFile(int listPosition, int filePosition, int type, int fileID) {
+    String cloudPicture = null;
+    String cloudVideo = null;
+
+    public void downloadFile(final int listPosition, final int filePosition, final int type, int fileID) {
         RequestFile rf = new RequestFile(listPosition, filePosition, type);
         String commmentId = ((ListItemData) items.get(listPosition).get("listItem")).getTime();
+
+        final String createTime = ((ListItemData) (items.get(listPosition).get("listItem"))).getTime();
 
         int PoiID = ((ListItemData) items.get(listPosition).get("listItem")).getPoiID();
 
@@ -996,68 +1000,127 @@ public class MyCommentModel {
         downloadMediaFiles.requestHttpData(new ByteHttpUtil.ResponseData() {
             @Override
             public void onResponseData(boolean isSuccess, InputStream responseObject) throws IOException {
+
                 if (isSuccess) {
-                    long downloadedLength = 0; // 记录已下载的文件长度
                     InputStream inputStream = responseObject;
                     RandomAccessFile accessFile = null;
                     File file = null;
-                    String imageName = Common.currentTimeMill();
-                    String dir = Common.PHOTO_PATH + imageName;
-                    file = new File(dir + "_cloud.jpg");
-//                    if (file.exists()){
-//                        // 如果已存在就读取已下载的字节数，这样可以在后面启动断点续传功能
-//                        downloadedLength = file.length();
-//                        Log.i("DownloadTask", "downloadedLength:"+downloadedLength);
-//                    }
-                    accessFile = new RandomAccessFile(file, "rw");
-//                    accessFile.seek(downloadedLength);
-                    byte[] b = new byte[1024];
-                    int len;
-                    while ((len = inputStream.read(b)) != -1){
-                        accessFile.write(b, 0, len);
+
+                    if (type == CommentMediaFilesData.TYPE_PIC) {
+                        if (null == inputStream || "noPic".equals(inputStream) || "null".equals(inputStream)) {
+                            mDownFile.onFileDownload(-1, listPosition, filePosition);
+                            return;
+                        }
+                        String imageName = Common.currentTimeMill();
+                        String dir = Common.PHOTO_PATH + imageName;
+                        file = new File(dir + "_cloud.jpg");
+
+                        accessFile = new RandomAccessFile(file, "rw");
+                        byte[] b = new byte[1024];
+                        int len;
+                        while ((len = inputStream.read(b)) != -1) {
+                            accessFile.write(b, 0, len);
+                        }
+
+                        PhotoDBHelper writeDBHelper = new PhotoDBHelper(context, PhotoDBHelper.DBWRITE);
+                        cloudPicture = file.getAbsolutePath();
+                        /**
+                         * 将该云端图记录到EventFiles表对应文件
+                         */
+                        ContentValues cv = new ContentValues();
+                        cv.put(PhotoDBHelper.COLUMNS_FILE[1], file.getAbsolutePath());
+                        int result = writeDBHelper.updateFile(cv, "datetime("
+                                + PhotoDBHelper.COLUMNS_FILE[2] + ")=datetime('"
+                                + createTime + "') AND "
+                                + PhotoDBHelper.COLUMNS_FILE[0] + " = " + filePosition);
+                        Log.i("Eaa", "datetime(" + PhotoDBHelper.COLUMNS_FILE[2]
+                                + ")=datetime('" + createTime + "') AND "
+                                + PhotoDBHelper.COLUMNS_FILE[0] + " = " + filePosition);
+
+                        Log.i("Eaa", "downFile result:" + result);
+                        CommentMediaFilesData updateFile = ((ListItemData) items.get(listPosition).get("listItem")).getFiles()[filePosition];
+                        updateFile.setFileName(cloudPicture);
+                        // 更新list
+                        ((ListItemData) items.get(listPosition).get("listItem")).setOneFile(filePosition, updateFile);
+
+                        writeDBHelper.closeDB();
+                        mDownFile.onFileDownload(0, listPosition, filePosition);//修改后，第一次下载这里会因为空指针崩溃
                     }
-                    Log.i("dongsiyuandownloadFile", "inputStream: " + inputStream);
+                    // 如果请求的文件是视频
+                    else if (type == CommentMediaFilesData.TYPE_VIDEO) {
+                        if ("null".equals(inputStream) || "noPic".equals(inputStream)) {
+                            mDownFile.onFileDownload(-2, listPosition, filePosition);
+                            return;
+                        }
 
-//                    InputStream is = null;
-//                    byte[] buf = new byte[2048];
-//                    int len = 0;
-//                    FileOutputStream fos = null;
-//                    // 储存下载文件的目录
-//                    String imageName = Common.currentTimeMill();
-//                    String savePath = isExistDir(Common.PHOTO_PATH + imageName + "_cloud.jpg");
+                        String videoName = Common.PHOTO_PATH + Common.currentTimeMill();
+                        file = new File(videoName + "_cloud.mp4");
+                        accessFile = new RandomAccessFile(file, "rw");
+                        byte[] b = new byte[1024];
+                        int len;
+                        while ((len = inputStream.read(b)) != -1) {
+                            accessFile.write(b, 0, len);
+                        }
 
-//                    FileOutputStream fileOutputStream = null;
-//                    try {
-//                        String imageName = Common.currentTimeMill();
-//                        File file = new File(Common.PHOTO_PATH + imageName + "_cloud.jpg");
-//                        fileOutputStream = new FileOutputStream(file);
-//                        byte[] buffer = new byte[2048];
-//                        int len = 0;
-//                        while ((len = inputStream.read(buffer)) != -1) {
-//                            fileOutputStream.write(buffer, 0, len);
-//                        }
-//                        fileOutputStream.flush();
-//                    } catch (IOException e) {
-//                        Log.i("wangshu", "IOException");
-//                        e.printStackTrace();
-//                    }
+                        PhotoDBHelper writeDBHelper = new PhotoDBHelper(context, PhotoDBHelper.DBWRITE);
+                        cloudVideo = file.getAbsolutePath();
+                        // 更新数据库中文件的记录
+                        ContentValues cv = new ContentValues();
+                        cv.put(PhotoDBHelper.COLUMNS_FILE[1], cloudVideo);
+
+                        writeDBHelper.updateFile(cv, "datetime(" + PhotoDBHelper.COLUMNS_FILE[2] + ")=datetime('"
+                                + createTime + "') AND " + PhotoDBHelper.COLUMNS_FILE[0] + " = " + filePosition);
+
+                        CommentMediaFilesData updateFile = ((ListItemData) items.get(listPosition).get("listItem")).getFiles()[filePosition];
+                        updateFile.setFileName(cloudVideo);
+                        // 更新list
+                        ((ListItemData) items.get(listPosition).get("listItem")).setOneFile(filePosition, updateFile);
+                        writeDBHelper.closeDB();
+                        mDownFile.onFileDownload(0, listPosition, filePosition);
+//
+//                        HttpUtils http = new HttpUtils();
+//
+//                        http.download(fileStr, videoName, true, true,
+//                                new RequestCallBack<File>() {
+//                                    @Override
+//                                    public void onSuccess(ResponseInfo<File> arg0) {
+//                                        // TODO Auto-generated method stub
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onFailure(HttpException arg0,
+//                                                          String arg1) {
+//                                        // TODO Auto-generated method stub
+//                                        mDownFile.onFileDownload(-2, listPosition, filePosition);
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onLoading(long total, long current,
+//                                                          boolean isUploading) {
+//                                        // TODO Auto-generated method stub
+//                                        super.onLoading(total, current, isUploading);
+//                                    }
+//                                });
+                    }
                 }
+                mDownFile.onFileDownload(0, listPosition, filePosition);//第二次下载时，这里会因为空指针崩溃
             }
         });
 
-//        GetCloudPicture gcp = new GetCloudPicture(rf, Common.URL_DOWNFILE,
-//                Common.getUserId(context), commmentId, "" + filePosition,
-//                Common.getDeviceId(context));
-//
-//        Log.i("Eaa", "downloadFile:" + commmentId);
-//        gcp.start();
+        //        GetCloudPicture gcp = new GetCloudPicture(rf, Common.URL_DOWNFILE,
+        //                Common.getUserId(context), commmentId, "" + filePosition,
+        //                Common.getDeviceId(context));
+        //
+        //        Log.i("Eaa", "downloadFile:" + commmentId);
+        //        gcp.start();
     }
 
     /**
      * @param saveDir
      * @return
-     * @throws IOException
-     * 判断下载目录是否存在
+     * @throws IOException 判断下载目录是否存在
      */
     private String isExistDir(String saveDir) throws IOException {
         // 下载位置
@@ -1073,12 +1136,105 @@ public class MyCommentModel {
      * 下载缩略图
      *
      * @param position
+     * @param poiID
      */
-    public void downloadThumbFile(int position, String dateTime) {
-        GetThumbPic getThumb = new GetThumbPic(new RequestThembFiles(position,
-                dateTime), Common.URL_DOWNEVENT, Common.getUserId(context),
-                dateTime, Common.getDeviceId(context));
-        getThumb.start();
+    public void downloadThumbFile(final int position, final String dateTime, int poiID) {
+//                GetThumbPic getThumb = new GetThumbPic(new RequestThembFiles(position,
+//                        dateTime), Common.URL_DOWNEVENT, Common.getUserId(context),
+//                        dateTime, Common.getDeviceId(context));
+//                getThumb.start();
+
+        Log.i("DownloadThumbMediaFiles", "downloadThumbFile: " + poiID);
+
+        final ArrayList<HashMap<String, String>> images = new ArrayList<>();
+        DownloadThumbMediaFiles downloadThumbMediaFiles = new DownloadThumbMediaFiles(sp.getString("token", ""), poiID);
+        downloadThumbMediaFiles.requestHttpData(new ResponseData() {
+            @Override
+            public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
+                if (isSuccess) {
+
+//                    Gson gson = new Gson();
+                    LinkedList<ThumbMediaFiles> thumbs = new LinkedList<>();
+                    thumbs = (LinkedList<ThumbMediaFiles>) responseObject;
+//                    try {
+//                        java.lang.reflect.Type fileType = new TypeToken<LinkedList<ThumbMediaFiles>>() {}.getType();
+//                        thumbs = gson.fromJson(msg.obj.toString().trim(), fileType);
+//                    } catch (Exception e) {
+//                        mDownThumbFile.onThumbFileDownload(-1, position, images);
+//                    }
+                    // Log.d("Eaa", msg.obj.toString());
+                    if (thumbs.size() == 0) {
+                        return;
+                    }
+                    PhotoDBHelper writeDBHelper = new PhotoDBHelper(context, PhotoDBHelper.DBWRITE);
+                    // 加载缩略图到gridView,同时更新EventFiles 数据库表
+                    images.removeAll(images);
+                    int index = 0;
+                    for (Iterator iterator = thumbs.iterator(); iterator.hasNext(); ) {
+                        ThumbMediaFiles thumbPic = (ThumbMediaFiles) iterator.next();
+                        int fileType = 1;
+                        if (thumbPic.getFileType().equals("image")) {
+                            fileType = CommentMediaFilesData.TYPE_PIC;
+                        } else if (thumbPic.getFileType().equals("video")) {
+                            fileType = CommentMediaFilesData.TYPE_VIDEO;
+                        }
+                        // 将缩略图写到本地文件夹
+                        byte[] picByte = Base64.decode(thumbPic.getFileBase64(), Base64.DEFAULT);
+                        BufferedOutputStream bos = null;
+                        String imageName = Common.currentTimeMill();
+                        File file = new File(Common.CACHEPHOTO_PATH + File.separator + thumbPic.getFileId() + imageName + ".jpg");
+                        FileOutputStream fos;
+                        try {
+                            fos = new FileOutputStream(file);
+                            // 将该缩略图记录到EventFiles表对应文件
+
+                            ContentValues cv = new ContentValues();
+                            cv.put(PhotoDBHelper.COLUMNS_FILE[3], fileType);
+                            cv.put(PhotoDBHelper.COLUMNS_FILE[4], file.getAbsolutePath());
+                            // 更新数据库中的缩略图
+                            writeDBHelper.updateFile(cv, "datetime("
+                                    + PhotoDBHelper.COLUMNS_FILE[2] + ")=datetime('" + dateTime + "') AND "
+                                    + PhotoDBHelper.COLUMNS_FILE[0] + " = " + index);
+                            bos = new BufferedOutputStream(fos);
+                            bos.write(picByte);
+                            bos.close();
+                            picByte = null;
+                            index++;
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        String imgPaht = file.getAbsolutePath();
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put("itemImage", imgPaht);
+                        images.add(map);
+                    }
+
+                    // 更新items，保证ListView的同步更新
+                    Cursor fileCursor = dbHelper.selectFiles(null, "datetime("
+                            + PhotoDBHelper.COLUMNS_UE[2] + ")=datetime('" + dateTime + "')",
+                            null, null, null, null);
+                    CommentMediaFilesData files[] = new CommentMediaFilesData[fileCursor.getCount()];
+                    int cursorIndex = 0;
+                    while (fileCursor.moveToNext()) {
+                        files[cursorIndex] = new CommentMediaFilesData(fileCursor.getInt(0),
+                                fileCursor.getString(1), fileCursor.getString(2),
+                                fileCursor.getInt(3), fileCursor.getString(4), fileCursor.getInt(5));
+                        cursorIndex++;
+                    }
+                    if (position < items.size()) {
+                        ((ListItemData) (items.get(position).get("listItem"))).setFiles(files);
+                    }
+                    fileCursor.close();
+                    writeDBHelper.closeDB();
+                }
+                mDownThumbFile.onThumbFileDownload(0, position, images);
+            }
+        });
+
+
     }
 
     /**

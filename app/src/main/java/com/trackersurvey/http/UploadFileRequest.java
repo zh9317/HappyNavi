@@ -42,7 +42,7 @@ public class UploadFileRequest extends HttpUtil {
         }
         if (fileType.equals("avi")||fileType.equals("mov")||fileType.equals("mp4")||fileType.equals("wmv")
                 ||fileType.equals("rmvb")||fileType.equals("3gp")||fileType.equals("mkv")) {
-            uploadType = "image/"+fileType;
+            uploadType = "video/"+fileType;
         }
         RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                 .addFormDataPart("file", filePath,
