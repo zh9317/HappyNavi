@@ -43,12 +43,16 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private SharedPreferences sp;
 
     private int checkedItem = 0;
+    private SharedPreferences languageSelected;     // 默认 0 为 zh ； 1 为 en
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         sp = getSharedPreferences("coffig", MODE_PRIVATE);
+        languageSelected = getSharedPreferences("languageSet", MODE_PRIVATE);
         StatusBarCompat.setStatusBarColor(this, Color.BLACK); // 修改状态栏颜色
         // 隐藏原始标题栏
         ActionBar actionBar = getSupportActionBar();
@@ -67,17 +71,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             e.printStackTrace();
         }
 
-        Resources resources = getResources();
-        Configuration configure = resources.getConfiguration();
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        if (sp.getString("language", "").equals("0")) {
-            configure.locale = Locale.CHINESE;
-        }
-        if (sp.getString("language", "").equals("1")) {
-            configure.locale = Locale.ENGLISH;
-        }
-        resources.updateConfiguration(configure, dm);
-
         LinearLayout parameterLayout = findViewById(R.id.parameter_setting_layout);
         LinearLayout languageLayout = findViewById(R.id.select_language_layout);
         LinearLayout clearCacheLayout = findViewById(R.id.clear_cache_layout);
@@ -89,7 +82,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         backgroundRunLayout.setOnClickListener(this);
         logoutBtn.setOnClickListener(this);
 
-        checkedItem = Integer.parseInt(sp.getString("language", "0"));
+        checkedItem = Integer.parseInt(languageSelected.getString("language", "0"));
     }
 
     @Override
@@ -105,28 +98,21 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
                 builder2.setTitle(getResources().getString(R.string.language_title));
                 builder2.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO Auto-generated method stub
                         switch (which) {
                             case 0: // 中文
                                 dialog.dismiss();
-                                //                                SharedPreferences.Editor editor = sp.edit();
-                                //                                editor.putString("language", "zh");
-                                //                                editor.apply();
-                                //                                StoreLanguageSP.setLanguageLocal(SettingActivity.this, "zh");
-                                //                                EventBus.getDefault().post("EVENT_REFRESH_LANGUAGE");
-                                //                                Intent intent = new Intent(SettingActivity.this,MainActivity.class);
-                                //                                finish();
-                                //                                startActivity(intent);
                                 SharedPreferences preferences1 = getSharedPreferences("language", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = preferences1.edit();
                                 editor.putString("language", "zh");
                                 editor.apply();
-//                                setResult(RESULT_OK);
-//                                EventBus.getDefault().post("EVENT_REFRESH_LANGUAGE");
-                                 finish();
+
+                                SharedPreferences.Editor editor1 = languageSelected.edit();
+                                editor1.putString("language", "0");
+                                editor1.apply();
+                                finish();
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -138,20 +124,16 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                                 break;
                             case 1: // 英文
                                 dialog.dismiss();
-                                //                                SharedPreferences.Editor editor2 = sp.edit();
-                                //                                editor2.putString("language", "en");
-                                //                                editor2.apply();
-                                //                                Intent intent2 = new Intent(SettingActivity.this,SettingActivity.class);
-                                //                                finish();
-                                //                                startActivity(intent2);
-                                //                                StoreLanguageSP.setLanguageLocal(SettingActivity.this, "en");
+
                                 //                                EventBus.getDefault().post("EVENT_REFRESH_LANGUAGE");
-                                //                                finish();
                                 SharedPreferences preferences = getSharedPreferences("language", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor1 = preferences.edit();
-                                editor1.putString("language", "en");
-                                editor1.apply();
-//                                setResult(RESULT_OK);
+                                SharedPreferences.Editor editor2 = preferences.edit();
+                                editor2.putString("language", "en");
+                                editor2.apply();
+
+                                SharedPreferences.Editor editor3 = languageSelected.edit();
+                                editor3.putString("language", "1");
+                                editor3.apply();
                                 finish();
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
@@ -283,12 +265,4 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         configuration.locale = Locale.ENGLISH;
         resources.updateConfiguration(configuration, dm);
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK) {
-//            recreate();
-//        }
-//    }
 }

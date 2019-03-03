@@ -2,6 +2,7 @@ package com.trackersurvey.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,7 @@ public class TraceListAdapter extends BaseAdapter {
             R.mipmap.ic_train,
             R.mipmap.others,
     };
+    private static SharedPreferences sp;
 
     public TraceListAdapter(Context context, TextView txtcount, ArrayList<TraceListItemData> traceItems, ArrayList<StepData> steps){
         this.context = context;
@@ -105,17 +107,17 @@ public class TraceListAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
 
-            convertView = mInflater.inflate(R.layout.trace_list_item, null);
-
-//            int l = TabHost_Main.l;
-//            if(l==0){
-//                Log.i("language", "zzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-//                convertView = mInflater.inflate(R.layout.traillistitems, null);
-//            }
-//            if(l==1){
-//                Log.i("language", "eeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-//                convertView = mInflater.inflate(R.layout.traillistitems_en, null);
-//            }
+            sp = context.getSharedPreferences("languageSet", 0);
+            String language = sp.getString("language", "0");
+            int l = Integer.parseInt(language);
+            if(l==0){
+                Log.i("language", "zzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+                convertView = mInflater.inflate(R.layout.trace_list_item, null);
+            }
+            if(l==1){
+                Log.i("language", "eeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                convertView = mInflater.inflate(R.layout.trail_list_items_en, null);
+            }
 
             holder.tracepic = (ImageView)convertView.findViewById(R.id.trace_type_iv);
             holder.isLocalimg = (ImageView)convertView.findViewById(R.id.is_local_iv);
