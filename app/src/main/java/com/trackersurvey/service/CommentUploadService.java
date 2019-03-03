@@ -19,6 +19,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.trackersurvey.db.PhotoDBHelper;
+import com.trackersurvey.fragment.MapFragment;
 import com.trackersurvey.happynavi.R;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.UploadFileRequest;
@@ -223,6 +224,7 @@ public class CommentUploadService extends Service {
             public void onResponseData(boolean isSuccess, String code, Object responseObject, String msg) throws IOException {
                 if (isSuccess) {
                     if (code.equals("0")) {
+                        MapFragment.poiCount++;
                         poiID = (int) responseObject;
                         Log.i("CommentUploadService", "poiID : " + poiID);
                         uploadCache.edit().remove(createTime).commit();

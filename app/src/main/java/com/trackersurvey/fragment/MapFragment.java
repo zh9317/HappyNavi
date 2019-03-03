@@ -210,6 +210,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     private AlertDialog                        dialog;
 
     private PoiChoiceModel poiChoiceModel;
+    public static int poiCount = 0;
 
     @Nullable
 
@@ -1026,6 +1027,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             locationService.uploadGPS();
             //            List<TraceData> tracelist = new ArrayList<TraceData>();
             tracedata.setSteps(total_step);
+            tracedata.setPoiCount(poiCount);
             //            tracelist.add(tracedata);
             String traceInfo = GsonHelper.toJson(tracedata);
             //            Log.i("HomePageFragment", "tracelist size:" + tracelist.size());
@@ -1052,6 +1054,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                             @Override
                             public void run() {
                                 Toast.makeText(getContext(), "上传轨迹成功", Toast.LENGTH_SHORT).show();
+                                poiCount = 0;
                                 dismissDialog();
                             }
                         });
