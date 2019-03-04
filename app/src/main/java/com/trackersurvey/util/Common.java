@@ -66,7 +66,7 @@ public class Common {
     public static       String       URL_DOWNFILE      = url_file + "downFile.aspx";
     public static       String       URL_DELETEEVENT   = url_file + "userChgCmt.aspx";
     public static       String       url_wx            = "http://www.lisoft.com.cn/Share/PoMobile.ashx?";
-    public static       String       WX_APP_ID         = "wx3d06ba93fb282593";//"wxbe3210c55c8d7e64";"wx79c37ea773c35a23"
+    public static       String       WX_APP_ID         = "wxbe3210c55c8d7e64";//"wxbe3210c55c8d7e64";"wx79c37ea773c35a23";"wx3d06ba93fb282593"
     public static       String       NickName          = "";
     public static       AMapLocation aLocation         = null;
     public static       FileInfoData fileInfo          = null;//新版apk文件

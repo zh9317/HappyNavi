@@ -38,14 +38,14 @@
     <application
         android:name="com.trackersurvey.util.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/app_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/app_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="5a23eb2b467ea1bbe703edfc7c07837f" />
+            android:value="024b0f76892f0d460b85684b844dcd91" />
 
         <activity
             android:name=".MainActivity"
@@ -88,6 +88,28 @@
             android:name="com.trackersurvey.service.CommentUploadService"
             android:enabled="true"
             android:exported="true" />
+
+        <activity
+            android:name="com.trackersurvey.wxapi.WXEntryActivity"
+            android:theme="@style/TitleTheme" >
+        </activity>
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:noHistory="true"
+            android:launchMode="singleTask" >
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="tencent1105447917"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/TitleTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            ></activity>
 
         <activity android:name=".CommentActivity" />
         <activity android:name=".BGRunningGuideActivity" />
