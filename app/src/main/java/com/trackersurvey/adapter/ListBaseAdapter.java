@@ -594,6 +594,7 @@ public class ListBaseAdapter extends BaseAdapter {
     };
 
     Handler handler = new Handler(new Handler.Callback() {
+        @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
