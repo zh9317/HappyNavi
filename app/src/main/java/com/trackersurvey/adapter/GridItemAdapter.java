@@ -7,6 +7,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
 import com.lidroid.xutils.bitmap.core.BitmapSize;
@@ -62,19 +64,25 @@ public class GridItemAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
-        convertView = View
-                .inflate(context, R.layout.griditem_downpic, null);
+        convertView = View.inflate(context, R.layout.griditem_downpic, null);
         convertView.setMinimumWidth(colWidth);
-        ImageView downImg = (ImageView) convertView
-                .findViewById(R.id.dowm_img);
+        ImageView downImg = (ImageView) convertView.findViewById(R.id.dowm_img);
         pb = (ProgressBar) convertView.findViewById(R.id.down_img_pb);
         downImg.setMaxHeight(colWidth);
         downImg.setMinimumHeight(colWidth);
 
-        BitmapDisplayConfig bdc = new BitmapDisplayConfig();
-        bdc.setBitmapMaxSize(new BitmapSize(colWidth, colWidth)
-                .scaleDown(2));
-        bitmapUtils.display(downImg, ((HashMap<String, String>) getItem(position)).get("itemImage"), bdc);
+        Glide.with(context)
+                .load(((HashMap<String, String>) getItem(position)).get("itemImage"))
+                .thumbnail(0.5f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.mipmap.ic_launcher)
+                .into(downImg);
+
+
+
+//        BitmapDisplayConfig bdc = new BitmapDisplayConfig();
+//        bdc.setBitmapMaxSize(new BitmapSize(colWidth, colWidth).scaleDown(2));
+//        bitmapUtils.display(downImg, ((HashMap<String, String>) getItem(position)).get("itemImage"), bdc);
         pb.setVisibility(View.GONE);
         return convertView;
     }

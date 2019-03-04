@@ -20,11 +20,13 @@ import android.graphics.Color;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -122,6 +124,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private long               traceID    = 0;
     private int                stateType;
     private int                fileNum;
+    private int imageCount;
     private String             videoPath  = null; // 选择的视频的绝对路径
 
     // 用户评论媒体文件
@@ -425,45 +428,79 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     File imgDirs = new File(Common.PHOTO_PATH);
                     if (!imgDirs.exists()) {
                         if (imgDirs.mkdirs()) {
-                            Toast.makeText(CommentActivity.this,
-                                    getResources().getString(R.string.tips_savepath) + Common.PHOTO_PATH,
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_savepath) + Common.PHOTO_PATH, Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(CommentActivity.this,
-                                    getResources().getString(R.string.tips_norighttomkdir), Toast.LENGTH_SHORT)
-                                    .show();
+                            Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_norighttomkdir), Toast.LENGTH_SHORT).show();
                             return;
                         }
                     }
-                    File imageName = new File(imgDirs, "HappyNavi_"
-                            + Common.currentTime().trim() + ".jpg");
+
+                    File imageName = new File(imgDirs, "HappyNavi_" + Common.currentTime().trim() + ".jpg");
                     imageName.createNewFile();
                     recentPhoto = imageName.getAbsolutePath();
-                    Uri uri = Uri.fromFile(imageName);
+
+                    //                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    //                    Uri uri = Uri.fromFile(imageName);
+                    Uri uri;
+                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                    // SDK>24 和 <24
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+//                        ContentValues contentValues = new ContentValues(1);
+//                        contentValues.put(MediaStore.Images.Media.DATA, imageName.getAbsolutePath());
+//
+//                        uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+//                        intent.setDataAndType(uri, "application/vnd.android.package-archive");
+                        uri = FileProvider.getUriForFile(CommentActivity.this,
+                                "com.trackersurvey.happynavi.fileProvider", imageName);
+                    } else {
+
+                        uri = Uri.fromFile(imageName);
+                    }
 
                     Log.i("Eaa", "_photoPath_" + recentPhoto);
-                    Intent intent = new Intent(
-                            MediaStore.ACTION_IMAGE_CAPTURE);
+
+                    //                    intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     intent.putExtra(MediaStore.Images.Media.ORIENTATION, 1);
                     //设定拍照时手机方向为竖向
                     //设定照片保存的路径
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                     startActivityForResult(intent, REQUEST_TAKEPIC);
                 } catch (ActivityNotFoundException e) {
-                    Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_findsdfail),
-                            Toast.LENGTH_SHORT).show();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_findsdfail), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 } catch (IOException e) {
                     //e.printStackTrace();
-                    Toast.makeText(CommentActivity.this, R.string.tips_createfilefail,
-                            Toast.LENGTH_SHORT).show();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(CommentActivity.this, R.string.tips_createfilefail, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }
             } else {
-                Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_nosd),
-                        Toast.LENGTH_SHORT).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_nosd), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         } else {
-            Toast.makeText(CommentActivity.this, R.string.nomorethan9,
-                    Toast.LENGTH_SHORT).show();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(CommentActivity.this, R.string.nomorethan9, Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
 
@@ -474,8 +511,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         int videoNum = 0;
         if (hasVideo >= 0) {
             videoNum = 1;
-            Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_selectvideoagain),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_selectvideoagain), Toast.LENGTH_SHORT).show();
         }
 
         if (itemNo - videoNum < 9) {
@@ -497,25 +533,17 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                     Intent intent = new Intent();
                                     intent.setAction("android.media.action.VIDEO_CAPTURE");
                                     intent.addCategory("android.intent.category.DEFAULT");
-                                    intent.putExtra(
-                                            MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                                    intent.putExtra(
-                                            MediaStore.EXTRA_DURATION_LIMIT,
-                                            200000);
-                                    intent.putExtra(
-                                            MediaStore.EXTRA_SIZE_LIMIT,
-                                            20 * 1024 * 1024);
-                                    startActivityForResult(intent,
-                                            REQUEST_CAMERA);
+                                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                                    intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 200000);
+                                    intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 20 * 1024 * 1024);
+                                    startActivityForResult(intent, REQUEST_CAMERA);
 
                                     break;
                                 case 1: {
                                     // 文件选择
-                                    Intent intent2 = new Intent(
-                                            Intent.ACTION_GET_CONTENT);
+                                    Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
                                     intent2.setType("video/*");
-                                    startActivityForResult(intent2,
-                                            REQUEST_VIDEO);
+                                    startActivityForResult(intent2, REQUEST_VIDEO);
                                     break;
                                 }
                                 default:
@@ -610,22 +638,18 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     String sdStatus = Environment.getExternalStorageState();
                     if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
                         Log.i("TestFile", "SD card is not avaiable/writeable right now.");
-                        Toast.makeText(CommentActivity.this,
-                                R.string.cantusingsdcard, Toast.LENGTH_SHORT)
-                                .show();
+                        Toast.makeText(CommentActivity.this, R.string.cantusingsdcard, Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if (recentPhoto != null && new File(recentPhoto).exists()) {
                         String path = recentPhoto;
 
                         InsertPicToMediaStore insertImg = new InsertPicToMediaStore();
-                        insertImg.execute(new Object[]{getApplicationContext(),
-                                path, Common.currentTime()});
+                        insertImg.execute(new Object[]{getApplicationContext(), path, Common.currentTime()});
 
                         selectImages.add(recentPhoto);
                     } else {
-                        Toast.makeText(CommentActivity.this, R.string.tips_takepicfail,
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CommentActivity.this, R.string.tips_takepicfail, Toast.LENGTH_SHORT).show();
                     }
 
                     break;
@@ -685,18 +709,14 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 case REQUEST_CAMERA: {
                     try {
                         if (null == data) {
-                            Toast.makeText(CommentActivity.this,
-                                    getResources().getString(R.string.tips_takevideofail), Toast.LENGTH_SHORT)
-                                    .show();
+                            Toast.makeText(CommentActivity.this, getResources().getString(R.string.tips_takevideofail), Toast.LENGTH_SHORT).show();
                             break;
                         }
                         //Log.i("Eaa_camera", data.toString());
                         Uri uri = data.getData();
-                        if (!TextUtils.isEmpty(uri.getAuthority())
-                                || !TextUtils.isEmpty(uri.getScheme())) {
+                        if (!TextUtils.isEmpty(uri.getAuthority()) || !TextUtils.isEmpty(uri.getScheme())) {
                             // 查询选择视频
-                            Cursor cursor = getContentResolver().query(uri,
-                                    new String[]{MediaStore.Video.Media.DATA},
+                            Cursor cursor = getContentResolver().query(uri, new String[]{MediaStore.Video.Media.DATA},
                                     null, null, null);
                             if (null != cursor) {
                                 // 光标移动至开头 获取图片路径
@@ -973,13 +993,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         //            comment.setShare(0);
         //        }
         // 将要上传的文件添加到sharedPreferences
-        SharedPreferences uploadFiles = getSharedPreferences(SHAREDFILES,
-                Activity.MODE_PRIVATE);
+        SharedPreferences uploadFiles = getSharedPreferences(SHAREDFILES, Activity.MODE_PRIVATE);
         SharedPreferences.Editor edit = uploadFiles.edit();
 
         Log.i("dongsiyuancomment", "createTime=" + createTime + "|longitude=" + longitude + "|latitude=" + latitude
                 + "|altitude=" + altitude + "|country=" + country + "|province=" + province + "|city=" + city
-                + "|placeName=" + placeName + "|comment=" + commentText + "|fileNum=" + comment.getImageCount()
+                + "|placeName=" + placeName + "|comment=" + commentText + "|fileNum=" + fileNum + "|ImageCount=" + selectImages.size()
                 + "|traceID=" + traceID + "|videoCount=" + comment.getVideoCount() + "|audioCount=" + 0
                 + "|userID=" + Common.getUserID(getApplicationContext()) + "|feeling=" + feeling
                 + "|behaviour=" + behaviour + "|stay=" + stay + "|companion=" + companion + "|relation=" + relation
@@ -1009,7 +1028,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             files[fileNum].setFileName(videoPath);
             files[fileNum].setThumbnailName(cacheVideo);
             files[fileNum].setFileType(2);
-            comment.setImageCount(fileNum + 1);
+//            comment.setImageCount(fileNum + 1);
             edit.putString(
                     createTime + File.separator + fileNum + File.separator + 2
                             + File.separator

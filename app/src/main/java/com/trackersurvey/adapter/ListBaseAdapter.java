@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -304,6 +306,7 @@ public class ListBaseAdapter extends BaseAdapter {
 
         // 用户事件文件
         CommentMediaFilesData imageUrls[] = itemEntity.getFiles();
+        Log.i("dongsiyuanimageUrls", "getView: " + imageUrls.length + " imageUrls: " + imageUrls[0].toString() );
         ArrayList<HashMap<String, String>> imageItems = new ArrayList<HashMap<String, String>>();
         holder.gridview.setVisibility(View.VISIBLE);
         if (imageUrls == null || imageUrls.length == 0) { // 没有图片资源就隐藏GridView
@@ -361,6 +364,7 @@ public class ListBaseAdapter extends BaseAdapter {
                     String clickedThumbName = lid5[position].getThumbnailName();
                     ArrayList<String> pathes = new ArrayList<String>();
                     ArrayList<String> thumbpathes = new ArrayList<String>();
+                    Log.i("dongsiyuanclickedType", "onItemClick: " + clickedType);
 
                     //下载所有未下载的图片
                     for (int j = 0; j < items.size(); j++) {
@@ -496,8 +500,17 @@ public class ListBaseAdapter extends BaseAdapter {
                         Log.i("isDownloaded", "这里执行了：thumbpathes=" + thumbpathes);
                     } else if (clickedType == CommentMediaFilesData.TYPE_VIDEO && isDownloaded) {
                         // 调用系统视频播放器
-                        Uri uri = Uri.fromFile(new File(clickedpathName));
+                        Uri uri = null;
                         Intent intent = new Intent(Intent.ACTION_VIEW);
+                        File videoUri = new File(clickedpathName);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            uri = FileProvider.getUriForFile(context,  "com.trackersurvey.happynavi.fileProvider", videoUri);
+                        } else {
+                            uri = Uri.fromFile(videoUri);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        }
+
                         intent.setDataAndType(uri, "video/*");
                         context.startActivity(intent);
                     }
