@@ -1,141 +1,147 @@
-<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:gravity="center_vertical"
-    android:orientation="horizontal" >
-    <RelativeLayout 
+    android:orientation="horizontal">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        <RelativeLayout 
+        android:layout_height="match_parent">
+
+        <RelativeLayout
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:background="#09c7f7"
-            >
-            <TextView 
+            android:background="#09c7f7">
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/share_to"
-                android:textSize="20sp"
-                android:textColor="@color/white"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                />
-            <ImageView 
-	        	android:id="@+id/close_dialog"
-	        	android:layout_width="wrap_content"
-	        	android:layout_height="wrap_content"
-	        	android:layout_alignParentRight="true"
-	        	android:layout_centerVertical="true"
-	        	android:layout_marginRight="10dp"
-	        	android:src="@mipmap/close_dialog"
-	        />
+                android:text="@string/share_to"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/close_dialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/close_dialog" />
         </RelativeLayout>
-        <LinearLayout
-            android:id="@+id/share_wxsession_layout"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:padding="20dp"
-	        
-	        android:gravity="center_horizontal"
-	        android:orientation="vertical"
-	        android:layout_below="@id/dialog_title">
 
-	        <ImageButton
-	            android:id="@+id/share_wxsession"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:background="@color/white"
-	            android:src="@mipmap/icon_wx_logo" />
-	
-	        <TextView
-	            android:id="@+id/share_wxsession_text"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="@string/share_to_wx_session" />
-    	</LinearLayout>
+        <RelativeLayout
+            android:gravity="center"
+            android:layout_below="@+id/dialog_title"
+            android:id="@+id/dialog_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-	    <LinearLayout
-	        android:id="@+id/share_wxtinmeline_layout"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:padding="20dp"
-	        
-	        android:gravity="center_horizontal"
-	        android:orientation="vertical"
-	        android:layout_toRightOf="@id/share_wxsession_layout"
-	        android:layout_below="@id/dialog_title" >
+            <!--android:layout_below="@id/dialog_title"-->
+            <LinearLayout
+                android:id="@+id/share_wxsession_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-	        <ImageButton
-	            android:id="@+id/share_wxtinmeline"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:background="#ffffff"
-	            android:src="@mipmap/icon_wx_moments" />
-	
-	        <TextView
-	            android:id="@+id/share_wxtimeline_text"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="@string/share_to_wx_timeline"
-	            />
-    	</LinearLayout>
-    
-	    <LinearLayout
-	        android:id="@+id/share_qzone_layout"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_below="@id/share_wxsession_layout"
-	        android:layout_toLeftOf="@+id/share_wxtinmeline_layout"
-	        android:gravity="center_horizontal"
-	        android:orientation="vertical"
-	        android:padding="20dp" >
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-	        <ImageButton 
-	            android:id="@+id/share_qzone"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:background="#FFFFFF"
-	            android:src="@mipmap/qq_qzone"
-	            />
-	        
-	        <TextView 
-	            android:id="@+id/share_qzone_text"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="@string/share_to_qzone"
-	            />
-	    </LinearLayout>
-    
-	    <LinearLayout
-	        android:id="@+id/share_qq_layout"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignRight="@+id/share_wxtinmeline_layout"
-	        android:layout_below="@id/share_wxsession_layout"
-	        android:layout_toRightOf="@id/share_qzone_layout"
-	        android:gravity="center_horizontal"
-	        android:orientation="vertical"
-	        android:padding="20dp" >
+                <ImageButton
+                    android:id="@+id/share_wxsession"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:src="@mipmap/icon_wx_logo" />
 
-	        <ImageButton 
-	            android:id="@+id/share_qq"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:background="#FFFFFF"
-	            android:src="@mipmap/qq_friends"
-	            />
-	        
-	        <TextView 
-	            android:id="@+id/share_qq_text"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="@string/share_to_qq"
-	            />
-	    </LinearLayout>
-	    
-	    </RelativeLayout>
-    
+                <TextView
+                    android:id="@+id/share_wxsession_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/share_to_wx_session" />
+            </LinearLayout>
+
+            <!--android:layout_below="@id/dialog_title"-->
+            <LinearLayout
+                android:id="@+id/share_wxtinmeline_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_toRightOf="@id/share_wxsession_layout"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <ImageButton
+                    android:id="@+id/share_wxtinmeline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#ffffff"
+                    android:src="@mipmap/icon_wx_moments" />
+
+                <TextView
+                    android:id="@+id/share_wxtimeline_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/share_to_wx_timeline" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/share_qzone_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/share_wxsession_layout"
+                android:layout_toLeftOf="@+id/share_wxtinmeline_layout"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <ImageButton
+                    android:id="@+id/share_qzone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:src="@mipmap/qq_qzone" />
+
+                <TextView
+                    android:id="@+id/share_qzone_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/share_to_qzone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/share_qq_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/share_wxsession_layout"
+                android:layout_alignRight="@+id/share_wxtinmeline_layout"
+                android:layout_toRightOf="@id/share_qzone_layout"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <ImageButton
+                    android:id="@+id/share_qq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:src="@mipmap/qq_friends" />
+
+                <TextView
+                    android:id="@+id/share_qq_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/share_to_qq" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
 </LinearLayout>

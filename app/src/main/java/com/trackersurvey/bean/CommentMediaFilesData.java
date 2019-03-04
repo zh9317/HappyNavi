@@ -77,4 +77,16 @@ public class CommentMediaFilesData {
     public void setFileNo(int fileNo) {
         this.fileNo = fileNo;
     }
+
+    @Override
+    public String toString() {
+        return "CommentMediaFilesData{" +
+                "fileID=" + fileID +
+                ", fileName='" + fileName + '\'' +
+                ", dateTime='" + dateTime + '\'' +
+                ", fileType=" + fileType +
+                ", thumbnailName='" + thumbnailName + '\'' +
+                ", fileNo=" + fileNo +
+                '}';
+    }
 }
