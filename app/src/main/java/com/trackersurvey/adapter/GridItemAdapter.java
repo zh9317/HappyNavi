@@ -1,6 +1,7 @@
 package com.trackersurvey.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -71,14 +72,15 @@ public class GridItemAdapter extends BaseAdapter {
         downImg.setMaxHeight(colWidth);
         downImg.setMinimumHeight(colWidth);
 
+        Log.i("dongsiyuancolWidth", "getView: " + colWidth);
+
         Glide.with(context)
                 .load(((HashMap<String, String>) getItem(position)).get("itemImage"))
                 .thumbnail(0.5f)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.app_logo)
+                .override(colWidth, colWidth)
                 .into(downImg);
-
-
 
 //        BitmapDisplayConfig bdc = new BitmapDisplayConfig();
 //        bdc.setBitmapMaxSize(new BitmapSize(colWidth, colWidth).scaleDown(2));
