@@ -1214,7 +1214,7 @@ public class MyCommentModel {
 
                     // 更新items，保证ListView的同步更新
                     Cursor fileCursor = dbHelper.selectFiles(null, "datetime("
-                            + PhotoDBHelper.COLUMNS_UE[2] + ")=datetime('" + dateTime + "')",
+                            + PhotoDBHelper.COLUMNS_UE[0] + ")=datetime('" + dateTime + "')",
                             null, null, null, null);
                     CommentMediaFilesData files[] = new CommentMediaFilesData[fileCursor.getCount()];
                     int cursorIndex = 0;
@@ -1230,6 +1230,10 @@ public class MyCommentModel {
                     fileCursor.close();
                     writeDBHelper.closeDB();
                 }
+                Intent intent = new Intent();
+                intent.setAction(UPDATEUI_ACTION);
+                Log.i("dongsiyuansendBroadcast", "sendBroadcast: ");
+                context.sendBroadcast(intent);
                 mDownThumbFile.onThumbFileDownload(0, position, images);
             }
         });

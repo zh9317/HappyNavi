@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -309,8 +311,6 @@ public class ListBaseAdapter extends BaseAdapter {
             holder.gridview.setVisibility(View.GONE);
             holder.delete.setLayoutParams(new LinearLayout.LayoutParams(
                     ActionBar.LayoutParams.MATCH_PARENT, 0, 3));
-            //			holder.trace.setLayoutParams(new LinearLayout.LayoutParams(
-            //					LayoutParams.MATCH_PARENT, 0, 3));
         } else {
             for (int i = 0; i < imageUrls.length; i++) {
                 String thumbPic = imageUrls[i].getThumbnailName();
@@ -323,6 +323,7 @@ public class ListBaseAdapter extends BaseAdapter {
                 } else {
                     // 解码缩略图放入gridView
                     File imgFile = new File(thumbPic);
+                    Log.i("dongiysuanimgFile", "getView: " + imgFile);
                     if (imgFile.exists()) {
                         imgPath = thumbPic;
                     } else {
@@ -531,13 +532,25 @@ public class ListBaseAdapter extends BaseAdapter {
     MyCommentModel.DownFileListener fileDownloaded = new MyCommentModel.DownFileListener() {
         @Override
         public void onFileDownload(int msg, int listPosition, int filePosition) {
-            ProgressBar pb = downloadingFiles.remove("" + listPosition + filePosition);
-            if (pb != null) {
-                pb.setVisibility(View.GONE);
+            Message message = new Message();
+//            ProgressBar pb = downloadingFiles.remove("" + listPosition + filePosition);
+            if (msg == 0) {
+                message.what = 3;
+                message.arg1 = listPosition;
+                message.arg2 = filePosition;
+                handler.sendMessage(message);
+            } else {
+                message.what = 2;
+                handler.sendMessage(message);
             }
-            if (msg != 0) {
-                modelTips(msg);
-            }
+
+
+//            if (pb != null) {
+//                pb.setVisibility(View.GONE);
+//            }
+//            if (msg != 0) {
+//                modelTips(msg);
+//            }
         }
     };
 
@@ -560,19 +573,50 @@ public class ListBaseAdapter extends BaseAdapter {
      */
     MyCommentModel.DownThumbFileListener thumbDownloaded = new MyCommentModel.DownThumbFileListener() {
         @Override
-        public void onThumbFileDownload(int msg, int listPosition,
-                                        ArrayList<HashMap<String, String>> newThumbs) {
+        public void onThumbFileDownload(int msg, int listPosition, ArrayList<HashMap<String, String>> newThumbs) {
+            Message message = new Message();
             if (msg == 0) {
-                Log.i("Eaa", listPosition + "newThumbs:" + newThumbs.toString());
-                GridItemAdapter gView = downloadingThumbs.remove(listPosition);
-                if (null != gView) {
-                    gView.setItems(newThumbs).notifyDataSetChanged();
-                }
+                message.what = 0;
+                message.arg1 = listPosition;
+                message.obj = newThumbs;
+                handler.sendMessage(message);
+//                Log.i("Eaa", listPosition + "newThumbs:" + newThumbs.toString());
+//                GridItemAdapter gView = downloadingThumbs.remove(listPosition);
+//                if (null != gView) {
+//                    gView.setItems(newThumbs).notifyDataSetChanged();
+//                }
             } else {
-                modelTips(msg);
+                message.what = 2;
+                handler.sendMessage(message);
+//                modelTips(msg);
             }
         }
     };
+
+    Handler handler = new Handler(new Handler.Callback() {
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    ArrayList<HashMap<String, String>> newThumbs = (ArrayList<HashMap<String, String>>) msg.obj;
+                    int listPosition = msg.arg1;
+                    Log.i("Eaa", listPosition + "newThumbs:" + newThumbs.toString());
+                    GridItemAdapter gView = downloadingThumbs.remove(listPosition);
+                    if (null != gView) {
+                        gView.setItems(newThumbs).notifyDataSetChanged();
+                    }
+                    break;
+                case 2:
+                    modelTips(8);
+                    break;
+                case 3:
+                    ProgressBar pb = downloadingFiles.remove("" + msg.arg1 + msg.arg2);
+                    if (pb != null) {
+                        pb.setVisibility(View.GONE);
+                    }
+            }
+            return false;
+        }
+    });
 
     /**
      * 根据Model操作的回调，弹出Toast提醒用户
