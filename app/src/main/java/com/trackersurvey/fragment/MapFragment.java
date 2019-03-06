@@ -438,6 +438,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
 
             if(Build.VERSION.SDK_INT>=26){
                 getActivity().startForegroundService (locationServiceIntent);
+
             }else{
                 getActivity().bindService(locationServiceIntent, connection, Context.BIND_AUTO_CREATE);
             }

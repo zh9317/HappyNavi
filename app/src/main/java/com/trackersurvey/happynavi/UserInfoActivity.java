@@ -23,25 +23,25 @@ import com.trackersurvey.util.RoundImageView;
 
 import java.io.IOException;
 
-public class UserInfoActivity extends BaseActivity implements View.OnClickListener{
+public class UserInfoActivity extends BaseActivity implements View.OnClickListener {
 
     private SharedPreferences sp;
-    private String sexStr;
-    private String nicknameStr;
-    private String realNameStr;
-    private String userIDStr;
-    private String birthDateStr;
-    private String occupationStr;
-    private String educationStr;
+    private String            sexStr;
+    private String            nicknameStr;
+    private String            realNameStr;
+    private String            userIDStr;
+    private String            birthDateStr;
+    private String            occupationStr;
+    private String            educationStr;
 
     private RoundImageView userHeadIv;
-    private TextView nicknameTv;
-    private TextView realNameTv;
-    private TextView userIdTv;
-    private TextView birthDateTv;
-    private TextView sexTv;
-    private TextView occupationTv;
-    private TextView educationTv;
+    private TextView       nicknameTv;
+    private TextView       realNameTv;
+    private TextView       userIdTv;
+    private TextView       birthDateTv;
+    private TextView       sexTv;
+    private TextView       occupationTv;
+    private TextView       educationTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         StatusBarCompat.setStatusBarColor(this, Color.BLACK); // 修改状态栏颜色
         // 隐藏原始标题栏
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
+        if (actionBar != null) {
             actionBar.hide();
         }
         AppManager.getAppManager().addActivity(this);
@@ -108,26 +108,26 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.logout_btn:
                 String msg = getResources().getString(R.string.exitdlg1);
-                if(Common.isRecording){
+                if (Common.isRecording) {
                     msg = getResources().getString(R.string.exitdlg2);
                 }
                 CustomDialog.Builder builder_logout = new CustomDialog.Builder(this);
                 builder_logout.setTitle(getResources().getString(R.string.exit));
                 builder_logout.setMessage(msg);
-                builder_logout.setNegativeButton(getResources().getString(R.string.cancl),new DialogInterface.OnClickListener() {
+                builder_logout.setNegativeButton(getResources().getString(R.string.cancl), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
-                builder_logout.setPositiveButton(getResources().getString(R.string.confirm),new DialogInterface.OnClickListener() {
+                builder_logout.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
-//                        Common.sendOffline(Common.getDeviceId(getApplicationContext()),getApplication());
-//                        //Common.userId="0";
-//                        Common.layerid_main=0;
+                        //                        Common.sendOffline(Common.getDeviceId(getApplicationContext()),getApplication());
+                        //                        //Common.userId="0";
+                        //                        Common.layerid_main=0;
                         LogoutRequest logoutRequest = new LogoutRequest(sp.getString("token", ""));
                         logoutRequest.requestHttpData(new ResponseData() {
                             @Override
@@ -174,7 +174,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Glide.with(this).load("http://211.87.227.204:8089"
+        Glide.with(this)
+                .load("http://211.87.227.204:8089"
                 + sp.getString("headurl", "") + "?token="
                 + sp.getString("token", "")).into(userHeadIv);
         if (sp.getInt("sex", 0) == 0) {

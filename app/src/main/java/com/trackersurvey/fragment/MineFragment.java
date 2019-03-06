@@ -26,6 +26,7 @@ import com.trackersurvey.happynavi.TraceListActivity;
 import com.trackersurvey.happynavi.UserInfoActivity;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.TestRequest;
+import com.trackersurvey.service.LocationService;
 import com.trackersurvey.util.AppManager;
 import com.trackersurvey.util.Common;
 import com.trackersurvey.util.CustomDialog;
@@ -132,6 +133,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             public void onClick(DialogInterface dialog, int which) {
                 // TODO Auto-generated method stub
                 dialog.dismiss();
+                Intent stopIntent = new Intent(getActivity(), LocationService.class);
+                getActivity().stopService(stopIntent);//停止服务
                 Common.sendOffline(Common.getDeviceId(getContext()), getContext());
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     getActivity().finishAffinity();
