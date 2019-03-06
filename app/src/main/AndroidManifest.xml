@@ -5,6 +5,12 @@
     android:versionCode="201"
     android:versionName="2.0.1">
 
+    <!--Android Mac地址-->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--android8.0以上版本的前台服务-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
