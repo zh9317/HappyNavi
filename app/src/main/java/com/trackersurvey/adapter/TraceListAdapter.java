@@ -182,8 +182,8 @@ public class TraceListAdapter extends BaseAdapter {
                     stepstr = steps.get(i).getSteps()+"";
                     holder.stepcounts.setText(stepstr);
                     //Log.i("trailadapter", "step:"+steps.get(i).getsteps()+",traceNo:"+steps.get(i).gettraceNo());
-                    holder.lablestep.setVisibility(View.VISIBLE);
-                    holder.stepcounts.setVisibility(View.VISIBLE);
+//                    holder.lablestep.setVisibility(View.VISIBLE);
+//                    holder.stepcounts.setVisibility(View.VISIBLE);
                     hasSteps=true;
                     break;
                 }
