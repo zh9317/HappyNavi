@@ -18,6 +18,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -433,8 +434,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
             // 已申请则开启定位服务
-            getActivity().bindService(locationServiceIntent,
-                    connection, Context.BIND_AUTO_CREATE);
+//            getActivity().bindService(locationServiceIntent, connection, Context.BIND_AUTO_CREATE);
+
+            if(Build.VERSION.SDK_INT>=26){
+                getActivity().startForegroundService (locationServiceIntent);
+            }else{
+                getActivity().bindService(locationServiceIntent, connection, Context.BIND_AUTO_CREATE);
+            }
+
         }
         getActivity().bindService(locationServiceIntent,
                 connection, Context.BIND_AUTO_CREATE);
