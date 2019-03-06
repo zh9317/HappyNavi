@@ -275,6 +275,7 @@
     <string name="mine_offline_map">离线地图</string>
     <string name="mine_setting">设置</string>
     <string name="mine_help">帮助</string>
+    <string name="exit_app">退出应用</string>
     <string name="user_info_head">头像</string>
     <string name="user_info_nickname">昵称</string>
     <string name="user_info_real_name">姓名</string>

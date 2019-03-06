@@ -545,6 +545,8 @@
     <string name="mine_setting">Settings </string>
         
     <string name="mine_help">Help </string>
+
+    <string name="exit_app">Exit the app</string>
         
     <string name="user_info_head">avatar </string>
         

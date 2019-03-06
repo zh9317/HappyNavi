@@ -1654,6 +1654,9 @@ public class ShowTraceFragment extends Fragment implements View.OnClickListener,
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+
+        if (myComment == null)
+            myComment = new MyCommentModel(context, "mark");
         myComment.stopModel();
         myComment = null;
         // bdMapView.onDestroy();

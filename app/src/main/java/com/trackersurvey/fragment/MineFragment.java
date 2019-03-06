@@ -1,8 +1,10 @@
 package com.trackersurvey.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,6 +26,9 @@ import com.trackersurvey.happynavi.TraceListActivity;
 import com.trackersurvey.happynavi.UserInfoActivity;
 import com.trackersurvey.http.ResponseData;
 import com.trackersurvey.http.TestRequest;
+import com.trackersurvey.util.AppManager;
+import com.trackersurvey.util.Common;
+import com.trackersurvey.util.CustomDialog;
 import com.trackersurvey.util.RoundImageView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,11 +67,13 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         LinearLayout myGroupLayout = meLayout.findViewById(R.id.my_group_layout); // 我的群组
         LinearLayout settingLayout = meLayout.findViewById(R.id.my_setting_layout); // 设置
         LinearLayout helpLayout = meLayout.findViewById(R.id.my_help_layout); // 帮助
+        LinearLayout exit_app = meLayout.findViewById(R.id.ll_exit_app);     // 退出应用
         userInfoLayout.setOnClickListener(this);
         myAlbumLayout.setOnClickListener(this);
         myGroupLayout.setOnClickListener(this);
         settingLayout.setOnClickListener(this);
         helpLayout.setOnClickListener(this);
+        exit_app.setOnClickListener(this);
 //        EventBus.getDefault().register(this);
         return meLayout;
     }
@@ -99,7 +106,41 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 break;
+            case R.id.ll_exit_app:
+                exit();
         }
+    }
+
+    public void exit(){
+        //退出提醒对话框
+        CustomDialog.Builder builder = new CustomDialog.Builder(getContext());
+        builder.setTitle(getResources().getString(R.string.tip));
+        if(Common.isRecording) {
+            builder.setMessage(getResources().getString(R.string.exitdlg0));
+        } else {
+            builder.setMessage(getResources().getString(R.string.exitdlg));
+        }
+        builder.setNegativeButton(getResources().getString(R.string.cancl),new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton(getResources().getString(R.string.exit),new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                dialog.dismiss();
+                Common.sendOffline(Common.getDeviceId(getContext()), getContext());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    getActivity().finishAffinity();
+                }
+                System.exit(0);
+                AppManager.getAppManager().AppExit(getContext());
+            }
+        });
+        builder.create().show();
     }
 
     @Override

@@ -287,6 +287,28 @@
             android:layout_marginRight="35dp"/>
 
         <LinearLayout
+            android:id="@+id/ll_exit_app"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@drawable/bg_mine_layout_press"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_exit_app"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/exit_app"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/my_help_layout"
             android:layout_width="match_parent"
             android:layout_height="43dp"

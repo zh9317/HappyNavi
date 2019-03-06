@@ -212,15 +212,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
+
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-            exit();
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent home = new Intent(Intent.ACTION_MAIN);
+            home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            home.addCategory(Intent.CATEGORY_HOME);
+            startActivity(home);
             return true;
-        } else {
-            return super.dispatchKeyEvent(event);
         }
+        return super.onKeyDown(keyCode, event);
     }
+
+        //    @Override
+//    public boolean dispatchKeyEvent(KeyEvent event) {
+//        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+////            exit();
+//            return true;
+//        } else {
+//            return super.dispatchKeyEvent(event);
+//        }
+//    }
     public void exit(){
         //退出提醒对话框
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
