@@ -1,6 +1,7 @@
 package com.trackersurvey.happynavi;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -67,6 +68,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private TextView mineText;
 
     private FragmentManager fragmentManager;
+
+    private final String REFRESH_ACTION = "android.intent.action.REFRESH_RECEIVER";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +149,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 }else {
                     transaction.show(discoverFragment);
                 }
+                Intent intent = new Intent();
+                intent.setAction(REFRESH_ACTION);
+                Log.i("dongsiyuansendBroadcast", "sendBroadcast: ");
+                sendBroadcast(intent);
                 break;
             case 3:
                 mineImage.setImageResource(R.mipmap.mine_select);

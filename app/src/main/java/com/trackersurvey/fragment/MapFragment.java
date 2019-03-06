@@ -181,6 +181,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
     private final String              MY_ACTION          = "android.intent.action.LOCATION_RECEIVER";
     private final String              PULLREFRESH_ACTION = "android.intent.action.PULLREFRESH_RECEIVER";
     private final String              ACCURACY_ACTION    = "android.intent.action.ACCURACY_RECEIVER";
+    private final String REFRESH_ACTION = "android.intent.action.REFRESH_RECEIVER";
     //private static final String URL_STARTTRAIL = Common.url+"reqTraceNo.aspx";
     private       String              URL_ENDTRAIL       = null;
     //private static final String URL_GET4TIME = Common.url+"request.aspx";
@@ -866,8 +867,12 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
                     //showDialog("正在请求..","请求中..请稍后....");
                     //PostStartTrail startTrailThread=new PostStartTrail(handler,URL_STARTTRAIL,Common.userId);
                     //startTrailThread.start();
+                    Intent intent = new Intent();
+                    intent.setAction(REFRESH_ACTION);
+                    Log.i("dongsiyuansendBroadcast", "sendBroadcast: ");
+                    getContext().sendBroadcast(intent);
                 } else {
-                    Toast.makeText(getContext(), "取消记录", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "取消记录", Toast.LENGTH_SHORT).show();
                 }
             }
         });
