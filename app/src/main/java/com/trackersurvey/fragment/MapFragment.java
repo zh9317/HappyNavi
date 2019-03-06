@@ -980,7 +980,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Locat
             getActivity().startService(stepCountServiceIntent);
             iscountstep = true;
             new Thread(stepThread).start();
-            stepTv.setVisibility(View.VISIBLE);
+//            stepTv.setVisibility(View.VISIBLE);
             stepTv.setText(getResources().getString(R.string.step_label) + "：" + total_step);
         }
     }
