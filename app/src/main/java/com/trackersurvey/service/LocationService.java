@@ -281,8 +281,8 @@ public class LocationService extends Service implements AMapLocationListener {
             Intent notificationIntent = new Intent();
             notificationIntent.setAction("foreground");
             Notification notification = new Notification.Builder(this, CHANNEL_ID)
-                    .setContentTitle("收到一条重要通知")
-                    .setContentText("这是重要通知")
+                    .setContentTitle(getText(R.string.notification_title))
+                    .setContentText(getText(R.string.notification_message))
                     .setSmallIcon(R.mipmap.app_logo)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                     .setContentIntent(PendingIntent.getBroadcast(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT))
